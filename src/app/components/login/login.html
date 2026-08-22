@@ -1,0 +1,71 @@
+<div class="login-wrapper">
+
+  <!-- Left Panel -->
+  <div class="login-left">
+    <span class="signin">
+      Signin
+      <svg class="signin-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3"/>
+      </svg>
+    </span>
+
+    <h1 class="headline">
+      <span class="line1">AI Powered Online Assessment</span>
+      <span class="ampersand">&amp;</span>
+      <span class="line2">Student Performance Analysis System</span>
+    </h1>
+
+    <ul class="feature-list">
+      <li>Automated grading of objective questions</li>
+      <li>Real-time performance dashboards for educators</li>
+      <li>AI-driven prediction of at-risk students</li>
+      <li>Personalized feedback and learning recommendations</li>
+      <li>Secure storage of student, assessment, and result data</li>
+    </ul>
+  </div>
+
+  <!-- Right Panel -->
+  <div class="login-right">
+    <div class="login-form-container">
+      <h2 class="welcome-title">Welcome Back</h2>
+      <p class="welcome-subtitle">Please enter your details below to continue</p>
+
+      <form (ngSubmit)="onLogin()">
+
+        <input
+          type="email"
+          placeholder="Enter your email"
+          [(ngModel)]="email"
+          name="email"
+          required
+          class="form-input"
+        />
+
+        <input
+          type="password"
+          placeholder="Enter your password"
+          [(ngModel)]="password"
+          name="password"
+          required
+          class="form-input"
+        />
+
+        <div class="form-row">
+          <label class="remember-me">
+            <input type="checkbox" [(ngModel)]="rememberMe" name="rememberMe" />
+            Remember me
+          </label>
+          <a routerLink="/forgotpassword" class="forgot-link">Forgot your password?</a>
+        </div>
+
+        <button type="submit" class="login-btn">Login</button>
+
+        <p class="signup-text">
+          Don't have an account? <a routerLink="/signup" class="signup-link">Sign Up</a>
+        </p>
+
+      </form>
+    </div>
+  </div>
+
+</div>
