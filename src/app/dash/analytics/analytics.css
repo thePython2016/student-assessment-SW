@@ -1,0 +1,255 @@
+.analytics-page {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* KPI cards */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+
+.kpi-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px;
+}
+
+.kpi-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.kpi-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.kpi-label {
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+.kpi-value {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.kpi-trend {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  font-size: 0.78rem;
+  font-weight: 500;
+}
+
+.kpi-trend mat-icon {
+  font-size: 14px;
+  width: 14px;
+  height: 14px;
+}
+
+.trend-up { color: #198754; }
+.trend-down { color: #dc2626; }
+
+/* Charts grid */
+.charts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 16px;
+}
+
+.chart-card mat-card-content {
+  padding-top: 16px;
+}
+
+/* Bar chart (monthly trend) */
+.bar-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  height: 180px;
+  padding-top: 20px;
+}
+
+.bar-column {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  height: 100%;
+  justify-content: flex-end;
+}
+
+.bar {
+  width: 100%;
+  max-width: 36px;
+  background-color: #2b6cb0;
+  border-radius: 4px 4px 0 0;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  transition: height 0.3s ease;
+}
+
+.bar-value {
+  position: absolute;
+  top: -20px;
+  font-size: 0.75rem;
+  color: #1e293b;
+  font-weight: 600;
+}
+
+.bar-label {
+  margin-top: 8px;
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+/* Donut chart */
+.pie-legend {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.donut {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.donut-hole {
+  width: 80px;
+  height: 80px;
+  background: white;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.donut-hole span {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.donut-hole small {
+  font-size: 0.7rem;
+  color: #64748b;
+}
+
+.legend-items {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  color: #1e293b;
+}
+
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+/* Horizontal bar list (course scores) */
+.hbar-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.hbar-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hbar-label {
+  width: 40px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.hbar-track {
+  flex: 1;
+  height: 10px;
+  background-color: #e2e8f0;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.hbar-fill {
+  height: 100%;
+  background-color: #198754;
+  border-radius: 6px;
+}
+
+.hbar-value {
+  width: 40px;
+  text-align: right;
+  font-size: 0.85rem;
+  color: #64748b;
+}
+
+/* Weak topics */
+.weak-topic-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.weak-topic-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.88rem;
+  margin-bottom: 4px;
+}
+
+.weak-topic-header span:first-child {
+  font-weight: 500;
+  color: #1e293b;
+}
+
+.miss-rate {
+  color: #dc2626;
+  font-weight: 500;
+}
+
+.weak-topic-track {
+  height: 8px;
+  background-color: #e2e8f0;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.weak-topic-fill {
+  height: 100%;
+  background-color: #dc2626;
+  border-radius: 6px;
+}

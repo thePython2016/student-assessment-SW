@@ -1,0 +1,91 @@
+<div class="page-header">
+  <a mat-raised-button color="primary" routerLink="/dash/users/create" class="add-assessment-btn">
+    <mat-icon>add</mat-icon> Create User
+  </a>
+</div>
+
+<mat-card class="table-card">
+  <mat-card-header>
+    <mat-card-title>Manage Users</mat-card-title>
+    <mat-card-subtitle>Update or remove users</mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-divider class="header-divider"></mat-divider>
+
+  <mat-card-content>
+
+    <div class="table-toolbar">
+      <mat-form-field appearance="outline" class="page-size-field">
+        <mat-label>Items per page</mat-label>
+        <mat-select [(ngModel)]="selectedPageSize" (selectionChange)="onPageSizeChange($event.value)">
+          <mat-option *ngFor="let size of pageSizeOptions" [value]="size">
+            {{ size }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-label>Search</mat-label>
+        <input matInput (keyup)="applyFilter($event)" placeholder="Search users...">
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+    </div>
+
+    <div class="selected-actions" *ngIf="selectedUser">
+      <span class="selected-label">Selected: {{ selectedUser.name }}</span>
+      <button mat-stroked-button color="primary" (click)="openEditDialog(selectedUser, $event)">
+        <mat-icon>edit</mat-icon> Update
+      </button>
+      <button mat-stroked-button color="warn" (click)="deleteUser(selectedUser, $event)">
+        <mat-icon>delete</mat-icon> Delete
+      </button>
+    </div>
+
+    <div class="table-container">
+      <table mat-table [dataSource]="dataSource" matSort class="assessment-table">
+
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
+          <td mat-cell *matCellDef="let u"> {{ u.id }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Name </th>
+          <td mat-cell *matCellDef="let u"> {{ u.name }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="email">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Email </th>
+          <td mat-cell *matCellDef="let u"> {{ u.email }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="role">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Role </th>
+          <td mat-cell *matCellDef="let u"> {{ u.role }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="createdAt">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Joined </th>
+          <td mat-cell *matCellDef="let u"> {{ u.createdAt | date:'mediumDate' }} </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row
+            *matRowDef="let row; columns: displayedColumns;"
+            (click)="selectRow(row)"
+            [class.selected-row]="isSelected(row)">
+        </tr>
+
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell no-data" [attr.colspan]="displayedColumns.length">
+            No users matching the filter.
+          </td>
+        </tr>
+
+      </table>
+    </div>
+
+    <mat-paginator [pageSizeOptions]="pageSizeOptions" showFirstLastButtons></mat-paginator>
+
+  </mat-card-content>
+</mat-card>

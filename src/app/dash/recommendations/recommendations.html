@@ -1,0 +1,51 @@
+<mat-card class="rec-card">
+  <mat-card-header>
+    <mat-card-title>{{ selectedStudent ? 'Recommendations for ' + selectedStudent.name : 'Course Recommendations' }}</mat-card-title>
+    <mat-card-subtitle>Search for a student to view personalized course recommendations</mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-divider class="header-divider"></mat-divider>
+
+  <mat-card-content>
+
+    <mat-form-field appearance="outline" class="search-field" *ngIf="!selectedStudent">
+      <mat-label>Search student by name or ID</mat-label>
+      <input
+        matInput
+        [(ngModel)]="searchText"
+        [matAutocomplete]="auto"
+        placeholder="e.g. John Doe or 11391"
+      />
+      <mat-icon matSuffix>search</mat-icon>
+      <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayStudent" (optionSelected)="onStudentSelected($event)">
+        <mat-option *ngFor="let student of filteredStudents" [value]="student">
+          {{ student.name }} (ID: {{ student.id }})
+        </mat-option>
+      </mat-autocomplete>
+    </mat-form-field>
+
+    <div class="selected-student" *ngIf="selectedStudent">
+      <mat-icon>person</mat-icon>
+      <span>{{ selectedStudent.name }} (ID: {{ selectedStudent.id }})</span>
+      <button mat-icon-button (click)="clearSelection()" aria-label="Clear selection">
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+
+    <div class="loading-state" *ngIf="loading">
+      <mat-spinner diameter="32"></mat-spinner>
+      <span>Finding the best courses...</span>
+    </div>
+
+    <div class="results" *ngIf="!loading && recommendations.length > 0">
+      <h3>Recommended Courses</h3>
+      <div class="rec-list">
+        <div class="rec-item" *ngFor="let rec of recommendations">
+          <span class="rec-course">{{ rec.course }}</span>
+          <span class="rec-score">{{ (rec.score * 100).toFixed(0) }}% match</span>
+        </div>
+      </div>
+    </div>
+
+  </mat-card-content>
+</mat-card>

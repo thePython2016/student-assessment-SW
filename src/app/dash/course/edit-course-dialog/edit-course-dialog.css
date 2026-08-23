@@ -1,0 +1,16 @@
+.dialog-content {
+  min-width: 400px;
+}
+
+.form-row {
+  display: flex;
+  gap: 16px;
+}
+
+.half-width {
+  flex: 1;
+}
+
+.full-width {
+  width: 100%;
+}

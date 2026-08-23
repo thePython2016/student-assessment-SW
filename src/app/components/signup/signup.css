@@ -256,7 +256,7 @@ input[type="password"]:focus {
   flex: 0 0 55%;
   height: 100vh;
   overflow: hidden;
-  background: linear-gradient(135deg, #2b6cb0, #1e3a8a);
+   background: #e9860d;
   color: white;
   padding: 40px 50px;
   display: flex;

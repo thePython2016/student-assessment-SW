@@ -1,0 +1,71 @@
+<div class="page-header">
+  <a mat-raised-button color="primary" routerLink="/dash/course/add" class="add-course-btn">
+    <mat-icon>add</mat-icon> Add Course
+  </a>
+</div>
+<mat-card class="form-card">
+  <mat-card-header>
+    <mat-card-title>Add New Course</mat-card-title>
+    <mat-card-subtitle>Fill in the course details below</mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-divider class="header-divider"></mat-divider>
+
+  <mat-card-content>
+    <form (ngSubmit)="onSubmit()" class="course-form">
+
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="half-width">
+          <mat-label>Course Name</mat-label>
+          <input matInput [(ngModel)]="courseName" name="courseName" required>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="half-width">
+          <mat-label>Course Code</mat-label>
+          <input matInput [(ngModel)]="courseCode" name="courseCode" required>
+        </mat-form-field>
+      </div>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="half-width">
+          <mat-label>Department</mat-label>
+          <mat-select [(ngModel)]="department" name="department" required>
+            <mat-option *ngFor="let d of departments" [value]="d">{{ d }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="half-width">
+          <mat-label>Duration</mat-label>
+          <mat-select [(ngModel)]="duration" name="duration" required>
+            <mat-option *ngFor="let d of durations" [value]="d">{{ d }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="half-width">
+          <mat-label>Credits</mat-label>
+          <input matInput type="number" [(ngModel)]="credits" name="credits" required>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="half-width">
+          <mat-label>Instructor</mat-label>
+          <input matInput [(ngModel)]="instructor" name="instructor" required>
+        </mat-form-field>
+      </div>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Description</mat-label>
+        <textarea matInput rows="4" [(ngModel)]="description" name="description"></textarea>
+      </mat-form-field>
+
+      <div class="form-actions">
+        <button mat-stroked-button type="button" (click)="onCancel()">Cancel</button>
+        <button mat-raised-button type="submit" color="primary" class="submit-btn">
+          <mat-icon>add</mat-icon> Add Course
+        </button>
+      </div>
+
+    </form>
+  </mat-card-content>
+</mat-card>

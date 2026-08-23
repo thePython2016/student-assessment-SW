@@ -1,0 +1,81 @@
+<div class="page-header">
+  <a mat-raised-button color="primary" routerLink="/students" class="add-student-btn">
+    <mat-icon>add</mat-icon> Add Student
+  </a>
+</div>
+
+<mat-card class="form-card">
+  <mat-card-header>
+    <mat-card-title>Add New Student</mat-card-title>
+    <mat-card-subtitle>Fill in the student's details below</mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-divider class="header-divider"></mat-divider>
+
+  <mat-card-content>
+    <form (ngSubmit)="onSubmit()" class="student-form">
+
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="half-width">
+          <mat-label>First Name</mat-label>
+          <input matInput [(ngModel)]="firstName" name="firstName" required>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="half-width">
+          <mat-label>Last Name</mat-label>
+          <input matInput [(ngModel)]="lastName" name="lastName" required>
+        </mat-form-field>
+      </div>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="half-width">
+          <mat-label>Email</mat-label>
+          <input matInput type="email" [(ngModel)]="email" name="email" required>
+          <mat-icon matSuffix>email</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="half-width">
+          <mat-label>Phone Number</mat-label>
+          <input matInput type="tel" [(ngModel)]="phone" name="phone" required>
+          <mat-icon matSuffix>phone</mat-icon>
+        </mat-form-field>
+      </div>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Address</mat-label>
+        <input matInput [(ngModel)]="address" name="address" required>
+      </mat-form-field>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="half-width">
+          <mat-label>Date of Birth</mat-label>
+          <input matInput [matDatepicker]="picker" [(ngModel)]="dob" name="dob" required>
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="half-width">
+          <mat-label>Gender</mat-label>
+          <mat-select [(ngModel)]="gender" name="gender" required>
+            <mat-option *ngFor="let g of genders" [value]="g">{{ g }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Course</mat-label>
+        <mat-select [(ngModel)]="course" name="course" required>
+          <mat-option *ngFor="let c of courses" [value]="c">{{ c }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <div class="form-actions">
+        <button mat-stroked-button type="button">Cancel</button>
+        <button mat-raised-button type="submit" class="submit-btn">
+          <mat-icon>person_add</mat-icon> Add Student
+        </button>
+      </div>
+
+    </form>
+  </mat-card-content>
+</mat-card>

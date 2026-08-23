@@ -1,0 +1,109 @@
+<div class="analytics-page">
+
+  <!-- KPI Cards -->
+  <div class="kpi-grid">
+    <mat-card class="kpi-card" *ngFor="let kpi of kpis">
+      <div class="kpi-icon" [style.background-color]="kpi.color + '20'">
+        <mat-icon [style.color]="kpi.color">{{ kpi.icon }}</mat-icon>
+      </div>
+      <div class="kpi-info">
+        <span class="kpi-label">{{ kpi.label }}</span>
+        <span class="kpi-value">{{ kpi.value }}</span>
+        <span class="kpi-trend" [class.trend-up]="kpi.trendUp" [class.trend-down]="!kpi.trendUp">
+          <mat-icon>{{ kpi.trendUp ? 'arrow_upward' : 'arrow_downward' }}</mat-icon>
+          {{ kpi.trend }}
+        </span>
+      </div>
+    </mat-card>
+  </div>
+
+  <!-- Charts row -->
+  <div class="charts-grid">
+
+    <mat-card class="chart-card">
+      <mat-card-header>
+        <mat-card-title>Average Score Trend</mat-card-title>
+      </mat-card-header>
+      <mat-divider></mat-divider>
+      <mat-card-content>
+        <div class="bar-chart">
+          <div class="bar-column" *ngFor="let m of monthlyTrend">
+            <div class="bar" [style.height.%]="(m.avgScore / maxMonthlyScore) * 100">
+              <span class="bar-value">{{ m.avgScore }}%</span>
+            </div>
+            <span class="bar-label">{{ m.month }}</span>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="chart-card">
+      <mat-card-header>
+        <mat-card-title>Pass / Fail Distribution</mat-card-title>
+      </mat-card-header>
+      <mat-divider></mat-divider>
+      <mat-card-content>
+        <div class="pie-legend">
+          <div class="donut" [style.background]="'conic-gradient(#198754 0% ' + passFail.pass + '%, #dc2626 ' + passFail.pass + '% 100%)'">
+            <div class="donut-hole">
+              <span>{{ passFail.pass }}%</span>
+              <small>Pass</small>
+            </div>
+          </div>
+          <div class="legend-items">
+            <div class="legend-item">
+              <span class="legend-dot" style="background:#198754"></span> Pass ({{ passFail.pass }}%)
+            </div>
+            <div class="legend-item">
+              <span class="legend-dot" style="background:#dc2626"></span> Fail ({{ passFail.fail }}%)
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+  </div>
+
+  <div class="charts-grid">
+
+    <mat-card class="chart-card">
+      <mat-card-header>
+        <mat-card-title>Average Score by Course</mat-card-title>
+      </mat-card-header>
+      <mat-divider></mat-divider>
+      <mat-card-content>
+        <div class="hbar-list">
+          <div class="hbar-row" *ngFor="let c of courseScores">
+            <span class="hbar-label">{{ c.course }}</span>
+            <div class="hbar-track">
+              <div class="hbar-fill" [style.width.%]="(c.avgScore / maxCourseScore) * 100"></div>
+            </div>
+            <span class="hbar-value">{{ c.avgScore }}%</span>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="chart-card">
+      <mat-card-header>
+        <mat-card-title>Top Weak Topics</mat-card-title>
+      </mat-card-header>
+      <mat-divider></mat-divider>
+      <mat-card-content>
+        <div class="weak-topic-list">
+          <div class="weak-topic-item" *ngFor="let t of weakTopics">
+            <div class="weak-topic-header">
+              <span>{{ t.topic }}</span>
+              <span class="miss-rate">{{ t.missRate }}% miss rate</span>
+            </div>
+            <div class="weak-topic-track">
+              <div class="weak-topic-fill" [style.width.%]="t.missRate"></div>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+  </div>
+
+</div>

@@ -1,0 +1,136 @@
+<mat-card class="form-card">
+  <mat-card-header>
+    <mat-card-title>{{ editingIndex !== null ? 'Edit Question' : 'Create Question' }}</mat-card-title>
+    <mat-card-subtitle>Fill in the question details below</mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-divider class="header-divider"></mat-divider>
+
+  <mat-card-content>
+    <form (ngSubmit)="onSubmit()" class="assessment-form">
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Question Text</mat-label>
+        <textarea matInput [(ngModel)]="questionText" name="questionText" rows="2" required></textarea>
+      </mat-form-field>
+
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="half-width">
+          <mat-label>Type</mat-label>
+          <mat-select [(ngModel)]="type" name="type" required (selectionChange)="onTypeChange()">
+            <mat-option *ngFor="let t of questionTypes" [value]="t.value">{{ t.label }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="half-width">
+          <mat-label>Marks</mat-label>
+          <input matInput type="number" [(ngModel)]="marks" name="marks" min="1" required>
+        </mat-form-field>
+      </div>
+
+      <!-- MCQ options -->
+      <div class="options-section" *ngIf="type === 'mcq'">
+        <h4>Options <span class="hint">(select the correct answer)</span></h4>
+        <div class="option-row" *ngFor="let opt of options; let i = index">
+          <div class="correct-toggle">
+            <mat-radio-button
+              name="correctOption"
+              [checked]="opt.isCorrect"
+              (change)="markCorrectOption(i)">
+              Correct
+            </mat-radio-button>
+          </div>
+          <mat-form-field appearance="outline" class="option-field">
+            <mat-label>Option {{ i + 1 }}</mat-label>
+            <input matInput [(ngModel)]="opt.text" [name]="'option' + i" required>
+          </mat-form-field>
+          <button mat-icon-button type="button" (click)="removeOption(i)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </div>
+        <button mat-stroked-button type="button" (click)="addOption()">
+          <mat-icon>add</mat-icon> Add Option
+        </button>
+      </div>
+
+      <!-- True / False -->
+      <div class="tf-section" *ngIf="type === 'true-false'">
+        <h4>Correct Answer</h4>
+        <mat-radio-group [(ngModel)]="trueFalseAnswer" name="trueFalseAnswer">
+          <mat-radio-button [value]="true">True</mat-radio-button>
+          <mat-radio-button [value]="false">False</mat-radio-button>
+        </mat-radio-group>
+      </div>
+
+      <!-- Short answer -->
+      <mat-form-field appearance="outline" class="full-width" *ngIf="type === 'short-answer'">
+        <mat-label>Expected Answer</mat-label>
+        <input matInput [(ngModel)]="shortAnswer" name="shortAnswer" required>
+      </mat-form-field>
+
+      <div class="form-actions">
+        <button mat-stroked-button type="button" (click)="onCancel()">Cancel</button>
+        <button mat-raised-button type="submit" color="primary" class="submit-btn">
+          <mat-icon>{{ editingIndex !== null ? 'save' : 'add' }}</mat-icon>
+          {{ editingIndex !== null ? 'Update Question' : 'Add Question' }}
+        </button>
+      </div>
+
+    </form>
+  </mat-card-content>
+</mat-card>
+
+<mat-card class="table-card" *ngIf="stagedQuestions.length">
+  <mat-card-header>
+    <mat-card-title>Staged Questions ({{ stagedQuestions.length }})</mat-card-title>
+  </mat-card-header>
+
+  <mat-divider class="header-divider"></mat-divider>
+
+  <mat-card-content>
+    <table mat-table [dataSource]="stagedQuestions" class="questions-table">
+
+      <ng-container matColumnDef="index">
+        <th mat-header-cell *matHeaderCellDef> # </th>
+        <td mat-cell *matCellDef="let q; let i = index"> {{ i + 1 }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="questionText">
+        <th mat-header-cell *matHeaderCellDef> Question </th>
+        <td mat-cell *matCellDef="let q"> {{ q.questionText }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="type">
+        <th mat-header-cell *matHeaderCellDef> Type </th>
+        <td mat-cell *matCellDef="let q"> {{ q.type }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="marks">
+        <th mat-header-cell *matHeaderCellDef> Marks </th>
+        <td mat-cell *matCellDef="let q"> {{ q.marks }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef> Actions </th>
+        <td mat-cell *matCellDef="let q; let i = index">
+          <button mat-icon-button (click)="editQuestion(i)">
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button mat-icon-button color="warn" (click)="deleteQuestion(i)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+
+    <div class="save-all-row">
+      <button mat-raised-button color="accent" [disabled]="submitting" (click)="saveAllQuestions()">
+        <mat-icon>cloud_upload</mat-icon>
+        {{ submitting ? 'Saving...' : 'Save All Questions' }}
+      </button>
+    </div>
+  </mat-card-content>
+</mat-card>

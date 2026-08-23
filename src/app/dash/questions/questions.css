@@ -1,0 +1,85 @@
+.form-card,
+.table-card {
+  margin-bottom: 24px;
+}
+
+.header-divider {
+  margin: 8px 0 16px;
+}
+
+.assessment-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-top: 8px;
+}
+
+.form-row {
+  display: flex;
+  gap: 16px;
+}
+
+.half-width {
+  flex: 1;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.options-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.options-section h4 {
+  margin-bottom: 4px;
+}
+
+.hint {
+  font-size: 0.8rem;
+  font-weight: normal;
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.option-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.correct-toggle {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.option-field {
+  flex: 1;
+}
+
+.tf-section {
+  margin: 4px 0;
+}
+
+.tf-section mat-radio-button {
+  margin-right: 16px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.questions-table {
+  width: 100%;
+}
+
+.save-all-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 16px;
+}

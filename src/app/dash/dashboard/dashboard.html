@@ -1,0 +1,64 @@
+<div class="dashboard-page">
+
+  <div class="welcome-banner">
+    <div>
+      <h2>Welcome back, {{ adminName }} </h2>
+      <p>Here's what's happening in your system today.</p>
+    </div>
+  </div>
+
+  <!-- KPI cards -->
+  <div class="kpi-grid">
+    <mat-card class="kpi-card" *ngFor="let kpi of kpis">
+      <div class="kpi-icon" [style.background-color]="kpi.color + '20'">
+        <mat-icon [style.color]="kpi.color">{{ kpi.icon }}</mat-icon>
+      </div>
+      <div class="kpi-info">
+        <span class="kpi-value">{{ kpi.value }}</span>
+        <span class="kpi-label">{{ kpi.label }}</span>
+      </div>
+    </mat-card>
+  </div>
+
+  <div class="content-grid">
+
+    <!-- Quick actions -->
+    <mat-card class="quick-links-card">
+      <mat-card-header>
+        <mat-card-title>Quick Actions</mat-card-title>
+      </mat-card-header>
+      <mat-divider></mat-divider>
+      <mat-card-content>
+        <div class="quick-links-grid">
+          <a class="quick-link" *ngFor="let link of quickLinks" [routerLink]="link.route">
+            <div class="quick-link-icon" [style.background-color]="link.color + '20'">
+              <mat-icon [style.color]="link.color">{{ link.icon }}</mat-icon>
+            </div>
+            <span>{{ link.label }}</span>
+          </a>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <!-- Recent activity -->
+    <mat-card class="activity-card">
+      <mat-card-header>
+        <mat-card-title>Recent Activity</mat-card-title>
+      </mat-card-header>
+      <mat-divider></mat-divider>
+      <mat-card-content>
+        <div class="activity-list">
+          <div class="activity-item" *ngFor="let activity of recentActivity">
+            <mat-icon class="activity-icon">{{ activity.icon }}</mat-icon>
+            <div class="activity-text">
+              <span>{{ activity.text }}</span>
+              <small>{{ activity.time }}</small>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+  </div>
+
+</div>

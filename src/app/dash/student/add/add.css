@@ -1,0 +1,63 @@
+
+
+.student-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.form-row {
+  display: flex;
+  gap: 16px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.half-width {
+  flex: 1;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.submit-btn {
+  background-color: #198754 !important;
+  color: white !important;
+}
+
+.submit-btn mat-icon {
+  margin-right: 6px;
+}
+.header-divider{
+    margin-top:20px !important;
+}
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.header-divider {
+  margin: 8px 0 16px;
+}
+.page-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 16px;
+}
+
+.add-student-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background-color: #198754 !important;
+  color:#ffffff !important;
+}

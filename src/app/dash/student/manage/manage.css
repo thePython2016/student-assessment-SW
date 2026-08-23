@@ -1,0 +1,73 @@
+.page-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 16px;
+}
+
+.add-student-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.header-divider {
+  margin: 8px 0 16px;
+}
+
+.table-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.page-size-field {
+  width: 160px;
+}
+
+.search-field {
+  width: 240px;
+}
+
+.selected-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  margin-bottom: 12px;
+  background-color: #e8f0fe;
+  border-radius: 4px;
+}
+
+.selected-label {
+  font-weight: 500;
+  margin-right: auto;
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+.student-table {
+  width: 100%;
+}
+
+.student-table tr.mat-mdc-row {
+  cursor: pointer;
+}
+
+.student-table tr.mat-mdc-row:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+.selected-row {
+  background-color: #e3f2fd !important;
+}
+
+.no-data {
+  text-align: center;
+  padding: 24px;
+  color: rgba(0, 0, 0, 0.5);
+}

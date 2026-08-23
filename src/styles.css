@@ -7,6 +7,102 @@ html, body {
   overflow: hidden;
 }
 
-body {
+* {
   font-family: 'Poppins', sans-serif;
+}
+/* Item Label */
+.item-label{
+  padding:9px 0px 10px 10px;
+  font-size:16px;
+}
+::ng-deep .mdc-list-item__content {
+  padding-top: 30px !important;
+}
+::ng-deep .sidebar .mat-mdc-list-item.mdc-list-item {
+  margin-top: 4px;
+}
+
+/* Active dashbaord item */
+/* .active-link {
+  background-color: #198754 !important;
+  border-left: 3px solid #38bdf8;
+  margin-bottom:10px;
+} */
+
+/* Active link dashboard  */
+
+
+/* sidebar header */
+.sidebar-header {
+  padding: 20px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  height:80px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* sidebar -title  */
+.sidebar-header .logo{
+  text-align:center !important;
+  /* color:red !important; */
+  font-size:16px !important;
+  padding:50px 0px 0px 40px !important;
+  
+
+}
+/* dashboard */
+.dashboard-link {
+  background-color:#198754 !important;
+  margin-bottom:10px !important;
+}
+
+.dashboard-link.active-link {
+  background-color: rgba(25, 135, 84, 0.35) !important;
+  border-left: 3px solid #198754;
+}
+
+::ng-deep .sidebar .dashboard-link mat-icon {
+  color: #198754 !important;
+}
+.add-student-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background-color: #198754 !important;
+  color:#ffffff !important;
+}
+
+/* Page header style */
+.page-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 16px;
+}
+
+/* Add course button */
+.add-course-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background-color: #198754 !important;
+  color: #ffffff !important;
+}
+
+.add-assessment-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background-color: #198754 !important;
+  color: #ffffff !important;
+}
+/* form card --for all forms  */
+.form-card, .rec-card, .pred-card{
+  max-width: 1200px !important;
+  margin: 0 auto;
+  margin-top:40px !important;
+}
+
+/* Form title divider */
+.header-divider {
+  margin-top: 15px !important;
 }

@@ -1,0 +1,101 @@
+<div class="page-header">
+  <a mat-raised-button color="primary" routerLink="/dash/student/add" class="add-student-btn">
+    <mat-icon>add</mat-icon> Add Student
+  </a>
+</div>
+
+<mat-card class="table-card">
+  <mat-card-header>
+    <mat-card-title>Manage Students</mat-card-title>
+    <mat-card-subtitle>Update or remove registered students</mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-divider class="header-divider"></mat-divider>
+
+  <mat-card-content>
+
+    <div class="table-toolbar">
+      <mat-form-field appearance="outline" class="page-size-field">
+        <mat-label>Items per page</mat-label>
+        <mat-select [(ngModel)]="selectedPageSize" (selectionChange)="onPageSizeChange($event.value)">
+          <mat-option *ngFor="let size of pageSizeOptions" [value]="size">
+            {{ size }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-label>Search</mat-label>
+        <input matInput (keyup)="applyFilter($event)" placeholder="Search students...">
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+    </div>
+
+    <div class="selected-actions" *ngIf="selectedStudent">
+      <span class="selected-label">Selected: {{ selectedStudent.firstName }} {{ selectedStudent.lastName }}</span>
+      <button mat-stroked-button color="primary" (click)="openEditDialog(selectedStudent, $event)">
+        <mat-icon>edit</mat-icon> Update
+      </button>
+      <button mat-stroked-button color="warn" (click)="deleteStudent(selectedStudent, $event)">
+        <mat-icon>delete</mat-icon> Delete
+      </button>
+    </div>
+
+    <div class="table-container">
+      <table mat-table [dataSource]="dataSource" matSort class="student-table">
+
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
+          <td mat-cell *matCellDef="let student"> {{ student.id }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="firstName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> First Name </th>
+          <td mat-cell *matCellDef="let student"> {{ student.firstName }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="lastName">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Last Name </th>
+          <td mat-cell *matCellDef="let student"> {{ student.lastName }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="email">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Email </th>
+          <td mat-cell *matCellDef="let student"> {{ student.email }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="phone">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Phone </th>
+          <td mat-cell *matCellDef="let student"> {{ student.phone }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="course">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Course </th>
+          <td mat-cell *matCellDef="let student"> {{ student.course }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="gender">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Gender </th>
+          <td mat-cell *matCellDef="let student"> {{ student.gender }} </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row
+            *matRowDef="let row; columns: displayedColumns;"
+            (click)="selectRow(row)"
+            [class.selected-row]="isSelected(row)">
+        </tr>
+
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell no-data" [attr.colspan]="displayedColumns.length">
+            No students matching the filter.
+          </td>
+        </tr>
+
+      </table>
+    </div>
+
+    <mat-paginator [pageSizeOptions]="pageSizeOptions" showFirstLastButtons></mat-paginator>
+
+  </mat-card-content>
+</mat-card>

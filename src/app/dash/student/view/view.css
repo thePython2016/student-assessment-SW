@@ -1,0 +1,63 @@
+.page-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 16px;
+}
+
+.add-student-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.header-divider {
+  margin: 8px 0 16px;
+}
+
+.table-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.search-field {
+  flex: 1;
+  min-width: 200px;
+}
+
+.page-size-field {
+  width: 160px;
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+.student-table {
+  width: 100%;
+}
+
+.no-data {
+  text-align: center;
+  padding: 24px;
+  color: rgba(0, 0, 0, 0.5);
+}
+.table-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.page-size-field {
+  width: 160px;
+}
+
+.search-field {
+  width: 20px !important;
+}

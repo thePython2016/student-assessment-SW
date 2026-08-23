@@ -1,0 +1,92 @@
+<div class="page-header">
+  <a mat-raised-button color="primary" routerLink="/dash/assessment/create" class="add-assessment-btn">
+    <mat-icon>add</mat-icon> Create Assessment
+  </a>
+</div>
+
+<mat-card class="table-card">
+  <mat-card-header>
+    <mat-card-title>Assessment List</mat-card-title>
+    <mat-card-subtitle>All quizzes, exams, tests, and assignments</mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-divider class="header-divider"></mat-divider>
+
+  <mat-card-content>
+
+    <div class="table-toolbar">
+      <mat-form-field appearance="outline" class="page-size-field">
+        <mat-label>Items per page</mat-label>
+        <mat-select [(ngModel)]="selectedPageSize" (selectionChange)="onPageSizeChange($event.value)">
+          <mat-option *ngFor="let size of pageSizeOptions" [value]="size">
+            {{ size }}
+          </mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-label>Search</mat-label>
+        <input matInput (keyup)="applyFilter($event)" placeholder="Search assessments...">
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+    </div>
+
+    <div class="table-container">
+      <table mat-table [dataSource]="dataSource" matSort class="assessment-table">
+
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
+          <td mat-cell *matCellDef="let a"> {{ a.id }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="title">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Title </th>
+          <td mat-cell *matCellDef="let a"> {{ a.title }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="type">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Type </th>
+          <td mat-cell *matCellDef="let a"> {{ a.type }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="course">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Course </th>
+          <td mat-cell *matCellDef="let a"> {{ a.course }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="duration">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Duration (min) </th>
+          <td mat-cell *matCellDef="let a"> {{ a.duration }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="totalMarks">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Total Marks </th>
+          <td mat-cell *matCellDef="let a"> {{ a.totalMarks }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="deadline">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Deadline </th>
+          <td mat-cell *matCellDef="let a"> {{ a.deadline | date:'mediumDate' }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="numberOfQuestions">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Questions </th>
+          <td mat-cell *matCellDef="let a"> {{ a.numberOfQuestions }} </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell no-data" [attr.colspan]="displayedColumns.length">
+            No assessments matching the filter.
+          </td>
+        </tr>
+
+      </table>
+    </div>
+
+    <mat-paginator [pageSizeOptions]="pageSizeOptions" showFirstLastButtons></mat-paginator>
+
+  </mat-card-content>
+</mat-card>

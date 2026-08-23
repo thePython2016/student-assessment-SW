@@ -1,0 +1,59 @@
+<h2 mat-dialog-title>Update Assessment</h2>
+
+<mat-dialog-content class="dialog-content">
+  <form class="assessment-form">
+
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Title</mat-label>
+        <input matInput [(ngModel)]="assessment.title" name="title" required>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Type</mat-label>
+        <mat-select [(ngModel)]="assessment.type" name="type" required>
+          <mat-option *ngFor="let t of types" [value]="t">{{ t }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Course</mat-label>
+      <mat-select [(ngModel)]="assessment.course" name="course" required>
+        <mat-option *ngFor="let c of courses" [value]="c">{{ c }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Duration (minutes)</mat-label>
+        <input matInput type="number" [(ngModel)]="assessment.duration" name="duration" required>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Total Marks</mat-label>
+        <input matInput type="number" [(ngModel)]="assessment.totalMarks" name="totalMarks" required>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Deadline</mat-label>
+        <input matInput [matDatepicker]="picker" [(ngModel)]="assessment.deadline" name="deadline" required>
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Number of Questions</mat-label>
+        <input matInput type="number" [(ngModel)]="assessment.numberOfQuestions" name="numberOfQuestions" required>
+      </mat-form-field>
+    </div>
+
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-stroked-button type="button" (click)="onCancel()">Cancel</button>
+  <button mat-raised-button color="primary" type="button" (click)="onSave()">Save Changes</button>
+</mat-dialog-actions>

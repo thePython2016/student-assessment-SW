@@ -1,0 +1,66 @@
+.page-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 16px;
+}
+
+.table-card {
+  margin-bottom: 24px;
+}
+
+.header-divider {
+  margin: 8px 0 16px;
+}
+
+.table-toolbar {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.page-size-field {
+  width: 140px;
+}
+
+.search-field {
+  flex: 1;
+  min-width: 200px;
+}
+
+.selected-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 12px;
+  margin-bottom: 12px;
+  background: rgba(0, 0, 0, 0.04);
+  border-radius: 4px;
+}
+
+.selected-label {
+  flex: 1;
+  font-weight: 500;
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+.assessment-table {
+  width: 100%;
+}
+
+tr.mat-row {
+  cursor: pointer;
+}
+
+.selected-row {
+  background-color: rgba(63, 81, 181, 0.08);
+}
+
+.no-data {
+  text-align: center;
+  padding: 24px;
+  color: rgba(0, 0, 0, 0.5);
+}

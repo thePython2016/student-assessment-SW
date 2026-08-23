@@ -1,0 +1,52 @@
+<h2 mat-dialog-title>Update Course</h2>
+
+<mat-dialog-content class="dialog-content">
+  <form class="course-form">
+
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Course Name</mat-label>
+        <input matInput [(ngModel)]="course.courseName" name="courseName" required>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Course Code</mat-label>
+        <input matInput [(ngModel)]="course.courseCode" name="courseCode" required>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Department</mat-label>
+        <mat-select [(ngModel)]="course.department" name="department" required>
+          <mat-option *ngFor="let d of departments" [value]="d">{{ d }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Duration</mat-label>
+        <mat-select [(ngModel)]="course.duration" name="duration" required>
+          <mat-option *ngFor="let d of durations" [value]="d">{{ d }}</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Credits</mat-label>
+        <input matInput type="number" [(ngModel)]="course.credits" name="credits" required>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Instructor</mat-label>
+        <input matInput [(ngModel)]="course.instructor" name="instructor" required>
+      </mat-form-field>
+    </div>
+
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-stroked-button type="button" (click)="onCancel()">Cancel</button>
+  <button mat-raised-button color="primary" type="button" (click)="onSave()">Save Changes</button>
+</mat-dialog-actions>
