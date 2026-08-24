@@ -203,6 +203,7 @@
 ::ng-deep .login-right input,
 ::ng-deep .login-right textarea {
   background-color: transparent !important;
+  /* margin-top:20px !important; */
 }
 
 ::ng-deep .login-right .mdc-text-field--outlined:not(.mdc-text-field--disabled) .mdc-text-field__input {
@@ -236,21 +237,22 @@
 
 ::ng-deep .login-right .mat-mdc-form-field-infix {
   min-height: 28px;
-  padding-top: 8px !important;
+  /* padding-top: 8px !important; */
   padding-bottom: 8px !important;
   display: flex;
   align-items: center;
 }
 
 ::ng-deep .login-right .mat-mdc-form-field-infix input.mat-mdc-input-element {
-  padding: 0 !important;
-  margin: 0 !important;
+  padding: 4px !important;
+  margin: 4px !important;
   line-height: normal;
   align-self: center;
 }
 
 ::ng-deep .login-right .mdc-text-field__input {
   height: auto !important;
+  /* padding-top:20px !important; */
 }
 
 ::ng-deep .login-right .mat-mdc-form-field-icon-suffix {
