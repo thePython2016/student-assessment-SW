@@ -30,12 +30,15 @@ SECRET_KEY = 'django-insecure-u0lq-w(*)4-sefksgef9p(g_*jho80n7f#8yf()idkolqa_d=v
 DEBUG = os.environ.get("DEBUG", "False") == "True"
 
 # Allow Angular site to access------------------------------
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+"https://student-assessment-alis.onrender.com/"
+]
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:4200",
      "http://localhost:4200",
     "http://127.0.0.1:4200",
-    "https://student-assessment-zeta.vercel.app"
+    "https://student-assessment-zeta.vercel.app",
+    
 ]
 
 
