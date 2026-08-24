@@ -31,7 +31,9 @@ DEBUG = os.environ.get("DEBUG", "False") == "True"
 
 # Allow Angular site to access------------------------------
 ALLOWED_HOSTS = [
-"https://student-assessment-alis.onrender.com/"
+    "student-assessment-alis.onrender.com",
+    "localhost",
+    "127.0.0.1",
 ]
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:4200",
