@@ -32,33 +32,30 @@
 
       <form (ngSubmit)="onLogin()">
 
-        <input
-          type="email"
-          placeholder="Enter your email"
-          [(ngModel)]="email"
-          name="email"
-          required
-          class="form-input"
-        />
+        <mat-form-field appearance="outline" class="full-width" [class.field-error]="emailError">
+          <mat-label>Email <span class="required-star">*</span></mat-label>
+          <input matInput type="email" [(ngModel)]="email" name="email">
+          <mat-icon matSuffix>email</mat-icon>
+        </mat-form-field>
+        <p class="error" *ngIf="emailError">{{ emailError }}</p>
 
-        <input
-          type="password"
-          placeholder="Enter your password"
-          [(ngModel)]="password"
-          name="password"
-          required
-          class="form-input"
-        />
+        <mat-form-field appearance="outline" class="full-width" [class.field-error]="passwordError">
+          <mat-label>Password <span class="required-star">*</span></mat-label>
+          <input matInput [type]="showPassword ? 'text' : 'password'" [(ngModel)]="password" name="password">
+          <button mat-icon-button matSuffix type="button" (click)="togglePassword()" [attr.aria-label]="'Toggle password visibility'">
+            <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+        </mat-form-field>
+        <p class="error" *ngIf="passwordError">{{ passwordError }}</p>
 
         <div class="form-row">
-          <label class="remember-me">
-            <input type="checkbox" [(ngModel)]="rememberMe" name="rememberMe" />
-            Remember me
-          </label>
+          <mat-checkbox [(ngModel)]="rememberMe" name="rememberMe">Remember me</mat-checkbox>
           <a routerLink="/forgotpassword" class="forgot-link">Forgot your password?</a>
         </div>
 
-        <button type="submit" class="login-btn">Login</button>
+        <p class="error" *ngIf="error">{{ error }}</p>
+
+        <button mat-raised-button type="submit" class="login-btn">Login</button>
 
         <p class="signup-text">
           Don't have an account? <a routerLink="/signup" class="signup-link">Sign Up</a>

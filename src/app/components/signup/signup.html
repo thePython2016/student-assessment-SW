@@ -32,52 +32,48 @@
 
       <form (ngSubmit)="onSignup()">
 
-        <input
-          type="email"
-          placeholder="Enter your email"
-          [(ngModel)]="email"
-          name="email"
-          required
-          class="form-input"
-        />
+        <mat-form-field appearance="outline" class="full-width" [class.field-error]="emailError">
+          <mat-label>Email <span class="required-star">*</span></mat-label>
+          <input matInput type="email" [(ngModel)]="email" name="email">
+          <mat-icon matSuffix>email</mat-icon>
+        </mat-form-field>
+        <p class="error" *ngIf="emailError">{{ emailError }}</p>
 
-        <input
-          type="tel"
-          placeholder="Enter your phone number"
-          [(ngModel)]="phone"
-          name="phone"
-          required
-          class="form-input"
-        />
+        <mat-form-field appearance="outline" class="full-width" [class.field-error]="phoneError">
+          <mat-label>Phone number <span class="required-star">*</span></mat-label>
+          <input matInput type="tel" [(ngModel)]="phone" name="phone">
+          <mat-icon matSuffix>call</mat-icon>
+        </mat-form-field>
+        <p class="error" *ngIf="phoneError">{{ phoneError }}</p>
 
-        <input
-          type="text"
-          placeholder="Enter your address"
-          [(ngModel)]="address"
-          name="address"
-          required
-          class="form-input"
-        />
+        <mat-form-field appearance="outline" class="full-width" [class.field-error]="addressError">
+          <mat-label>Address <span class="required-star">*</span></mat-label>
+          <input matInput type="text" [(ngModel)]="address" name="address">
+          <mat-icon matSuffix>home</mat-icon>
+        </mat-form-field>
+        <p class="error" *ngIf="addressError">{{ addressError }}</p>
 
-        <input
-          type="password"
-          placeholder="Enter your password"
-          [(ngModel)]="password"
-          name="password"
-          required
-          class="form-input"
-        />
+        <mat-form-field appearance="outline" class="full-width" [class.field-error]="passwordError">
+          <mat-label>Password <span class="required-star">*</span></mat-label>
+          <input matInput [type]="showPassword ? 'text' : 'password'" [(ngModel)]="password" name="password">
+          <button mat-icon-button matSuffix type="button" (click)="togglePassword()" [attr.aria-label]="'Toggle password visibility'">
+            <mat-icon>{{ showPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+        </mat-form-field>
+        <p class="error" *ngIf="passwordError">{{ passwordError }}</p>
 
-        <input
-          type="password"
-          placeholder="Repeat your password"
-          [(ngModel)]="repeatPassword"
-          name="repeatPassword"
-          required
-          class="form-input"
-        />
+        <mat-form-field appearance="outline" class="full-width" [class.field-error]="repeatPasswordError">
+          <mat-label>Repeat password <span class="required-star">*</span></mat-label>
+          <input matInput [type]="showRepeatPassword ? 'text' : 'password'" [(ngModel)]="repeatPassword" name="repeatPassword">
+          <button mat-icon-button matSuffix type="button" (click)="toggleRepeatPassword()" [attr.aria-label]="'Toggle repeat password visibility'">
+            <mat-icon>{{ showRepeatPassword ? 'visibility_off' : 'visibility' }}</mat-icon>
+          </button>
+        </mat-form-field>
+        <p class="error" *ngIf="repeatPasswordError">{{ repeatPasswordError }}</p>
 
-        <button type="submit" class="login-btn">Sign Up</button>
+        <p class="error" *ngIf="serverError">{{ serverError }}</p>
+
+        <button mat-raised-button type="submit" class="login-btn">Sign Up</button>
 
         <p class="signup-text">
           Already have an account? <a routerLink="/" class="signup-link">Login</a>
