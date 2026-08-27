@@ -27,7 +27,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-u0lq-w(*)4-sefksgef9p(g_*jho80n7f#8yf()idkolqa_d=v'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get("DEBUG", "False") == "True"
+# DEBUG = os.environ.get("DEBUG", "False") == "True"
+DEBUG = False
 
 # Allow Angular site to access------------------------------
 ALLOWED_HOSTS = [
