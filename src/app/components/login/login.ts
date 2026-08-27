@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -7,6 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-login',
@@ -19,7 +20,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
     MatInputModule,
     MatIconModule,
     MatButtonModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    MatProgressSpinnerModule
   ],
   templateUrl: './login.html',
   styleUrl: './login.css'
@@ -34,10 +36,14 @@ export class Login {
   emailError = '';
   passwordError = '';
   error = '';
+  wrongPass = '';
+  invalid = '';
+wrongCredentials='';
+  isLoading = false;
 
-  private base = 'https://student-assessment-alis.onrender.com';
+  private base = 'http://127.0.0.1:8000';
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private cdr: ChangeDetectorRef) {}
 
   togglePassword(): void {
     this.showPassword = !this.showPassword;
@@ -47,6 +53,8 @@ export class Login {
     this.emailError = '';
     this.passwordError = '';
     this.error = '';
+    this.invalid = '';
+    
   }
 
   async onLogin() {
@@ -64,20 +72,26 @@ export class Login {
 
     if (hasError) return;
 
+    this.isLoading = true;
+
     try {
       const response = await fetch(`${this.base}/api/account/login/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: this.email, password: this.password })
       });
+      const result = await response.json();
 
       if (response.status === 200) {
         this.router.navigate(['/dash/dashboard']);
       } else {
-        this.error = 'Invalid email or password';
+        this.wrongCredentials = result.non_field_errors[0];
       }
     } catch (e) {
       this.error = 'Something went wrong. Try again.';
+    } finally {
+      this.isLoading = false;
+      this.cdr.detectChanges(); // ← force Angular to re-render after the async response
     }
   }
 }
