@@ -1,0 +1,43 @@
+<div class="resources">
+
+  <div class="page-header">
+    <div>
+      <p class="title">Resources</p>
+      <p class="subtitle">Study materials and reference documents</p>
+    </div>
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-icon matPrefix>search</mat-icon>
+      <input matInput placeholder="Search resources..." [(ngModel)]="searchQuery" />
+    </mat-form-field>
+  </div>
+
+  <mat-chip-listbox class="category-chips" [value]="selectedCategory">
+    <mat-chip-option
+      *ngFor="let c of categories"
+      [selected]="selectedCategory === c"
+      (click)="selectCategory(c)">
+      {{ c }}
+    </mat-chip-option>
+  </mat-chip-listbox>
+
+  <div class="resource-list">
+    <div class="resource-item" *ngFor="let r of filteredResources">
+      <div class="resource-info">
+        <div class="resource-icon" [style.background]="r.bg" [style.color]="r.fg">
+          <mat-icon>{{ r.icon }}</mat-icon>
+        </div>
+        <div>
+          <p class="resource-title">{{ r.title }}</p>
+          <p class="resource-meta">{{ r.meta }}</p>
+        </div>
+      </div>
+      <button mat-stroked-button (click)="openResource(r)">
+        <mat-icon>{{ r.actionIcon }}</mat-icon>
+        {{ r.actionLabel }}
+      </button>
+    </div>
+
+    <p class="empty-state" *ngIf="filteredResources.length === 0">No resources match your search.</p>
+  </div>
+
+</div>

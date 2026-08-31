@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+
 html, body {
   margin: 0;
   padding: 0;
@@ -24,9 +27,29 @@ html, body {
   border-radius: 20px;
   width: 220px;
   transition: width 0.2s ease;
-  overflow: hidden;
+  overflow-y: auto;
+  overflow-x: hidden;
   height: 100%;
   box-sizing: border-box;
+  scrollbar-width: thin;
+  scrollbar-color: #d1d5db transparent;
+}
+
+.sidebar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 3px;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+  background: #b0b4bb;
 }
 
 .sidebar.collapsed {
@@ -124,10 +147,26 @@ html, body {
   overflow-y: auto;
   background: #ffffff;
   border-radius: 20px;
-  /* padding: 5px 5px; */
   box-sizing: border-box;
-  /* display: flex; */
   justify-content: center;
-  /* align-items: flex-start; */
+}
+/* Quick lionk */
+.quick-links-title{
+  font-family: 'Poppins', sans-serif !important;
+  font-size: 18px !important;
+  margin-top:10px !important;
+  
+}
+.quick-links{
+  margin-top:30px !important;
+   font-family: 'Poppins', sans-serif !important;
+}
+hr {
+  border: none;
+  border-top: 1px solid #e5e7eb;
+  margin: 8px 0;
 }
 
+.nav-bottom{
+  margin-top:30px !important;
+}

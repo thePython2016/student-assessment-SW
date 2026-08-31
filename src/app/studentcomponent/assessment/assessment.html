@@ -1,1 +1,91 @@
-<p>assessment works!</p>
+<div class="assessments">
+
+  <div class="page-header">
+    <div>
+      <p class="title">Assessments</p>
+      <p class="subtitle">Track upcoming tests and past results</p>
+    </div>
+    <div class="header-actions">
+      <button mat-stroked-button [matMenuTriggerFor]="filterMenu">
+        <mat-icon>filter_list</mat-icon>
+        Filter
+      </button>
+      <mat-menu #filterMenu="matMenu">
+        <button mat-menu-item *ngFor="let f of filterOptions" (click)="applyFilter(f)">{{ f }}</button>
+      </mat-menu>
+
+      <button mat-stroked-button [matMenuTriggerFor]="sortMenu">
+        <mat-icon>swap_vert</mat-icon>
+        Sort
+      </button>
+      <mat-menu #sortMenu="matMenu">
+        <button mat-menu-item *ngFor="let s of sortOptions" (click)="applySort(s)">{{ s }}</button>
+      </mat-menu>
+    </div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card" *ngFor="let s of stats">
+      <p class="stat-label">{{ s.label }}</p>
+      <p class="stat-value" [class.danger]="s.danger">{{ s.value }}</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <p class="section-title">Upcoming</p>
+    <div class="upcoming-list">
+      <div class="upcoming-item" *ngFor="let a of upcomingAssessments">
+        <div class="upcoming-info">
+          <div class="upcoming-icon" [style.background]="a.bg" [style.color]="a.fg">
+            <mat-icon>{{ a.icon }}</mat-icon>
+          </div>
+          <div>
+            <p class="upcoming-title">{{ a.title }}</p>
+            <p class="upcoming-meta">{{ a.dueLabel }} &middot; {{ a.durationMinutes }} min &middot; {{ a.questionCount }} questions</p>
+          </div>
+        </div>
+        <button
+          mat-raised-button
+          [color]="a.available ? 'primary' : undefined"
+          (click)="a.available ? startAssessment(a) : viewAssessment(a)">
+          {{ a.available ? 'Start' : 'View' }}
+        </button>
+      </div>
+
+      <p class="empty-state" *ngIf="upcomingAssessments.length === 0">No upcoming assessments right now.</p>
+    </div>
+  </div>
+
+  <div class="section">
+    <p class="section-title">Past results</p>
+    <div class="panel">
+      <table mat-table [dataSource]="pastResults" class="results-table">
+        <ng-container matColumnDef="title">
+          <th mat-header-cell *matHeaderCellDef>Assessment</th>
+          <td mat-cell *matCellDef="let row">{{ row.title }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="date">
+          <th mat-header-cell *matHeaderCellDef>Date</th>
+          <td mat-cell *matCellDef="let row">{{ row.date }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="score">
+          <th mat-header-cell *matHeaderCellDef>Score</th>
+          <td mat-cell *matCellDef="let row">{{ row.score }}%</td>
+        </ng-container>
+
+        <ng-container matColumnDef="status">
+          <th mat-header-cell *matHeaderCellDef>Status</th>
+          <td mat-cell *matCellDef="let row">
+            <span [class]="statusClass(row.status)">{{ row.status }}</span>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="resultColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: resultColumns;"></tr>
+      </table>
+    </div>
+  </div>
+
+</div>

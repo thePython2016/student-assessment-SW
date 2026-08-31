@@ -26,6 +26,10 @@ import {Performance as StudentPerformance} from './studentcomponent/performance/
 import {Insights as StudentInsights} from './studentcomponent/insights/insights';
 import {Notification as StudentNotification} from './studentcomponent/notification/notification';
 import {Layout} from './studentcomponent/layout/layout';
+import {Resources} from './studentcomponent/resources/resources';
+import {Assignment} from './studentcomponent/assignment/assignment';
+import {Insights} from './studentcomponent/insights/insights';
+
 
 export const routes: Routes = [
   { path: '', component: Login },
@@ -35,8 +39,10 @@ export const routes: Routes = [
     children:[
       {path:'dashboard',component:StudentDashboard},
       {path:'assessment',component:StudentAssessment},
+      {path:'resources',component:Resources},
+      {path:'assignment',component:Assignment},
       {path:'performance',component:StudentPerformance},
-      {path:'insights',component:StudentInsights},
+      {path:'insights',component:Insights},
       {path:'notification',component:StudentNotification},
     //   // {path:Dashboard,component:student-dash},
 

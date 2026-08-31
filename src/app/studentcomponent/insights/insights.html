@@ -1,1 +1,59 @@
-<p>insights works!</p>
+<div class="insights-page">
+
+  <header class="page-header">
+    <div>
+      <h1>AI Insights</h1>
+      <p class="subtitle">A personalized read on how you're doing and what to focus on next.</p>
+    </div>
+  </header>
+
+  <div class="summary-card">
+    <div class="summary-top">
+      <span class="risk-chip" [ngClass]="riskLevel">{{ riskLabel() }}</span>
+      <span class="comparison-text">{{ courseAverageComparison }}</span>
+    </div>
+    <p class="summary-text">{{ summary }}</p>
+  </div>
+
+  <div class="section">
+    <p class="section-title">Recommended focus areas</p>
+    <div class="recommendation-grid">
+      <div class="recommendation-card" *ngFor="let rec of topicRecommendations">
+        <div class="rec-header">
+          <div>
+            <p class="rec-topic">{{ rec.topic }}</p>
+            <p class="rec-course">{{ rec.courseName }}</p>
+          </div>
+          <span class="rec-mastery" [style.color]="masteryColor(rec.masteryPercent)">
+            {{ rec.masteryPercent }}%
+          </span>
+        </div>
+        <p class="rec-suggestion">{{ rec.suggestion }}</p>
+        <button mat-stroked-button color="primary" (click)="goToResource(rec.resourceLink)">
+          Open study materials
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <p class="section-title">Suggested next steps</p>
+    <ul class="next-steps-list">
+      <li *ngFor="let step of nextSteps">
+        <mat-icon>{{ step.icon }}</mat-icon>
+        <span>{{ step.text }}</span>
+      </li>
+    </ul>
+  </div>
+
+  <div class="section">
+    <p class="section-title">Study pattern observations</p>
+    <ul class="pattern-list">
+      <li *ngFor="let pattern of studyPatterns">
+        <mat-icon>{{ pattern.icon }}</mat-icon>
+        <span>{{ pattern.text }}</span>
+      </li>
+    </ul>
+  </div>
+
+</div>

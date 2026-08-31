@@ -1,0 +1,85 @@
+<div class="assignment-page">
+
+  <header class="page-header">
+    <div>
+      <h1>Assignments</h1>
+      <p class="subtitle">Submit your work and track feedback across all courses.</p>
+    </div>
+  </header>
+
+  <div class="toolbar">
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-icon matPrefix>search</mat-icon>
+      <input matInput placeholder="Search assignments" [(ngModel)]="searchTerm" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="course-field">
+      <mat-select [(ngModel)]="courseFilter">
+        <mat-option value="all">All courses</mat-option>
+        <mat-option *ngFor="let course of courses" [value]="course">{{ course }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <mat-tab-group [(selectedIndex)]="selectedTabIndex" class="status-tabs">
+    <mat-tab *ngFor="let tab of tabs" [label]="tab.label"></mat-tab>
+  </mat-tab-group>
+
+  <div class="assignment-grid" *ngIf="filteredAssignments.length; else emptyState">
+    <mat-card class="assignment-card" *ngFor="let assignment of filteredAssignments">
+      <div class="card-top">
+        <div class="subject-icon">
+          <mat-icon>{{ assignment.subjectIcon }}</mat-icon>
+        </div>
+        <span class="status-chip" [ngClass]="assignment.status">
+          {{ statusLabel(assignment.status) }}
+        </span>
+      </div>
+
+      <h3 class="assignment-title">{{ assignment.title }}</h3>
+      <p class="course-name">{{ assignment.courseName }}</p>
+
+      <div class="meta-row">
+        <span class="meta-item">
+          <mat-icon>event</mat-icon>
+          Due {{ assignment.dueDate | date: 'MMM d' }}
+        </span>
+        <span class="meta-item">
+          <mat-icon>military_tech</mat-icon>
+          {{ assignment.maxPoints }} pts
+        </span>
+        <span class="meta-item" *ngIf="assignment.submittedDate">
+          <mat-icon>upload_file</mat-icon>
+          Submitted {{ assignment.submittedDate | date: 'MMM d' }}
+        </span>
+      </div>
+
+      <p class="grade-label" *ngIf="assignment.status === 'graded'">
+        Grade: <strong>{{ assignment.grade }}/{{ assignment.maxPoints }}</strong>
+      </p>
+      <p class="feedback-label" *ngIf="assignment.status === 'graded' && assignment.feedback"
+         [matTooltip]="assignment.feedback">
+        <mat-icon>chat_bubble_outline</mat-icon>
+        {{ assignment.feedback }}
+      </p>
+
+      <div class="card-actions">
+        <button
+          mat-flat-button
+          color="primary"
+          [class.overdue-btn]="assignment.status === 'overdue'"
+          (click)="onAction(assignment)">
+          {{ actionLabel(assignment.status) }}
+        </button>
+      </div>
+    </mat-card>
+  </div>
+
+  <ng-template #emptyState>
+    <div class="empty-state">
+      <mat-icon>inbox</mat-icon>
+      <p>No assignments match your filters.</p>
+    </div>
+  </ng-template>
+
+</div>

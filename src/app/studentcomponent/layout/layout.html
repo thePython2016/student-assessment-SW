@@ -8,27 +8,29 @@
     </div>
 
     <nav class="nav-links">
-      <a routerLink="/student-course/dashboard" routerLinkActive="active" class="nav-item" (click)="expandSidebar()" title="Dashboard">
+      <a id="dashboard-item" routerLink="/student-course/dashboard" routerLinkActive="active" class="nav-item" (click)="expandSidebar()" title="Dashboard">
         <mat-icon>dashboard</mat-icon>
-        <span *ngIf="!isCollapsed">Dashboard</span>
+        <span *ngIf="!isCollapsed" >Dashboard</span>
       </a>
       <a routerLink="/student-course/assessment" routerLinkActive="active" class="nav-item" (click)="expandSidebar()" title="Assessments">
         <mat-icon>description</mat-icon>
         <span *ngIf="!isCollapsed">Assessments</span>
       </a>
-      <a routerLink="/students" routerLinkActive="active" class="nav-item" (click)="expandSidebar()" title="Students profile">
+     
+      <a routerLink="/student-course/resources" routerLinkActive="active" class="nav-item" (click)="expandSidebar()" title="Students profile">
         <mat-icon>groups</mat-icon>
-        <span *ngIf="!isCollapsed">Students profile</span>
+        <span *ngIf="!isCollapsed">Resources</span>
       </a>
-      <a routerLink="/mentor-info" routerLinkActive="active" class="nav-item" (click)="expandSidebar()" title="Mentor info">
-        <mat-icon>support_agent</mat-icon>
-        <span *ngIf="!isCollapsed">Mentor info</span>
+      <a routerLink="/student-course/assignment" routerLinkActive="active" class="nav-item" (click)="expandSidebar()" title="Students profile">
+        <mat-icon>groups</mat-icon>
+        <span *ngIf="!isCollapsed">Assignments</span>
       </a>
-      <a routerLink="/performance" routerLinkActive="active" class="nav-item" (click)="expandSidebar()" title="Performance">
+     
+      <a routerLink="/student-course/performance" routerLinkActive="active" class="nav-item" (click)="expandSidebar()" title="Performance">
         <mat-icon>bar_chart</mat-icon>
         <span *ngIf="!isCollapsed">Performance</span>
       </a>
-      <a routerLink="/insights" routerLinkActive="active" class="nav-item" (click)="expandSidebar()" title="AI Insights">
+      <a routerLink="/student-course/insights" routerLinkActive="active" class="nav-item" (click)="expandSidebar()" title="AI Insights">
         <mat-icon>lightbulb</mat-icon>
         <span *ngIf="!isCollapsed">AI Insights</span>
       </a>
@@ -37,6 +39,27 @@
         <span *ngIf="!isCollapsed">Notifications</span>
       </a>
     </nav>
+
+   <div class="quick-links">
+  <span class="quick-links-title" *ngIf="!isCollapsed">Quick Links</span>
+  <hr *ngIf="!isCollapsed" />
+  <a routerLink="/upcoming-tests" routerLinkActive="active" class="nav-item" (click)="expandSidebar()" title="Upcoming tests">
+    <mat-icon>event</mat-icon>
+    <span *ngIf="!isCollapsed">Upcoming tests</span>
+  </a>
+  <a routerLink="/study-materials" routerLinkActive="active" class="nav-item" (click)="expandSidebar()" title="Study materials">
+    <mat-icon>menu_book</mat-icon>
+    <span *ngIf="!isCollapsed">Study materials</span>
+  </a>
+  <a routerLink="/help-center" routerLinkActive="active" class="nav-item" (click)="expandSidebar()" title="Help center">
+    <mat-icon>help_outline</mat-icon>
+    <span *ngIf="!isCollapsed">Help center</span>
+  </a>
+  <a routerLink="/contact-support" routerLinkActive="active" class="nav-item" (click)="expandSidebar()" title="Contact support">
+    <mat-icon>support</mat-icon>
+    <span *ngIf="!isCollapsed">Contact support</span>
+  </a>
+</div>
 
     <div class="nav-bottom">
       <a routerLink="/profile" routerLinkActive="active" class="nav-item" (click)="expandSidebar()" title="Settings">

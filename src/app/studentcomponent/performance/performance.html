@@ -1,1 +1,67 @@
-<p>performance works!</p>
+<div class="performance-page">
+
+  <header class="page-header">
+    <div>
+      <h1>Performance</h1>
+      <p class="subtitle">Your scores, trends, and topics to focus on.</p>
+    </div>
+  </header>
+
+  <div class="metric-grid">
+    <div class="metric-card">
+      <p class="metric-label">Overall average</p>
+      <p class="metric-value">{{ overallAverage }}%</p>
+    </div>
+    <div class="metric-card">
+      <p class="metric-label">Trend</p>
+      <p class="metric-value positive">+{{ trendDelta }}%</p>
+    </div>
+    <div class="metric-card">
+      <p class="metric-label">Strongest subject</p>
+      <p class="metric-value-text">{{ strongestSubject }}</p>
+    </div>
+    <div class="metric-card">
+      <p class="metric-label">Needs attention</p>
+      <p class="metric-value-text negative">{{ weakestSubject }}</p>
+    </div>
+  </div>
+
+  <div class="chart-card">
+    <p class="chart-title">Score trend</p>
+    <div class="chart-wrapper">
+      <canvas #trendCanvas role="img" aria-label="Line chart of average score by month"></canvas>
+    </div>
+  </div>
+
+  <div class="chart-card">
+    <p class="chart-title">Average score by subject</p>
+    <div class="chart-wrapper">
+      <canvas #subjectCanvas role="img" aria-label="Bar chart comparing average score by subject"></canvas>
+    </div>
+  </div>
+
+  <div class="mastery-card">
+    <p class="chart-title">Topic mastery</p>
+    <div class="mastery-list">
+      <div class="mastery-row" *ngFor="let item of topicMastery">
+        <div class="mastery-header">
+          <span>{{ item.topic }}</span>
+          <span class="mastery-percent">{{ item.masteryPercent }}%</span>
+        </div>
+        <div class="mastery-track">
+          <div
+            class="mastery-fill"
+            [style.width.%]="item.masteryPercent"
+            [style.background]="masteryColor(item.masteryPercent)">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="insight-banner">
+    <mat-icon>lightbulb</mat-icon>
+    <span class="insight-text">{{ insightMessage }}</span>
+  </div>
+
+</div>

@@ -6,6 +6,10 @@ html, body {
   padding: 0;
   overflow: hidden;
 }
+/* Dashboard item bg Color */
+#dashboard-item{
+  background-color: rgb(240, 232, 232);
+}
 html, body {
   margin: 0;
   padding: 0;
