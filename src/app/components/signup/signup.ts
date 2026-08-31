@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -45,10 +45,12 @@ export class Signup implements OnInit {
   passwordError = '';
   repeatPasswordError = '';
   serverError = '';
+  isSubmitting = false; 
+  token='';
 
   private base = 'http://127.0.0.1:8000';
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {}
 
@@ -67,9 +69,11 @@ export class Signup implements OnInit {
     this.passwordError = '';
     this.repeatPasswordError = '';
     this.serverError = '';
+    this.token='';
   }
 
   async onSignup(): Promise<void> {
+    
     this.clearErrors();
     let hasError = false;
 
@@ -113,12 +117,27 @@ export class Signup implements OnInit {
       const status = await response.json();
 
       if (response.status === 201) {
+      
         this.router.navigate(['/']);
+        this.token=status.token || '';
+        sessionStorage.setItem('token',this.token)
       } else {
-        this.serverError = status.detail || 'Signup failed. Please try again.';
+         
+  this.token = status.token?.[0] || '';
+  this.emailError = status.email?.[0] || '';
+  this.phoneError = status.phone?.[0] || '';
+  this.addressError = status.address?.[0] || '';
+  this.passwordError = status.password?.[0] || '';
+
+  if (!status.email && !status.phone && !status.address && !status.password) {
+    this.serverError = 'Signup failed. Please try again.';
+  }
+
       }
     } catch (error: any) {
       this.serverError = `Error: ${error.message}`;
+    } finally {
+      this.cdr.detectChanges(); // ← force Angular to re-render after the async response
     }
   }
 }

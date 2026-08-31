@@ -31,20 +31,23 @@
       <p class="welcome-subtitle">Please fill in your details below to get started</p>
 
       <form (ngSubmit)="onSignup()">
-
+ 
+  <p class="error" *ngIf="emailError">{{ emailError }}</p>
+  <p class="error" *ngIf="token">{{ token }}</p>
         <mat-form-field appearance="outline" class="full-width" [class.field-error]="emailError">
           <mat-label>Email <span class="required-star">*</span></mat-label>
           <input matInput type="email" [(ngModel)]="email" name="email">
+         
           <mat-icon matSuffix>email</mat-icon>
         </mat-form-field>
-        <p class="error" *ngIf="emailError">{{ emailError }}</p>
-
+        
+ <p class="error" *ngIf="phoneError">{{ phoneError }}</p>
         <mat-form-field appearance="outline" class="full-width" [class.field-error]="phoneError">
           <mat-label>Phone number <span class="required-star">*</span></mat-label>
           <input matInput type="tel" [(ngModel)]="phone" name="phone">
           <mat-icon matSuffix>call</mat-icon>
         </mat-form-field>
-        <p class="error" *ngIf="phoneError">{{ phoneError }}</p>
+       
 
         <mat-form-field appearance="outline" class="full-width" [class.field-error]="addressError">
           <mat-label>Address <span class="required-star">*</span></mat-label>
@@ -73,7 +76,9 @@
 
         <p class="error" *ngIf="serverError">{{ serverError }}</p>
 
-        <button mat-raised-button type="submit" class="login-btn">Sign Up</button>
+        <button mat-raised-button type="submit" class="login-btn"      [disabled]="isSubmitting"
+        (click)="onSignup()">Sign Up</button>
+
 
         <p class="signup-text">
           Already have an account? <a routerLink="/" class="signup-link">Login</a>

@@ -1,0 +1,56 @@
+<div class="layout">
+  <aside class="sidebar" [class.collapsed]="isCollapsed">
+    <div class="brand">
+      <button class="menu-toggle" (click)="toggleSidebar()">
+        <mat-icon>menu</mat-icon>
+      </button>
+      <span class="brand-name" *ngIf="!isCollapsed">Emedley</span>
+    </div>
+
+    <nav class="nav-links">
+      <a routerLink="/student-course/dashboard" routerLinkActive="active" class="nav-item" (click)="expandSidebar()" title="Dashboard">
+        <mat-icon>dashboard</mat-icon>
+        <span *ngIf="!isCollapsed">Dashboard</span>
+      </a>
+      <a routerLink="/student-course/assessment" routerLinkActive="active" class="nav-item" (click)="expandSidebar()" title="Assessments">
+        <mat-icon>description</mat-icon>
+        <span *ngIf="!isCollapsed">Assessments</span>
+      </a>
+      <a routerLink="/students" routerLinkActive="active" class="nav-item" (click)="expandSidebar()" title="Students profile">
+        <mat-icon>groups</mat-icon>
+        <span *ngIf="!isCollapsed">Students profile</span>
+      </a>
+      <a routerLink="/mentor-info" routerLinkActive="active" class="nav-item" (click)="expandSidebar()" title="Mentor info">
+        <mat-icon>support_agent</mat-icon>
+        <span *ngIf="!isCollapsed">Mentor info</span>
+      </a>
+      <a routerLink="/performance" routerLinkActive="active" class="nav-item" (click)="expandSidebar()" title="Performance">
+        <mat-icon>bar_chart</mat-icon>
+        <span *ngIf="!isCollapsed">Performance</span>
+      </a>
+      <a routerLink="/insights" routerLinkActive="active" class="nav-item" (click)="expandSidebar()" title="AI Insights">
+        <mat-icon>lightbulb</mat-icon>
+        <span *ngIf="!isCollapsed">AI Insights</span>
+      </a>
+      <a routerLink="/notifications" routerLinkActive="active" class="nav-item" (click)="expandSidebar()" title="Notifications">
+        <mat-icon>notifications</mat-icon>
+        <span *ngIf="!isCollapsed">Notifications</span>
+      </a>
+    </nav>
+
+    <div class="nav-bottom">
+      <a routerLink="/profile" routerLinkActive="active" class="nav-item" (click)="expandSidebar()" title="Settings">
+        <mat-icon>settings</mat-icon>
+        <span *ngIf="!isCollapsed">Settings</span>
+      </a>
+      <a class="nav-item logout" (click)="expandSidebar()" title="Log out">
+        <mat-icon>logout</mat-icon>
+        <span *ngIf="!isCollapsed">Log out</span>
+      </a>
+    </div>
+  </aside>
+
+  <main class="content">
+    <router-outlet></router-outlet>
+  </main>
+</div>

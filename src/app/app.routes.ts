@@ -20,11 +20,31 @@ import { Manage as CourseManage } from './dash/course/manage/manage';
 import { Create as AssessmentCreate } from './dash/assessment/create/create';
 import { View as AssessmentView } from './dash/assessment/view/view';
 import { Manage as AssessmentManage } from './dash/assessment/manage/manage';
+import { StudentDashboard } from './studentcomponent/studentdashboard/student-dashboard';
+import {Assessment as StudentAssessment} from './studentcomponent/assessment/assessment';
+import {Performance as StudentPerformance} from './studentcomponent/performance/performance';
+import {Insights as StudentInsights} from './studentcomponent/insights/insights';
+import {Notification as StudentNotification} from './studentcomponent/notification/notification';
+import {Layout} from './studentcomponent/layout/layout';
 
 export const routes: Routes = [
   { path: '', component: Login },
   { path: 'signup', component: Signup },
   { path: 'forgotpassword', component: ForgotPassword },
+  {path:'student-course',component:Layout,
+    children:[
+      {path:'dashboard',component:StudentDashboard},
+      {path:'assessment',component:StudentAssessment},
+      {path:'performance',component:StudentPerformance},
+      {path:'insights',component:StudentInsights},
+      {path:'notification',component:StudentNotification},
+    //   // {path:Dashboard,component:student-dash},
+
+
+    ]
+
+
+  },
 
   {
     path: 'dash',

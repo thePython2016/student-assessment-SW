@@ -40,7 +40,10 @@ export class Login {
   invalid = '';
 wrongCredentials='';
   isLoading = false;
+  isSubmitting=false;
+  loginToken='';
 
+  correct='';
   private base = 'http://127.0.0.1:8000';
 
   constructor(private router: Router, private cdr: ChangeDetectorRef) {}
@@ -54,6 +57,7 @@ wrongCredentials='';
     this.passwordError = '';
     this.error = '';
     this.invalid = '';
+    this.wrongCredentials='';
     
   }
 
@@ -83,7 +87,10 @@ wrongCredentials='';
       const result = await response.json();
 
       if (response.status === 200) {
+        this.loginToken=result.token || '';
+        sessionStorage.setItem('loginToken',this.loginToken);
         this.router.navigate(['/dash/dashboard']);
+        // console.log(result.email)
       } else {
         this.wrongCredentials = result.non_field_errors[0];
       }

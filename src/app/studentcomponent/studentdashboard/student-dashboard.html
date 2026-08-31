@@ -1,0 +1,118 @@
+<div class="dashboard">
+
+  <div class="topbar">
+    <div class="page-title">
+      <p class="crumb">Dashboard</p>
+      <p class="date">09 August, 2026</p>
+    </div>
+
+    <form class="search-form" (ngSubmit)="onSearch()">
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-icon matPrefix>search</mat-icon>
+        <input matInput placeholder="Search..." [(ngModel)]="searchQuery" name="search" />
+      </mat-form-field>
+    </form>
+
+    <div class="topbar-actions">
+      <button class="icon-btn" title="Notifications"><mat-icon>notifications</mat-icon></button>
+      <button class="icon-btn" title="Settings"><mat-icon>settings</mat-icon></button>
+      <div class="profile-chip">
+        <div class="avatar">{{ studentName[0] }}</div>
+        <span>{{ studentName }}</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="banner">
+    <div class="banner-text">
+      <p class="banner-tag">Academic Year 2025-2026</p>
+      <p class="banner-title">Overall Student Performance Dashboard for Class 10</p>
+      <button mat-raised-button class="banner-btn">Get Access</button>
+    </div>
+    <mat-icon class="banner-icon">insights</mat-icon>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat-card" *ngFor="let s of stats">
+      <div class="stat-icon" [style.background]="s.bg" [style.color]="s.fg">
+        <mat-icon>{{ s.icon }}</mat-icon>
+      </div>
+      <div>
+        <p class="stat-label">{{ s.label }}</p>
+        <p class="stat-value">{{ s.value }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="mid-grid">
+    <div class="panel chart-panel">
+      <div class="panel-header">
+        <p class="panel-title">Performance Trend</p>
+        <div class="panel-tabs">
+          <span class="tab active">Week</span>
+          <span class="tab">Month</span>
+          <span class="tab">Year</span>
+        </div>
+      </div>
+      <div class="chart-wrap">
+        <canvas #trendChart></canvas>
+      </div>
+    </div>
+
+    <div class="panel">
+      <p class="panel-title">Subject-wise Strength</p>
+      <div class="bars">
+        <div class="bar-row" *ngFor="let s of subjectBreakdown">
+          <div class="bar-label">
+            <span>{{ s.subject }}</span>
+            <span class="bar-score">{{ s.score }}%</span>
+          </div>
+          <div class="bar-track">
+            <div class="bar-fill" [style.width.%]="s.score" [style.background]="s.color"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel upcoming-panel">
+    <p class="panel-title">Upcoming Assessments</p>
+    <div class="assessment-list">
+      <div class="assessment-item" *ngFor="let a of upcomingAssessments">
+        <div>
+          <p class="assessment-title">{{ a.title }}</p>
+          <p class="assessment-meta">{{ a.dueLabel }} · {{ a.durationMinutes }} min</p>
+        </div>
+        <button mat-raised-button color="primary">Start</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel table-panel">
+    <div class="panel-header">
+      <p class="panel-title">Visualize Your Academic Success</p>
+      <button mat-stroked-button>View all</button>
+    </div>
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Student ID</th>
+          <th>Group</th>
+          <th>Mark-sheet</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let row of studentRows">
+          <td>{{ row.name }}</td>
+          <td>{{ row.studentId }}</td>
+          <td>{{ row.group }}</td>
+          <td><a class="link">{{ row.markSheet }}</a></td>
+          <td><span [class]="statusClass(row.status)">{{ row.status }}</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
