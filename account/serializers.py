@@ -1,27 +1,34 @@
-from django.contrib.auth.models import User
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, get_user_model
+from django.contrib.auth.password_validation import validate_password
 from rest_framework import serializers
-from .models import Profile
+
+User = get_user_model()
+
 
 class RegisterSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True, min_length=6)
-    phone = serializers.CharField(write_only=True, required=True)
-    address = serializers.CharField(write_only=True, required=True)
+    password = serializers.CharField(write_only=True, min_length=6, validators=[validate_password])
 
     class Meta:
         model = User
         fields = ['email', 'password', 'phone', 'address']
+        extra_kwargs = {
+            'phone': {'required': True},
+            'address': {'required': True},
+        }
 
     def validate_email(self, value):
         if User.objects.filter(email=value).exists():
             raise serializers.ValidationError("Email already in use.")
         return value
 
-    def create(self, validated_data):
-        phone = validated_data.pop('phone')
-        address = validated_data.pop('address')
+    def validate_phone(self, value):
+        if User.objects.filter(phone=value).exists():
+            raise serializers.ValidationError("Phone already in use.")
+        return value
 
-        username = validated_data['email'].split('@')[0]
+    def create(self, validated_data):
+        email = validated_data['email']
+        username = email.split('@')[0]
         base_username = username
         counter = 1
         while User.objects.filter(username=username).exists():
@@ -30,11 +37,11 @@ class RegisterSerializer(serializers.ModelSerializer):
 
         user = User.objects.create_user(
             username=username,
-            email=validated_data['email'],
-            password=validated_data['password']
+            email=email,
+            password=validated_data['password'],
+            phone=validated_data['phone'],
+            address=validated_data['address'],
         )
-
-        Profile.objects.create(user=user, phone=phone, address=address)
         return user
 
 
