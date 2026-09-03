@@ -1,12 +1,17 @@
-from django.shortcuts import render
-
-# Create your views here.
 from rest_framework import generics, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
-from rest_framework.authtoken.models import Token
+from rest_framework_simplejwt.tokens import RefreshToken
 from .serializers import RegisterSerializer, LoginSerializer
+
+
+def get_tokens_for_user(user):
+    refresh = RefreshToken.for_user(user)
+    return {
+        'refresh': str(refresh),
+        'access': str(refresh.access_token),
+    }
 
 
 class RegisterView(generics.CreateAPIView):
@@ -18,10 +23,11 @@ class RegisterView(generics.CreateAPIView):
         serializer.is_valid(raise_exception=True)
         user = serializer.save()
 
-        token, created = Token.objects.get_or_create(user=user)
+        tokens = get_tokens_for_user(user)
 
         return Response({
-            'token': token.key,
+            'access': tokens['access'],
+            'refresh': tokens['refresh'],
             'email': user.email,
             'username': user.username,
             'phone': user.phone,
@@ -37,10 +43,11 @@ class LoginView(APIView):
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
 
-        token, created = Token.objects.get_or_create(user=user)
+        tokens = get_tokens_for_user(user)
 
         return Response({
-            'token': token.key,
+            'access': tokens['access'],
+            'refresh': tokens['refresh'],
             'email': user.email,
             'username': user.username,
             'phone': user.phone,
