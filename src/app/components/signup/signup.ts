@@ -50,6 +50,7 @@ export class Signup implements OnInit {
 
   private base = 'http://127.0.0.1:8000';
 
+
   constructor(private router: Router, private cdr: ChangeDetectorRef) {}
 
   ngOnInit(): void {}

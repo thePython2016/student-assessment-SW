@@ -124,8 +124,8 @@
       </button>
       <mat-menu #profileMenu="matMenu">
         <div class="profile-header">
-          <p class="profile-name">{{ adminName }}</p>
-          <p class="profile-email">{{ adminEmail }}</p>
+          <!-- <p class="profile-name">{{ adminName }}</p> -->
+          <p *ngIf='email' class="profile-email">{{email }}</p>
         </div>
         <button mat-menu-item>
           <mat-icon>person</mat-icon> Profile

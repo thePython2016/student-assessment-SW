@@ -33,7 +33,11 @@ interface Activity {
   templateUrl: './dashboard.html',
 })
 export class Dashboard {
-  adminName = 'Admin User';
+
+    token="";
+    email='';
+  userToken = sessionStorage.getItem("token");
+  userEmail=sessionStorage.getItem("email");
 
   kpis: Kpi[] = [
     { label: 'Total Students', value: '1,284', icon: 'group', color: '#198754' },

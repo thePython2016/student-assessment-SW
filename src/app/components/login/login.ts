@@ -42,6 +42,7 @@ wrongCredentials='';
   isLoading = false;
   isSubmitting=false;
   loginToken='';
+  userEmail='';
 
   correct='';
   private base = 'http://127.0.0.1:8000';
@@ -58,6 +59,7 @@ wrongCredentials='';
     this.error = '';
     this.invalid = '';
     this.wrongCredentials='';
+
     
   }
 
@@ -86,12 +88,14 @@ wrongCredentials='';
       });
       const result = await response.json();
 
-      if (response.status === 200) {
-        this.loginToken=result.token || '';
-        sessionStorage.setItem('loginToken',this.loginToken);
-        this.router.navigate(['/dash/dashboard']);
-        // console.log(result.email)
-      } else {
+    if (response.status === 200) {
+  this.loginToken = result.access || '';
+  this.userEmail = result.email || '';
+  sessionStorage.setItem('loginToken', this.loginToken);
+  sessionStorage.setItem('refreshToken', result.refresh || '');
+  sessionStorage.setItem('email', this.userEmail);
+  this.router.navigate(['/dash/dashboard']);
+} else {
         this.wrongCredentials = result.non_field_errors[0];
       }
     } catch (e) {

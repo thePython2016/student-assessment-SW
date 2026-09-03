@@ -29,6 +29,7 @@ import {Layout} from './studentcomponent/layout/layout';
 import {Resources} from './studentcomponent/resources/resources';
 import {Assignment} from './studentcomponent/assignment/assignment';
 import {Insights} from './studentcomponent/insights/insights';
+import {authGuard} from './components/auth-guard';
 
 
 export const routes: Routes = [
@@ -37,13 +38,13 @@ export const routes: Routes = [
   { path: 'forgotpassword', component: ForgotPassword },
   {path:'student-course',component:Layout,
     children:[
-      {path:'dashboard',component:StudentDashboard},
-      {path:'assessment',component:StudentAssessment},
-      {path:'resources',component:Resources},
-      {path:'assignment',component:Assignment},
-      {path:'performance',component:StudentPerformance},
-      {path:'insights',component:Insights},
-      {path:'notification',component:StudentNotification},
+      {path:'dashboard',component:StudentDashboard,canActivate:[authGuard]},
+      {path:'assessment',component:StudentAssessment,canActivate:[authGuard]},
+      {path:'resources',component:Resources,canActivate:[authGuard]},
+      {path:'assignment',component:Assignment,canActivate:[authGuard]},
+      {path:'performance',component:StudentPerformance,canActivate:[authGuard]},
+      {path:'insights',component:Insights,canActivate:[authGuard]},
+      {path:'notification',component:StudentNotification,canActivate:[authGuard]},
     //   // {path:Dashboard,component:student-dash},
 
 
@@ -56,18 +57,18 @@ export const routes: Routes = [
     path: 'dash',
     component: DashLayout,
     children: [
-      { path: 'dashboard', component: Dashboard },
-      { path: 'student/add', component: Add },
-      { path: 'student/view', component: View },
-      { path: 'student/manage', component: Manage },
-      { path: 'course', component: Course },
-      { path: 'assessment', component: Assessment },
-      { path: 'user', component: User },
-      { path: 'analytics', component: Analytics },
-      { path: 'course/add', component: CourseAdd },
-      { path: 'course/view', component: CourseView },
-      { path: 'course/manage', component: CourseManage },
-      { path: 'assessment/create', component: AssessmentCreate },
+      { path: 'dashboard', component: Dashboard,canActivate:[authGuard] },
+      { path: 'student/add', component: Add,canActivate:[authGuard] },
+      { path: 'student/view', component: View, canActivate:[authGuard]},
+      { path: 'student/manage', component: Manage,canActivate:[authGuard] },
+      { path: 'course', component: Course,canActivate:[authGuard] },
+      { path: 'assessment', component: Assessment,canActivate:[authGuard] },
+      { path: 'user', component: User,canActivate:[authGuard] },
+      { path: 'analytics', component: Analytics,canActivate:[authGuard] },
+      { path: 'course/add', component: CourseAdd,canActivate:[authGuard] },
+      { path: 'course/view', component: CourseView,canActivate:[authGuard] },
+      { path: 'course/manage', component: CourseManage,canActivate:[authGuard] },
+      { path: 'assessment/create', component: AssessmentCreate,canActivate:[authGuard] },
       { path: 'assessment/view', component: AssessmentView },
       { path: 'assessment/manage', component: AssessmentManage },
       { path: 'questions', component: Questions },

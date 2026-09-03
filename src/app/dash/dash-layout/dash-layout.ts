@@ -30,14 +30,15 @@ import { MatTooltipModule } from '@angular/material/tooltip';
   styleUrl: './dash-layout.css'
 })
 export class DashLayout {
-  adminName = 'Admin User';
-  adminEmail = 'admin@example.com';
+  email=sessionStorage.getItem("email")
+  // userFname=sessionStorage.getItem("fname")
   notificationCount = 3;
 
   studentsMenuOpen = false;
   coursesMenuOpen = false;
   assessmentsMenuOpen = false;
   sidebarCollapsed = false;
+  is_logging_out=false;
 
   toggleStudentsMenu() {
     if (this.sidebarCollapsed) {

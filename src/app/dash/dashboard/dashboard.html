@@ -2,7 +2,8 @@
 
   <div class="welcome-banner">
     <div>
-      <h2>Welcome back, {{ adminName }} </h2>
+      <!-- <h2 *ngIf="userToken">Welcome back, {{ userToken }} </h2> -->
+      <h2 *ngIf="userEmail">Welcome back: {{ userEmail }} </h2>
       <p>Here's what's happening in your system today.</p>
     </div>
   </div>
