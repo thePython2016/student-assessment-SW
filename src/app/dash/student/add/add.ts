@@ -1,59 +1,33 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
+import { RouterLink } from '@angular/router';
+import { provideNativeDateAdapter } from '@angular/material/core';
+import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatCardModule } from '@angular/material/card';
 import { MatDividerModule } from '@angular/material/divider';
-import { RouterLink } from '@angular/router';
-
-
-
-interface StudentData {
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone: string;
-  address: string;
-  dob: Date | null;
-  gender: string;
-  course: string;
-  // token:string | null
-}
-
-// base utl
-
 
 @Component({
   selector: 'app-add',
   imports: [
-    RouterLink,
-    CommonModule,
-    FormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-    MatDatepickerModule,
-    MatNativeDateModule,
-    MatButtonModule,
-    MatIconModule,
-    MatCardModule,
-    MatDividerModule
+    CommonModule, FormsModule, RouterLink, MatCardModule, MatFormFieldModule,
+    MatInputModule, MatSelectModule, MatDatepickerModule, MatButtonModule,
+    MatIconModule, MatDividerModule,
   ],
+  providers: [provideNativeDateAdapter()],
+  styleUrl: './add.css',
   templateUrl: './add.html',
-  styleUrl: './add.css'
-
-  
 })
+export class Add implements OnInit {
+  private cdr = inject(ChangeDetectorRef);
 
-export class Add {
-  // token='';
-  token: string | null = null;
+  base = 'http://127.0.0.1:8000';
+
   firstName = '';
   lastName = '';
   email = '';
@@ -62,67 +36,78 @@ export class Add {
   dob: Date | null = null;
   gender = '';
   course = '';
-  baseUrl='http://127.0.0.1:8000/';
-  endPoint='student/'
-  
-
-
-  // data=''
+  res=''
+  errorFname=''
 
   genders = ['Male', 'Female', 'Other'];
-  courses = ['AAA', 'BBB', 'CCC', 'DDD', 'EEE', 'FFF', 'GGG'];
+  courses: string[] = [];
 
-  // User data
+  errors: Record<string, string[]> = {};
+  error = '';
+  success = '';
 
-
-  onSubmit = async ()=> {
-
-    const data:StudentData={
-    'firstName':this.firstName,
-    'lastName':this.lastName,
-    'email':this.email,
-    'phone':this.phone,
-    'address':this.address,
-    'dob':this.dob,
-    'gender':this.gender,
-    'course':this.course
-
+  ngOnInit() {
+    this.loadCourses();
   }
-  this.token=sessionStorage.getItem("loginToken")
-    // console.log({
-    //   firstName: this.firstName,
-    //   lastName: this.lastName,
-    //   email: this.email,
-    //   phone: this.phone,
-    //   address: this.address,
-    //   dob: this.dob,
-    //   gender: this.gender,
-    //   course: this.course
-  
-      try{
 
-      const response=await fetch(`${this.baseUrl}/${this.endPoint}${this.token}`,{
-        'method':'GET',
-        'headers':{
-          'Content-Type':'application/json',
-          'Authorization':`Bearer ${this.token}`
-        },
-        // 'body':JSON.stringify(data)
+  async loadCourses() {
+    try {
+      const response = await fetch(`${this.base}/course/`);
+      if (response.ok) {
+        const data = await response.json();
+        this.courses = data.map((c: any) => c.course_name);
+      }
+    } catch (e) {
+      this.error = 'Could not load courses';
+    } finally {
+      this.cdr.markForCheck();
+    }
+  }
+
+  private formatDate(d: Date | null): string | null {
+    if (!d) return null;
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${d.getFullYear()}-${m}-${day}`;
+  }
+
+  async onSubmit(form: NgForm) {
+    this.errors = {};
+    this.error = '';
+    this.success = '';
+    
+
+    const payload = {
+      first_name: this.firstName,
+      last_name: this.lastName,
+      email: this.email,
+      phone: this.phone,
+      address: this.address,
+      date_of_birth: this.formatDate(this.dob),
+      gender: this.gender,
+      course: this.course,
+    };
+
+    try {
+      const response = await fetch(`${this.base}/students/`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
       });
-       const result=await response.json()
-       if(response.ok){
-        console.log(result)
-       }
-    }
-   
+        const res=await response.json()
 
-    catch(e){
-      console.log(e)
-    }
+      if (response.ok) {
+        this.success = 'Student added successfully';
 
+        form.resetForm();
+      } 
+      else{
+        this.error=res;
+      }
+    } catch (e) {
+      this.error = 'Cannot reach the server';
+    } finally {
+      this.cdr.markForCheck();
+    }
   }
 }
-    
-       
-
-

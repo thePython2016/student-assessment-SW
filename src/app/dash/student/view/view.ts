@@ -1,6 +1,6 @@
-import { Component, AfterViewInit, ViewChild } from '@angular/core';
+import { Component, AfterViewInit, OnInit, ViewChild, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
 import { MatSortModule, MatSort } from '@angular/material/sort';
 import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator';
@@ -26,27 +26,23 @@ export interface Student {
 @Component({
   selector: 'app-view',
   imports: [
-    CommonModule,
-    RouterLink,
-    MatTableModule,
-    MatSortModule,
-    MatPaginatorModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatIconModule,
-    MatButtonModule,
-    MatCardModule,
-    MatDividerModule,
-    MatSelectModule,
-    FormsModule
+    CommonModule, RouterLink, MatTableModule, MatSortModule, MatPaginatorModule,
+    MatFormFieldModule, MatInputModule, MatIconModule, MatButtonModule,
+    MatCardModule, MatDividerModule, MatSelectModule, FormsModule,
   ],
   styleUrl: './view.css',
   templateUrl: './view.html',
 })
-export class View implements AfterViewInit {
+export class View implements OnInit, AfterViewInit {
+  private cdr = inject(ChangeDetectorRef);
+  private router = inject(Router);
+
+  base = 'http://127.0.0.1:8000';
+  error = '';
+  loading = false;
 
   displayedColumns: string[] = ['id', 'firstName', 'lastName', 'email', 'phone', 'course', 'gender'];
-  dataSource: MatTableDataSource<Student>;
+  dataSource = new MatTableDataSource<Student>([]);
 
   pageSizeOptions = [5, 10, 25, 50];
   selectedPageSize = 5;
@@ -54,14 +50,10 @@ export class View implements AfterViewInit {
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  students: Student[] = [
-    { id: 1, firstName: 'John', lastName: 'Doe', email: 'john.doe@example.com', phone: '0712345678', course: 'Computer Science', gender: 'Male' },
-    { id: 2, firstName: 'Jane', lastName: 'Smith', email: 'jane.smith@example.com', phone: '0723456789', course: 'Business Admin', gender: 'Female' },
-    { id: 3, firstName: 'Mike', lastName: 'Johnson', email: 'mike.j@example.com', phone: '0734567890', course: 'Engineering', gender: 'Male' },
-  ];
+  students: Student[] = [];
 
-  constructor() {
-    this.dataSource = new MatTableDataSource(this.students);
+  ngOnInit() {
+    this.loadStudents();
   }
 
   ngAfterViewInit() {
@@ -69,13 +61,40 @@ export class View implements AfterViewInit {
     this.dataSource.paginator = this.paginator;
   }
 
+  async loadStudents() {
+    this.loading = true;
+    this.error = '';
+    try {
+      const response = await fetch(`${this.base}/students/`);
+      if (!response.ok) {
+        this.error = 'Could not load students';
+        return;
+      }
+      const data = await response.json();
+      const list = Array.isArray(data) ? data : data.results; // data.results if DRF pagination is on
+
+      this.students = list.map((s: any): Student => ({
+        id: s.id,
+        firstName: s.first_name,
+        lastName: s.last_name,
+        email: s.email,
+        phone: s.phone,
+        course: s.course,
+        gender: s.gender,
+      }));
+      this.dataSource.data = this.students;
+    } catch (e) {
+      this.error = 'Cannot reach the server';
+    } finally {
+      this.loading = false;
+      this.cdr.markForCheck();
+    }
+  }
+
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
-
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
-    }
+    this.dataSource.paginator?.firstPage();
   }
 
   onPageSizeChange(size: number) {
@@ -85,11 +104,24 @@ export class View implements AfterViewInit {
   }
 
   editStudent(student: Student) {
-    // navigate to edit page or open dialog
+    this.router.navigate(['/dash/student/edit', student.id]); // adjust to your edit route
   }
 
-  deleteStudent(student: Student) {
-    this.students = this.students.filter(s => s.id !== student.id);
-    this.dataSource.data = this.students;
+  async deleteStudent(student: Student) {
+    if (!confirm(`Delete ${student.firstName} ${student.lastName}?`)) return;
+
+    try {
+      const response = await fetch(`${this.base}/students/${student.id}/`, { method: 'DELETE' });
+      if (response.status === 204) {
+        this.students = this.students.filter(s => s.id !== student.id);
+        this.dataSource.data = this.students;
+      } else {
+        this.error = 'Could not delete student';
+      }
+    } catch (e) {
+      this.error = 'Cannot reach the server';
+    } finally {
+      this.cdr.markForCheck();
+    }
   }
 }

@@ -11,7 +11,67 @@
    [matTooltip]="sidebarCollapsed ? 'Dashboard' : ''" matTooltipPosition="right">
   <mat-icon>dashboard</mat-icon> <span class="item-label">Dashboard</span>
 </a>
+<!-- Department block -->
 
+<a mat-list-item (click)="toggleDepartmentMenu()" class="expandable-item"
+         [matTooltip]="sidebarCollapsed ? 'Department' : ''" matTooltipPosition="right">
+        <mat-icon>apartment</mat-icon>
+<span class="item-label">Department</span>
+        <mat-icon class="chevron" [class.rotated]="departmentMenuOpen" *ngIf="!sidebarCollapsed">expand_more</mat-icon>
+      </a>
+
+      <div class="submenu" [class.open]="departmentMenuOpen && !sidebarCollapsed">
+        <a mat-list-item routerLink="department/add" routerLinkActive="active-link" class="submenu-item">
+          <mat-icon>person_add</mat-icon> <span class="item-label">Add Department</span>
+        </a>
+        <a mat-list-item routerLink="department/department-list" routerLinkActive="active-link" class="submenu-item">
+          <mat-icon>visibility</mat-icon> <span class="item-label">Department List</span>
+        </a>
+        <a mat-list-item routerLink="department/manage" routerLinkActive="active-link" class="submenu-item">
+          <mat-icon>edit</mat-icon> <span class="item-label">Update / Delete</span>
+        </a>
+      </div>
+
+      <!-- Instructor block -->
+
+      <a mat-list-item (click)="toggleInstructorMenu()" class="expandable-item"
+         [matTooltip]="sidebarCollapsed ? 'Instructor' : ''" matTooltipPosition="right">
+        <mat-icon>group</mat-icon>
+        <span class="item-label">Instructor</span>
+        <mat-icon class="chevron" [class.rotated]="instructorMenuOpen" *ngIf="!sidebarCollapsed">expand_more</mat-icon>
+      </a>
+
+      <div class="submenu" [class.open]="instructorMenuOpen && !sidebarCollapsed">
+        <a mat-list-item routerLink="instructor/add" routerLinkActive="active-link" class="submenu-item">
+          <mat-icon>person_add</mat-icon> <span class="item-label">Add Instructor</span>
+        </a>
+        <a mat-list-item routerLink="instructor/instructor-list" routerLinkActive="active-link" class="submenu-item">
+          <mat-icon>visibility</mat-icon> <span class="item-label">Instructor List</span>
+        </a>
+        <a mat-list-item routerLink="instructor/manage" routerLinkActive="active-link" class="submenu-item">
+          <mat-icon>edit</mat-icon> <span class="item-label">Update / Delete</span>
+        </a>
+      </div>
+<!-- Course block -->
+ <a mat-list-item (click)="toggleCoursesMenu()" class="expandable-item"
+         [matTooltip]="sidebarCollapsed ? 'Courses' : ''" matTooltipPosition="right">
+        <mat-icon>menu_book</mat-icon>
+        <span class="item-label">Courses</span>
+        <mat-icon class="chevron" [class.rotated]="coursesMenuOpen" *ngIf="!sidebarCollapsed">expand_more</mat-icon>
+      </a>
+
+      <div class="submenu" [class.open]="coursesMenuOpen && !sidebarCollapsed">
+        <a mat-list-item routerLink="course/add" routerLinkActive="active-link" class="submenu-item">
+          <mat-icon>add_box</mat-icon> <span class="item-label">Add Course</span>
+        </a>
+        <a mat-list-item routerLink="course/view" routerLinkActive="active-link" class="submenu-item">
+          <mat-icon>visibility</mat-icon> <span class="item-label">All Courses</span>
+        </a>
+        <a mat-list-item routerLink="course/manage" routerLinkActive="active-link" class="submenu-item">
+          <mat-icon>edit</mat-icon> <span class="item-label">Update / Delete</span>
+        </a>
+      </div>
+      <!-- Student block -->
       <a mat-list-item (click)="toggleStudentsMenu()" class="expandable-item"
          [matTooltip]="sidebarCollapsed ? 'Students' : ''" matTooltipPosition="right">
         <mat-icon>group</mat-icon>
@@ -24,32 +84,43 @@
           <mat-icon>person_add</mat-icon> <span class="item-label">Add Student</span>
         </a>
         <a mat-list-item routerLink="student/view" routerLinkActive="active-link" class="submenu-item">
-          <mat-icon>visibility</mat-icon> <span class="item-label">View Students</span>
+          <mat-icon>visibility</mat-icon> <span class="item-label">All Students</span>
         </a>
         <a mat-list-item routerLink="student/manage" routerLinkActive="active-link" class="submenu-item">
           <mat-icon>edit</mat-icon> <span class="item-label">Update / Delete</span>
         </a>
       </div>
 
-      <a mat-list-item (click)="toggleCoursesMenu()" class="expandable-item"
-         [matTooltip]="sidebarCollapsed ? 'Courses' : ''" matTooltipPosition="right">
-        <mat-icon>menu_book</mat-icon>
-        <span class="item-label">Courses</span>
-        <mat-icon class="chevron" [class.rotated]="coursesMenuOpen" *ngIf="!sidebarCollapsed">expand_more</mat-icon>
-      </a>
+           <!-- Question block -->
+             <a mat-list-item (click)="toggleQuestionMenu()" class="expandable-item"
+   [matTooltip]="sidebarCollapsed ? 'Question Bank' : ''" matTooltipPosition="right">
+  <mat-icon>quiz</mat-icon>
+  <span class="item-label">Question Bank</span>
+  <mat-icon class="chevron" [class.rotated]="questionMenuOpen" *ngIf="!sidebarCollapsed">expand_more</mat-icon>
+</a>
+       <!-- { path: 'question/create', component: QuestionAdd,canActivate:[authGuard] },
+       { path: 'question/import', component: QuestionImport,canActivate:[authGuard] },
+       { path: 'question/ai-generate', component: AIGenerate,canActivate:[authGuard] }, -->
 
-      <div class="submenu" [class.open]="coursesMenuOpen && !sidebarCollapsed">
-        <a mat-list-item routerLink="course/add" routerLinkActive="active-link" class="submenu-item">
-          <mat-icon>add_box</mat-icon> <span class="item-label">Add Course</span>
-        </a>
-        <a mat-list-item routerLink="course/view" routerLinkActive="active-link" class="submenu-item">
-          <mat-icon>visibility</mat-icon> <span class="item-label">View Courses</span>
-        </a>
-        <a mat-list-item routerLink="course/manage" routerLinkActive="active-link" class="submenu-item">
-          <mat-icon>edit</mat-icon> <span class="item-label">Update / Delete</span>
-        </a>
-      </div>
+<div class="submenu" [class.open]="questionMenuOpen && !sidebarCollapsed">
+  <a mat-list-item routerLink="question/create" routerLinkActive="active-link" class="submenu-item">
+    <mat-icon>add_circle</mat-icon> <span class="item-label">Add Question</span>
+  </a>
+  <a mat-list-item routerLink="question/import" routerLinkActive="active-link" class="submenu-item">
+    <mat-icon>upload_file</mat-icon> <span class="item-label">Import (Excel/PDF)</span>
+  </a>
+  <a mat-list-item routerLink="question/ai-generate" routerLinkActive="active-link" class="submenu-item">
+    <mat-icon>auto_awesome</mat-icon> <span class="item-label">AI Generate Questions</span>
+  </a>
+  <a mat-list-item routerLink="question/list" routerLinkActive="active-link" class="submenu-item">
+    <mat-icon>format_list_bulleted</mat-icon> <span class="item-label">All Questions</span>
+  </a>
+  <a mat-list-item routerLink="question/manage" routerLinkActive="active-link" class="submenu-item">
+    <mat-icon>edit_note</mat-icon> <span class="item-label">Update / Delete</span>
+  </a>
+</div>
 
+<!-- Assessment Block -->
       <a mat-list-item (click)="toggleAssessmentsMenu()" class="expandable-item"
          [matTooltip]="sidebarCollapsed ? 'Assessments' : ''" matTooltipPosition="right">
         <mat-icon>assignment</mat-icon>
@@ -62,23 +133,56 @@
           <mat-icon>add_box</mat-icon> <span class="item-label">Create Assessment</span>
         </a>
         <a mat-list-item routerLink="assessment/view" routerLinkActive="active-link" class="submenu-item">
-          <mat-icon>visibility</mat-icon> <span class="item-label">View Assessments</span>
+          <mat-icon>visibility</mat-icon> <span class="item-label">All Assessments</span>
+        </a>
+        
+
+          <a mat-list-item routerLink="assessment/manage" routerLinkActive="active-link" class="submenu-item">
+          <mat-icon>edit</mat-icon> <span class="item-label">Update / Deletes</span>
         </a>
         <a mat-list-item routerLink="assessment/manage" routerLinkActive="active-link" class="submenu-item">
-          <mat-icon>edit</mat-icon> <span class="item-label">Update / Delete</span>
+          <mat-icon>edit</mat-icon> <span class="item-label">Grading & Results </span>
         </a>
+        
+         
       </div>
 
-      <a mat-list-item routerLink="questions" routerLinkActive="active-link"
-         (click)="onMenuItemClick()"
-         [matTooltip]="sidebarCollapsed ? 'Questions' : ''" matTooltipPosition="right">
-        <mat-icon>quiz</mat-icon> <span class="item-label">Questions</span>
-      </a>
-      <a mat-list-item routerLink="recommendations" routerLinkActive="active-link"
-         (click)="onMenuItemClick()"
-         [matTooltip]="sidebarCollapsed ? 'Recommendations' : ''" matTooltipPosition="right">
-        <mat-icon>lightbulb</mat-icon> <span class="item-label">Recommendations</span>
-      </a>
+      <!-- Add Question
+   ├ Import (Excel/PDF)
+   └ AI Generate Questions -->
+ 
+      
+<!-- Performance Analysis
+   ├ Department Comparison
+   ├ Course Analytics
+   ├ Instructor Analytics
+   ├ At-Risk Students
+   └ Item Analysis -->
+<!-- Recommendation block -->
+     <a mat-list-item (click)="togglePerformanceMenu()" class="expandable-item"
+   [matTooltip]="sidebarCollapsed ? 'Question Bank' : ''" matTooltipPosition="right">
+  <mat-icon>quiz</mat-icon>
+  <span class="item-label">Performance Analysis</span>
+  <mat-icon class="chevron" [class.rotated]="performanceMenuOpen" *ngIf="!sidebarCollapsed">expand_more</mat-icon>
+</a>
+
+<div class="submenu" [class.open]="performanceMenuOpen && !sidebarCollapsed">
+  <a mat-list-item routerLink="performance-department" routerLinkActive="active-link" class="submenu-item">
+    <mat-icon>add_circle</mat-icon> <span class="item-label">Department Comparison</span>
+  </a>
+  <a mat-list-item routerLink="course-analytics" routerLinkActive="active-link" class="submenu-item">
+    <mat-icon>upload_file</mat-icon> <span class="item-label">Course Analytics</span>
+  </a>
+  <a mat-list-item routerLink="instructor-analytics" routerLinkActive="active-link" class="submenu-item">
+    <mat-icon>auto_awesome</mat-icon> <span class="item-label">Instructor Analytics</span>
+  </a>
+  <a mat-list-item routerLink="at-risk-student" routerLinkActive="active-link" class="submenu-item">
+    <mat-icon>format_list_bulleted</mat-icon> <span class="item-label">At-Risk Students</span>
+  </a>
+  <a mat-list-item routerLink="item-analytics" routerLinkActive="active-link" class="submenu-item">
+    <mat-icon>edit_note</mat-icon> <span class="item-label">Item Analytics</span>
+  </a>
+</div>
       <a mat-list-item routerLink="performance-prediction" routerLinkActive="active-link"
          (click)="onMenuItemClick()"
          [matTooltip]="sidebarCollapsed ? 'Performance Prediction' : ''" matTooltipPosition="right">
@@ -120,7 +224,7 @@
       </mat-menu>
 
       <button mat-icon-button [matMenuTriggerFor]="profileMenu" class="profile-btn" aria-label="Profile">
-        <div class="avatar">AU</div>
+        <div class="avatar">P</div>
       </button>
       <mat-menu #profileMenu="matMenu">
         <div class="profile-header">

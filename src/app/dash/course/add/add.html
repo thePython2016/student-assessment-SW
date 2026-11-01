@@ -1,8 +1,9 @@
 <div class="page-header">
-  <a mat-raised-button color="primary" routerLink="/dash/course/add" class="add-course-btn">
-    <mat-icon>add</mat-icon> Add Course
+  <a mat-raised-button color="primary" routerLink="/dash/course/view" class="add-course-btn">
+    <mat-icon>list</mat-icon> View Courses
   </a>
 </div>
+
 <mat-card class="form-card">
   <mat-card-header>
     <mat-card-title>Add New Course</mat-card-title>
@@ -12,56 +13,74 @@
   <mat-divider class="header-divider"></mat-divider>
 
   <mat-card-content>
-    <form (ngSubmit)="onSubmit()" class="course-form">
+    <form #courseForm="ngForm" (ngSubmit)="onSubmit(courseForm)" class="course-form">
 
       <div class="form-row">
         <mat-form-field appearance="outline" class="half-width">
           <mat-label>Course Name</mat-label>
-          <input matInput [(ngModel)]="courseName" name="courseName" required>
+          <input matInput [(ngModel)]="courseName" name="courseName" required
+                 (input)="errors['course_name'] = []">
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="half-width">
           <mat-label>Course Code</mat-label>
-          <input matInput [(ngModel)]="courseCode" name="courseCode" required>
+          <input matInput [(ngModel)]="courseCode" name="courseCode" required
+                 (input)="errors['course_code'] = []">
         </mat-form-field>
       </div>
+      @if (errors['course_name']?.length) { <p class="field-error">{{ errors['course_name'][0] }}</p> }
+      @if (errors['course_code']?.length) { <p class="field-error">{{ errors['course_code'][0] }}</p> }
 
       <div class="form-row">
         <mat-form-field appearance="outline" class="half-width">
           <mat-label>Department</mat-label>
-          <mat-select [(ngModel)]="department" name="department" required>
-            <mat-option *ngFor="let d of departments" [value]="d">{{ d }}</mat-option>
+          <mat-select [(ngModel)]="department" name="department" required
+                      (selectionChange)="onDepartmentChange()">
+            @for (d of departments; track d.id) {
+              <mat-option [value]="d.id">{{ d.departmentName_ }}</mat-option>
+            }
           </mat-select>
-        </mat-form-field>
-
-        <mat-form-field appearance="outline" class="half-width">
-          <mat-label>Duration</mat-label>
-          <mat-select [(ngModel)]="duration" name="duration" required>
-            <mat-option *ngFor="let d of durations" [value]="d">{{ d }}</mat-option>
-          </mat-select>
-        </mat-form-field>
-      </div>
-
-      <div class="form-row">
-        <mat-form-field appearance="outline" class="half-width">
-          <mat-label>Credits</mat-label>
-          <input matInput type="number" [(ngModel)]="credits" name="credits" required>
         </mat-form-field>
 
         <mat-form-field appearance="outline" class="half-width">
           <mat-label>Instructor</mat-label>
-          <input matInput [(ngModel)]="instructor" name="instructor" required>
+          <mat-select [(ngModel)]="instructor" name="instructor" required
+                      [disabled]="!department">
+            @for (i of filteredInstructors; track i.id) {
+              <mat-option [value]="i.id">{{ i.first_name }} {{ i.last_name }}</mat-option>
+            } @empty {
+              <mat-option disabled>No instructors in this department</mat-option>
+            }
+          </mat-select>
         </mat-form-field>
       </div>
+      @if (errors['department']?.length) { <p class="field-error">{{ errors['department'][0] }}</p> }
+      @if (errors['instructor']?.length) { <p class="field-error">{{ errors['instructor'][0] }}</p> }
+
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="half-width">
+          <mat-label>Credits</mat-label>
+          <input matInput type="number" min="1" max="10" [(ngModel)]="credits"
+                 name="credits" required (input)="errors['credits'] = []">
+        </mat-form-field>
+      </div>
+      @if (errors['credits']?.length) { <p class="field-error">{{ errors['credits'][0] }}</p> }
 
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Description</mat-label>
         <textarea matInput rows="4" [(ngModel)]="description" name="description"></textarea>
       </mat-form-field>
 
+      @if (errors['non_field_errors']?.length) {
+        <p class="field-error">{{ errors['non_field_errors'][0] }}</p>
+      }
+      @if (success) { <p class="success">{{ success }}</p> }
+      @if (error) { <p class="error">{{ error }}</p> }
+
       <div class="form-actions">
-        <button mat-stroked-button type="button" (click)="onCancel()">Cancel</button>
-        <button mat-raised-button type="submit" color="primary" class="submit-btn">
+        <button mat-stroked-button type="button" (click)="onCancel(courseForm)">Cancel</button>
+        <button mat-raised-button type="submit" color="primary" class="submit-btn"
+                [disabled]="courseForm.invalid">
           <mat-icon>add</mat-icon> Add Course
         </button>
       </div>

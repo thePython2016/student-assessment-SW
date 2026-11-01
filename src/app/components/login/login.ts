@@ -95,6 +95,8 @@ wrongCredentials='';
   sessionStorage.setItem('refreshToken', result.refresh || '');
   sessionStorage.setItem('email', this.userEmail);
   this.router.navigate(['/dash/dashboard']);
+  // this.router.navigate(['/student-course/dashboard']);
+  
 } else {
         this.wrongCredentials = result.non_field_errors[0];
       }

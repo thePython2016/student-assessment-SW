@@ -54,7 +54,7 @@ export class Dashboard {
   ];
 
   recentActivity: Activity[] = [
-    { text: 'John Doe submitted "Database Systems Quiz"', time: '10 minutes ago', icon: 'assignment_turned_in' },
+    { text: 'Peter Machibya submitted "Database Systems Quiz"', time: '10 minutes ago', icon: 'assignment_turned_in' },
     { text: 'New student Emily Davis registered', time: '1 hour ago', icon: 'person_add' },
     { text: 'Course "Network Protocols" was updated', time: '3 hours ago', icon: 'edit' },
     { text: 'Performance prediction flagged 3 students as at-risk', time: 'Yesterday', icon: 'warning' },

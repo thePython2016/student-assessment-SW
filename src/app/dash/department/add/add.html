@@ -1,0 +1,56 @@
+<!-- add.html -->
+<div class="page-header">
+  <a mat-raised-button color="primary" routerLink="/departments" class="add-student-btn">
+    <mat-icon>add</mat-icon> Add Department
+  </a>
+</div>
+
+<mat-card class="form-card">
+  <mat-card-header>
+    <mat-card-title>Add New Department</mat-card-title>
+    <mat-card-subtitle>Fill in the department's details below</mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-divider class="header-divider"></mat-divider>
+
+  <mat-card-content>
+   <form #deptForm="ngForm" (ngSubmit)="onSubmit(deptForm)" class="dept-form">
+
+      <div class="form-row">
+        <mat-form-field appearance="outline" class="half-width">
+          <mat-label>Department Code</mat-label>
+       
+          <input matInput [(ngModel)]="departmentCode" name="departmentCode"
+                 required maxlength="20">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="half-width">
+          <mat-label>Department Name</mat-label>
+          <input matInput [(ngModel)]="departmentName" name="departmentName"
+                 required maxlength="100">
+        </mat-form-field>
+      </div>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Description</mat-label>
+        <textarea matInput [(ngModel)]="description" name="description" rows="4"></textarea>
+      </mat-form-field>
+
+        
+      @if (success) {
+        <p class="success">{{ success }}</p>
+      }
+      @if (error) {
+        <p class="error">{{ error }}</p>
+      }
+
+      <div class="form-actions">
+        <button mat-stroked-button type="button">Cancel</button>
+        <button mat-raised-button type="submit" class="submit-btn" [disabled]="deptForm.invalid">
+          <mat-icon>add_business</mat-icon> Add Department
+        </button>
+      </div>
+
+    </form>
+  </mat-card-content>
+</mat-card>

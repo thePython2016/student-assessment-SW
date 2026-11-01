@@ -1,0 +1,35 @@
+:host { display: block; padding: 24px; }
+
+.page-header { display: flex; justify-content: flex-end; margin-bottom: 16px; }
+.add-instructor-btn mat-icon { margin-right: 4px; }
+
+.table-card { max-width: 1200px; margin: 0 auto; padding: 16px 24px 24px; border-radius: 12px; }
+.header-divider { margin: 16px 0 24px; }
+
+.table-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.page-size-field { width: 150px; }
+.search-field { width: 280px; }
+
+.table-container { overflow-x: auto; }
+.instructor-table { width: 100%; }
+
+.no-data { text-align: center; padding: 24px; color: #757575; }
+
+.error {
+  padding: 10px 14px;
+  border-radius: 6px;
+  margin: 8px 0;
+  background-color: #ffebee;
+  color: #c62828;
+  font-size: 14px;
+}
+
+@media (max-width: 600px) {
+  .page-size-field, .search-field { width: 100%; }
+}

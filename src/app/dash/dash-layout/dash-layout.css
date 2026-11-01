@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
 .dashboard-container {
   height: 100vh;
 }
@@ -10,6 +12,10 @@
   flex-direction: column;
   transition: width 0.25s ease;
   
+}
+.submenu a {
+
+  font-size:12px !important;
 }
 
 .sidebar.collapsed {
@@ -90,6 +96,7 @@
   align-items: center !important;
   gap: 16px;
   height: 48px;
+  font-size:12px;
 }
 
 .sidebar a mat-icon,
@@ -100,11 +107,16 @@
   justify-content: center !important;
   height: 24px;
   width: 24px;
-  font-size: 24px;
+  font-size: 20px;
   line-height: 24px !important;
   flex-shrink: 0;
 }
-
+.mat-mdc-nav-list .mat-mdc-list-item,
+.mat-mdc-nav-list .mdc-list-item__primary-text,
+.mat-mdc-nav-list .item-label {
+  font-size: 14px;
+  
+}
 .chevron {
   margin-left: auto !important;
   transition: transform 0.2s ease;

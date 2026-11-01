@@ -29,6 +29,17 @@ import {Layout} from './studentcomponent/layout/layout';
 import {Resources} from './studentcomponent/resources/resources';
 import {Assignment} from './studentcomponent/assignment/assignment';
 import {Insights} from './studentcomponent/insights/insights';
+import {View as DepartmentList} from './dash/department/view/view';
+import {Add as AddDept} from './dash/department/add/add';
+import {Manage as ManageDept} from './dash/department/manage/manage';
+import {Add as AddInstructor} from './dash/instructor/add/add';
+import {View as InstructorList} from './dash/instructor/view/view';
+import {Manage as ManageDepartment} from './dash/department/manage/manage';
+import {Manage as ManageInstructor} from './dash/instructor/manage/manage';
+// import {Manage as ManageInstructor} from './dash/instructor/manage/manage'
+import {Add as QuestionAdd} from './dash/questions/add/add';
+import {Import as QuestionImport} from './dash/questions/import/import';
+import {AIGeneration as AIGenerate} from './dash/questions/ai-generation/ai-generation';
 import {authGuard} from './components/auth-guard';
 
 
@@ -58,6 +69,18 @@ export const routes: Routes = [
     component: DashLayout,
     children: [
       { path: 'dashboard', component: Dashboard,canActivate:[authGuard] },
+
+      // Department Component
+      { path: 'department/add', component: AddDept,canActivate:[authGuard] },
+      { path: 'department/department-list', component: DepartmentList,canActivate:[authGuard] },
+      { path: 'department/manage', component: ManageDepartment,canActivate:[authGuard] },
+
+      // Instructor Component
+        { path: 'instructor/add', component: AddInstructor,canActivate:[authGuard] },
+      { path: 'instructor/instructor-list', component: InstructorList,canActivate:[authGuard] },
+      { path: 'instructor/manage', component: ManageInstructor,canActivate:[authGuard] },
+
+      // Student Component
       { path: 'student/add', component: Add,canActivate:[authGuard] },
       { path: 'student/view', component: View, canActivate:[authGuard]},
       { path: 'student/manage', component: Manage,canActivate:[authGuard] },
@@ -69,12 +92,16 @@ export const routes: Routes = [
       { path: 'course/view', component: CourseView,canActivate:[authGuard] },
       { path: 'course/manage', component: CourseManage,canActivate:[authGuard] },
       { path: 'assessment/create', component: AssessmentCreate,canActivate:[authGuard] },
+       { path: 'question/create', component: QuestionAdd,canActivate:[authGuard] },
+       { path: 'question/import', component: QuestionImport,canActivate:[authGuard] },
+       { path: 'question/ai-generate', component: AIGenerate,canActivate:[authGuard] },
       { path: 'assessment/view', component: AssessmentView },
       { path: 'assessment/manage', component: AssessmentManage },
       { path: 'questions', component: Questions },
       { path: 'recommendations', component: Recommendations },
       { path: 'performance-prediction', component: Performanceprediction },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
+    
     ]
   }
 ];

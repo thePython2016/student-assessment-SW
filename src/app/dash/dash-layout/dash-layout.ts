@@ -36,7 +36,11 @@ export class DashLayout {
 
   studentsMenuOpen = false;
   coursesMenuOpen = false;
+  performanceMenuOpen = false;
   assessmentsMenuOpen = false;
+   questionMenuOpen = false;
+  departmentMenuOpen = false;
+   instructorMenuOpen = false;
   sidebarCollapsed = false;
   is_logging_out=false;
 
@@ -45,6 +49,31 @@ export class DashLayout {
       this.sidebarCollapsed = false;
     }
     this.studentsMenuOpen = !this.studentsMenuOpen;
+  }
+
+   toggleDepartmentMenu() {
+    if (this.sidebarCollapsed) {
+      this.sidebarCollapsed = false;
+    }
+    this.departmentMenuOpen = !this.departmentMenuOpen;
+  }
+   toggleQuestionMenu() {
+    if (this.sidebarCollapsed) {
+      this.sidebarCollapsed = false;
+    }
+    this.questionMenuOpen = !this.questionMenuOpen;
+  }
+   togglePerformanceMenu() {
+    if (this.sidebarCollapsed) {
+      this.sidebarCollapsed = false;
+    }
+    this.questionMenuOpen = !this.questionMenuOpen;
+  }
+   toggleInstructorMenu() {
+    if (this.sidebarCollapsed) {
+      this.sidebarCollapsed = false;
+    }
+    this.instructorMenuOpen = !this.instructorMenuOpen;
   }
 
   toggleCoursesMenu() {

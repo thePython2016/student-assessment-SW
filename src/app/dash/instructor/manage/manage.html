@@ -1,0 +1,101 @@
+<div class="page-header">
+  <a mat-raised-button color="primary" routerLink="/dash/instructor/add" class="add-instructor-btn">
+    <mat-icon>add</mat-icon> Add Instructor
+  </a>
+</div>
+
+<mat-card class="table-card">
+  <mat-card-header>
+    <mat-card-title>Manage Instructors</mat-card-title>
+    <mat-card-subtitle>Select a row to update or delete</mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-divider class="header-divider"></mat-divider>
+
+  <mat-card-content>
+
+    @if (error) { <p class="error">{{ error }}</p> }
+    @if (success) { <p class="success">{{ success }}</p> }
+
+    <div class="table-toolbar">
+      <mat-form-field appearance="outline" class="page-size-field">
+        <mat-label>Items per page</mat-label>
+        <mat-select [(ngModel)]="selectedPageSize" (selectionChange)="onPageSizeChange($event.value)">
+          @for (size of pageSizeOptions; track size) {
+            <mat-option [value]="size">{{ size }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-label>Search</mat-label>
+        <input matInput (keyup)="applyFilter($event)" placeholder="Search instructors...">
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+    </div>
+
+    @if (selectedInstructor) {
+      <div class="selected-actions">
+        <span class="selected-label">
+          Selected: {{ selectedInstructor.first_name }} {{ selectedInstructor.last_name }}
+        </span>
+        <button mat-stroked-button color="primary" (click)="openEdit()">
+          <mat-icon>edit</mat-icon> Update
+        </button>
+        <button mat-stroked-button color="warn" (click)="deleteInstructor()">
+          <mat-icon>delete</mat-icon> Delete
+        </button>
+      </div>
+    }
+
+    <div class="table-container">
+      <table mat-table [dataSource]="dataSource" matSort class="instructor-table">
+
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
+          <td mat-cell *matCellDef="let row"> {{ row.id }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="first_name">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> First Name </th>
+          <td mat-cell *matCellDef="let row"> {{ row.first_name }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="last_name">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Last Name </th>
+          <td mat-cell *matCellDef="let row"> {{ row.last_name }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="email">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Email </th>
+          <td mat-cell *matCellDef="let row"> {{ row.email }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="phone">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Phone </th>
+          <td mat-cell *matCellDef="let row"> {{ row.phone }} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="department_name">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Department </th>
+          <td mat-cell *matCellDef="let row"> {{ row.department_name }} </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row
+            *matRowDef="let row; columns: displayedColumns;"
+            (click)="selectRow(row)"
+            [class.selected-row]="isSelected(row)">
+        </tr>
+
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell no-data" [attr.colspan]="displayedColumns.length">No instructors found.</td>
+        </tr>
+
+      </table>
+    </div>
+
+    <mat-paginator [pageSizeOptions]="pageSizeOptions" [pageSize]="selectedPageSize" showFirstLastButtons></mat-paginator>
+
+  </mat-card-content>
+</mat-card>

@@ -4,10 +4,13 @@
   margin-bottom: 16px;
 }
 
-.add-course-btn {
-  display: flex;
-  align-items: center;
-  gap: 4px;
+.add-course-btn mat-icon {
+  margin-right: 4px;
+}
+
+.table-card {
+  border-radius: 12px;
+  overflow: hidden;
 }
 
 .header-divider {
@@ -24,14 +27,20 @@
 }
 
 .page-size-field {
-  width: 160px;
+  width: 200px;
 }
 
 .search-field {
-  width: 240px;
+  width: 260px;
+}
+
+.error-msg {
+  color: #d32f2f;
+  margin-bottom: 12px;
 }
 
 .table-container {
+  width: 100%;
   overflow-x: auto;
 }
 
@@ -39,8 +48,28 @@
   width: 100%;
 }
 
+.course-table th.mat-mdc-header-cell {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.course-table tr.mat-mdc-row:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
 .no-data {
-  text-align: center;
   padding: 24px;
-  color: rgba(0, 0, 0, 0.5);
+  text-align: center;
+  color: rgba(0, 0, 0, 0.54);
+}
+
+mat-paginator {
+  margin-top: 8px;
+}
+
+@media (max-width: 600px) {
+  .page-size-field,
+  .search-field {
+    width: 100%;
+  }
 }

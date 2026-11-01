@@ -7,6 +7,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import Chart from 'chart.js/auto';
 
+
+
 interface StatCard {
   label: string;
   value: string;
@@ -44,8 +46,9 @@ interface StudentRow {
 })
 export class StudentDashboard implements AfterViewInit {
   @ViewChild('trendChart') trendChartRef!: ElementRef<HTMLCanvasElement>;
+  currentDate = new Date();
 
-  studentName = 'Amina';
+  studentName = 'Peter';
   searchQuery = '';
 
   stats: StatCard[] = [

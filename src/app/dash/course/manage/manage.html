@@ -7,20 +7,22 @@
 <mat-card class="table-card">
   <mat-card-header>
     <mat-card-title>Manage Courses</mat-card-title>
-    <mat-card-subtitle>Update or remove registered courses</mat-card-subtitle>
+    <mat-card-subtitle>View all courses</mat-card-subtitle>
   </mat-card-header>
 
   <mat-divider class="header-divider"></mat-divider>
 
   <mat-card-content>
 
+    @if (error) { <p class="error">{{ error }}</p> }
+
     <div class="table-toolbar">
       <mat-form-field appearance="outline" class="page-size-field">
         <mat-label>Items per page</mat-label>
         <mat-select [(ngModel)]="selectedPageSize" (selectionChange)="onPageSizeChange($event.value)">
-          <mat-option *ngFor="let size of pageSizeOptions" [value]="size">
-            {{ size }}
-          </mat-option>
+          @for (size of pageSizeOptions; track size) {
+            <mat-option [value]="size">{{ size }}</mat-option>
+          }
         </mat-select>
       </mat-form-field>
 
@@ -31,15 +33,17 @@
       </mat-form-field>
     </div>
 
-    <div class="selected-actions" *ngIf="selectedCourse">
-      <span class="selected-label">Selected: {{ selectedCourse.courseName }}</span>
-      <button mat-stroked-button color="primary" (click)="openEditDialog(selectedCourse, $event)">
-        <mat-icon>edit</mat-icon> Update
-      </button>
-      <button mat-stroked-button color="warn" (click)="deleteCourse(selectedCourse, $event)">
-        <mat-icon>delete</mat-icon> Delete
-      </button>
-    </div>
+   @if (selectedCourse) {
+  <div class="selected-actions">
+    <span class="selected-label">Selected: {{ selectedCourse.course_name }}</span>
+    <button mat-stroked-button color="primary" (click)="openEdit()">
+      <mat-icon>edit</mat-icon> Update
+    </button>
+    <button mat-stroked-button color="warn" (click)="deleteCourse()">
+      <mat-icon>delete</mat-icon> Delete
+    </button>
+  </div>
+}
 
     <div class="table-container">
       <table mat-table [dataSource]="dataSource" matSort class="course-table">
@@ -49,24 +53,19 @@
           <td mat-cell *matCellDef="let course"> {{ course.id }} </td>
         </ng-container>
 
-        <ng-container matColumnDef="courseName">
+        <ng-container matColumnDef="course_name">
           <th mat-header-cell *matHeaderCellDef mat-sort-header> Course Name </th>
-          <td mat-cell *matCellDef="let course"> {{ course.courseName }} </td>
+          <td mat-cell *matCellDef="let course"> {{ course.course_name }} </td>
         </ng-container>
 
-        <ng-container matColumnDef="courseCode">
+        <ng-container matColumnDef="course_code">
           <th mat-header-cell *matHeaderCellDef mat-sort-header> Code </th>
-          <td mat-cell *matCellDef="let course"> {{ course.courseCode }} </td>
+          <td mat-cell *matCellDef="let course"> {{ course.course_code }} </td>
         </ng-container>
 
         <ng-container matColumnDef="department">
           <th mat-header-cell *matHeaderCellDef mat-sort-header> Department </th>
-          <td mat-cell *matCellDef="let course"> {{ course.department }} </td>
-        </ng-container>
-
-        <ng-container matColumnDef="duration">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Duration </th>
-          <td mat-cell *matCellDef="let course"> {{ course.duration }} </td>
+          <td mat-cell *matCellDef="let course"> {{ course.department_name }} </td>
         </ng-container>
 
         <ng-container matColumnDef="credits">
@@ -76,7 +75,7 @@
 
         <ng-container matColumnDef="instructor">
           <th mat-header-cell *matHeaderCellDef mat-sort-header> Instructor </th>
-          <td mat-cell *matCellDef="let course"> {{ course.instructor }} </td>
+          <td mat-cell *matCellDef="let course"> {{ course.first_name }}  {{ course.last_name }}</td>
         </ng-container>
 
         <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
@@ -88,14 +87,18 @@
 
         <tr class="mat-row" *matNoDataRow>
           <td class="mat-cell no-data" [attr.colspan]="displayedColumns.length">
-            No courses matching the filter.
+            No courses found.
           </td>
         </tr>
 
       </table>
     </div>
 
-    <mat-paginator [pageSizeOptions]="pageSizeOptions" showFirstLastButtons></mat-paginator>
+    <mat-paginator
+      [pageSizeOptions]="pageSizeOptions"
+      [pageSize]="selectedPageSize"
+      showFirstLastButtons>
+    </mat-paginator>
 
   </mat-card-content>
 </mat-card>

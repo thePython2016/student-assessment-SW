@@ -13,7 +13,7 @@
   <mat-divider class="header-divider"></mat-divider>
 
   <mat-card-content>
-    <form (ngSubmit)="onSubmit()" class="student-form">
+   <form #studentForm="ngForm" (ngSubmit)="onSubmit(studentForm)" class="student-form">
 
       <div class="form-row">
         <mat-form-field appearance="outline" class="half-width">
@@ -75,7 +75,10 @@
           <mat-icon>person_add</mat-icon> Add Student
         </button>
       </div>
-
+ @if(success){
+      <p>{{success}}</p>
+    }
     </form>
+   
   </mat-card-content>
 </mat-card>
