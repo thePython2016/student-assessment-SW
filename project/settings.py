@@ -62,14 +62,38 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'rest_framework_simplejwt',
-    'student'
+    'student',
+    'instructor',
+    'department',
+    'course',
+    'questions'
+    
 ]
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
 }
+from datetime import timedelta
 
+SIMPLE_JWT = {
+    "ACCESS_TOKEN_LIFETIME": timedelta(hours=1),     # default is 5 minutes
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),     # default is 1 day
+    "ROTATE_REFRESH_TOKENS": True,                   # issue a new refresh token on each refresh
+    "BLACKLIST_AFTER_ROTATION": True,                # requires 'rest_framework_simplejwt.token_blacklist' in INSTALLED_APPS
+}
+
+AUTH_PASSWORD_VALIDATORS = [
+    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
+    {
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+        "OPTIONS": {"min_length": 8},
+    },
+    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
+    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
+    # your custom validator (see below)
+    {"NAME": "accounts.validators.StrongPasswordValidator"},
+]
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     "whitenoise.middleware.WhiteNoiseMiddleware",
@@ -119,21 +143,6 @@ DATABASES = {
 # Password validation
 # https://docs.djangoproject.com/en/6.1/ref/settings/#auth-password-validators
 
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'account.validators.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'account.validators.MinimumLengthValidator',
-        'OPTIONS': {'min_length': 6},
-    },
-    {
-        'NAME': 'account.validators.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'account.validators.NumericPasswordValidator',
-    },
-]
 
 
 # Internationalization

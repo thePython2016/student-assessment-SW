@@ -21,5 +21,12 @@ urlpatterns = [
     path('admin/', admin.site.urls),
      path('api/account/', include('account.urls')),
      path('',include('student.urls')),
+    #  path('',include('course.urls')),
+     path('',include('department.urls')),
+      path('',include('questions.urls')),
+     path("", include("instructor.urls")),
+  
+    path("", include("course.urls")),
+
      path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
 ]
