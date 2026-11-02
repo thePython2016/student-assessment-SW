@@ -6,13 +6,12 @@ from .models import QuestionBank
 
 class QuestionSerializer(serializers.ModelSerializer):
     # The Angular form sends "courseId"; it maps to the course foreign key.
-    courseId = serializers.PrimaryKeyRelatedField(
-        source="course", queryset=Course.objects.all(), write_only=True
-    )
+    courseId = serializers.PrimaryKeyRelatedField(source="course", queryset=Course.objects.all())
+    course_name = serializers.CharField(source="course.course_name", read_only=True)
 
     class Meta:
         model = QuestionBank
-        fields = ["id", "courseId", "text", "topic", "type", "difficulty", "marks"]
+        fields = ["id", "courseId", "course_name", "text", "topic", "type", "difficulty", "marks"]
 
     def validate_text(self, value):
         if len(value.strip()) < 3:

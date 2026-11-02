@@ -8,7 +8,7 @@ class QuestionBank(models.Model):
         HARD = "Hard"
 
   
-    course = models.ForeignKey("course.course", on_delete=models.CASCADE, related_name="questions")
+    course = models.ForeignKey("course.Course", on_delete=models.CASCADE, related_name="questions")
     text = models.TextField()
     topic = models.CharField(max_length=100)
     type = models.CharField(max_length=30, default="MCQ")

@@ -24,6 +24,8 @@ urlpatterns = [
     #  path('',include('course.urls')),
      path('',include('department.urls')),
       path('',include('questions.urls')),
+        #  path("", include("questions.urls")),
+   path("", include("assessment.urls")),
      path("", include("instructor.urls")),
   
     path("", include("course.urls")),

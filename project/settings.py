@@ -31,6 +31,7 @@ SECRET_KEY = 'django-insecure-u0lq-w(*)4-sefksgef9p(g_*jho80n7f#8yf()idkolqa_d=v
 AUTH_USER_MODEL = 'account.User'
 DEBUG = True
 
+
 # Allow Angular site to access------------------------------
 ALLOWED_HOSTS = [
     "student-assessment-alis.onrender.com",
@@ -47,6 +48,7 @@ CORS_ALLOWED_ORIGINS = [
 
 
 CORS_ALLOW_CREDENTIALS = True
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 # Application definition
 
@@ -66,7 +68,8 @@ INSTALLED_APPS = [
     'instructor',
     'department',
     'course',
-    'questions'
+    'questions',
+    'assessment'
     
 ]
 REST_FRAMEWORK = {
