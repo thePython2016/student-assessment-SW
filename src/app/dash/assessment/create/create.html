@@ -1,166 +1,220 @@
-<h1>Create assessment</h1>
-<p class="lead">Complete the four steps, then save a draft or publish.</p>
-
-<div class="steps">
-  @for (name of stepNames; track name; let i = $index) {
-    <button type="button" class="step" [class.on]="i === step" [class.done]="i < step" (click)="goTo(i)">
-      {{ i + 1 }}. {{ name }}
-    </button>
-  }
+<div class="top-bar">
+  <button mat-flat-button type="button" class="green-btn" (click)="newAssessment()">
+    <mat-icon>add</mat-icon>
+    Add Assessment
+  </button>
 </div>
 
-<form [formGroup]="form" (ngSubmit)="save('published')">
+<div class="card">
+  <div class="card-head">
+    <h2>Create Assessment</h2>
+    <p>Complete the four steps, then save a draft or publish</p>
+  </div>
 
-  <!-- Step 1: Basic info -->
-  @if (step === 0) {
-    <div class="card grid" formGroupName="basic">
-      <div class="full">
-        <label for="title">Title</label>
-        <input id="title" formControlName="title" placeholder="e.g. Database Systems midterm" />
-        @if (basic.controls.title.touched && basic.controls.title.invalid) {
-          <div class="err">Enter a title.</div>
-        }
+  <div class="steps">
+    @for (name of stepNames; track name; let i = $index) {
+      <button type="button" class="step" [class.on]="i === step" [class.done]="i < step" (click)="goTo(i)">
+        {{ i + 1 }}. {{ name }}
+      </button>
+    }
+  </div>
+
+  <form class="card-body" [formGroup]="form" (ngSubmit)="save('published')" novalidate>
+
+    <!-- Step 1: Basic info -->
+    @if (step === 0) {
+      <div formGroupName="basic">
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>Title</mat-label>
+          <input matInput formControlName="title" placeholder="e.g. Database Systems midterm" required />
+          @if (basic.controls.title.invalid) { <mat-error>Enter a title.</mat-error> }
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full">
+          <mat-label>Instructions for students</mat-label>
+          <textarea matInput rows="3" formControlName="description"></textarea>
+        </mat-form-field>
+
+        <div class="row">
+          <mat-form-field appearance="outline">
+            <mat-label>Department</mat-label>
+            <mat-select formControlName="departmentId" required>
+              @for (d of departments; track d.id) { <mat-option [value]="d.id">{{ d.name }}</mat-option> }
+            </mat-select>
+            @if (basic.controls.departmentId.invalid) { <mat-error>Select a department.</mat-error> }
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Course</mat-label>
+            <mat-select formControlName="courseId" required>
+              @for (c of courses; track c.id) { <mat-option [value]="c.id">{{ c.name }}</mat-option> }
+            </mat-select>
+            @if (basic.controls.courseId.invalid) { <mat-error>Select a course.</mat-error> }
+          </mat-form-field>
+        </div>
+
+        <div class="row">
+          <mat-form-field appearance="outline">
+            <mat-label>Instructor</mat-label>
+            <mat-select formControlName="instructorId">
+              @for (i of instructors; track i.id) { <mat-option [value]="i.id">{{ i.name }}</mat-option> }
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Type</mat-label>
+            <mat-select formControlName="type">
+              @for (t of types; track t) { <mat-option [value]="t">{{ t }}</mat-option> }
+            </mat-select>
+          </mat-form-field>
+        </div>
       </div>
-      <div class="full">
-        <label for="desc">Instructions for students</label>
-        <textarea id="desc" formControlName="description"></textarea>
+    }
+
+    <!-- Step 2: Settings -->
+    @if (step === 1) {
+      <div formGroupName="settings">
+        <div class="row">
+          <div class="datetime">
+            <mat-form-field appearance="outline">
+              <mat-label>Opens (date)</mat-label>
+              <input matInput [matDatepicker]="startPicker" [value]="dt.start.date" readonly
+                     (click)="startPicker.open()" (dateChange)="onDate('start', $event.value)" />
+              <mat-datepicker-toggle matIconSuffix [for]="startPicker"></mat-datepicker-toggle>
+              <mat-datepicker #startPicker></mat-datepicker>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Time</mat-label>
+              <input matInput type="time" [value]="dt.start.time" (input)="onTime('start', $any($event.target).value)" />
+            </mat-form-field>
+          </div>
+
+          <div class="datetime">
+            <mat-form-field appearance="outline">
+              <mat-label>Closes (date)</mat-label>
+              <input matInput [matDatepicker]="endPicker" [value]="dt.end.date" readonly
+                     (click)="endPicker.open()" (dateChange)="onDate('end', $event.value)" />
+              <mat-datepicker-toggle matIconSuffix [for]="endPicker"></mat-datepicker-toggle>
+              <mat-datepicker #endPicker></mat-datepicker>
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Time</mat-label>
+              <input matInput type="time" [value]="dt.end.time" (input)="onTime('end', $any($event.target).value)" />
+            </mat-form-field>
+          </div>
+        </div>
+        @if (settings.controls.start.touched && settings.controls.start.invalid) { <div class="err">Set the opening date and time.</div> }
+        @if (settings.controls.end.touched && settings.controls.end.invalid) { <div class="err">Set the closing date and time.</div> }
+        @if (settings.touched && settings.hasError('dateRange')) { <div class="err">Closing time must be after opening time.</div> }
+
+        <div class="row">
+          <mat-form-field appearance="outline">
+            <mat-label>Duration (minutes)</mat-label>
+            <input matInput type="number" min="1" formControlName="duration" required />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Attempts allowed</mat-label>
+            <input matInput type="number" min="1" formControlName="attempts" required />
+          </mat-form-field>
+        </div>
+
+        <div class="row">
+          <mat-form-field appearance="outline">
+            <mat-label>Total marks</mat-label>
+            <input matInput type="number" min="1" formControlName="totalMarks" required />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Passing marks</mat-label>
+            <input matInput type="number" min="0" formControlName="passMarks" required />
+          </mat-form-field>
+        </div>
+        @if (settings.hasError('passMax')) { <div class="err">Passing marks cannot exceed total marks.</div> }
+
+        <div class="row">
+          <mat-form-field appearance="outline">
+            <mat-label>Show results</mat-label>
+            <mat-select formControlName="resultVisibility">
+              @for (v of visibility; track v) { <mat-option [value]="v">{{ v }}</mat-option> }
+            </mat-select>
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Negative marking (per wrong answer)</mat-label>
+            <input matInput type="number" min="0" step="0.25" formControlName="negativeMarking" />
+            <mat-hint>Use 0 to turn it off.</mat-hint>
+          </mat-form-field>
+        </div>
+
+        <h3>Behaviour</h3>
+        <div class="sw"><span>Shuffle questions<small>Each student sees a different order</small></span><mat-slide-toggle formControlName="shuffleQuestions"></mat-slide-toggle></div>
+        <div class="sw"><span>Shuffle options<small>Applies to multiple-choice questions</small></span><mat-slide-toggle formControlName="shuffleOptions"></mat-slide-toggle></div>
+        <div class="sw"><span>Auto-submit when time runs out<small>Answers are saved and submitted automatically</small></span><mat-slide-toggle formControlName="autoSubmit"></mat-slide-toggle></div>
       </div>
+    }
+
+    <!-- Step 3: Questions -->
+    @if (step === 2) {
       <div>
-        <label for="dept">Department</label>
-        <select id="dept" formControlName="departmentId">
-          <option [ngValue]="0">{{ departments.length ? 'Select department' : 'Loading departments...' }}</option>
-          @for (d of departments; track d.id) { <option [ngValue]="d.id">{{ d.name }}</option> }
-        </select>
-        @if (basic.controls.departmentId.touched && basic.controls.departmentId.invalid) {
-          <div class="err">Select a department.</div>
-        }
-      </div>
-      <div>
-        <label for="course">Course</label>
-        <select id="course" formControlName="courseId">
-          <option [ngValue]="0">{{ courses.length ? 'Select course' : 'Loading courses...' }}</option>
-          @for (c of courses; track c.id) { <option [ngValue]="c.id">{{ c.name }}</option> }
-        </select>
-        @if (basic.controls.courseId.touched && basic.controls.courseId.invalid) {
-          <div class="err">Select a course.</div>
-        }
-      </div>
-      <div>
-        <label for="inst">Instructor</label>
-        <select id="inst" formControlName="instructorId">
-          <option [ngValue]="null">{{ instructors.length ? 'Select instructor' : 'Loading instructors...' }}</option>
-          @for (i of instructors; track i.id) { <option [ngValue]="i.id">{{ i.name }}</option> }
-        </select>
-      </div>
-      <div>
-        <label for="type">Type</label>
-        <select id="type" formControlName="type">
-          @for (t of ['Quiz', 'Midterm', 'Final', 'Assignment', 'Practice']; track t) { <option>{{ t }}</option> }
-        </select>
-      </div>
-    </div>
-  }
+        <div class="bar" [formGroup]="filters">
+          <mat-form-field appearance="outline" class="grow">
+            <mat-label>Search questions</mat-label>
+            <input matInput formControlName="search" />
+            <mat-icon matSuffix>search</mat-icon>
+          </mat-form-field>
 
-  <!-- Step 2: Settings -->
-  @if (step === 1) {
-    <div class="card" formGroupName="settings">
-      <div class="grid">
-        <div>
-          <label for="start">Opens</label>
-          <input id="start" type="datetime-local" formControlName="start" />
-          @if (settings.controls.start.touched && settings.controls.start.invalid) { <div class="err">Set the opening time.</div> }
-        </div>
-        <div>
-          <label for="end">Closes</label>
-          <input id="end" type="datetime-local" formControlName="end" />
-          @if (settings.controls.end.touched && settings.controls.end.invalid) { <div class="err">Set the closing time.</div> }
-          @if (settings.touched && settings.hasError('dateRange')) { <div class="err">Closing time must be after opening time.</div> }
-        </div>
-        <div>
-          <label for="dur">Duration (minutes)</label>
-          <input id="dur" type="number" min="1" formControlName="duration" />
-        </div>
-        <div>
-          <label for="att">Attempts allowed</label>
-          <input id="att" type="number" min="1" formControlName="attempts" />
-        </div>
-        <div>
-          <label for="total">Total marks</label>
-          <input id="total" type="number" min="1" formControlName="totalMarks" />
-        </div>
-        <div>
-          <label for="pass">Passing marks</label>
-          <input id="pass" type="number" min="0" formControlName="passMarks" />
-          @if (settings.hasError('passMax')) { <div class="err">Passing marks cannot exceed total marks.</div> }
-        </div>
-        <div>
-          <label for="show">Show results</label>
-          <select id="show" formControlName="resultVisibility">
-            <option>Immediately</option>
-            <option>After the deadline</option>
-            <option>Hidden until released</option>
-          </select>
-        </div>
-        <div>
-          <label for="neg">Negative marking (per wrong answer)</label>
-          <input id="neg" type="number" min="0" step="0.25" formControlName="negativeMarking" />
-          <div class="hint">Use 0 to turn it off.</div>
-        </div>
-      </div>
-      <h3>Behaviour</h3>
-      <div class="sw"><span>Shuffle questions<small>Each student sees a different order</small></span><input type="checkbox" formControlName="shuffleQuestions" /></div>
-      <div class="sw"><span>Shuffle options<small>Applies to multiple-choice questions</small></span><input type="checkbox" formControlName="shuffleOptions" /></div>
-      <div class="sw"><span>Auto-submit when time runs out<small>Answers are saved and submitted automatically</small></span><input type="checkbox" formControlName="autoSubmit" /></div>
-    </div>
-  }
+          <mat-form-field appearance="outline" class="sel">
+            <mat-label>Topic</mat-label>
+            <mat-select formControlName="topic">
+              <mat-option value="">All topics</mat-option>
+              @for (t of topics; track t) { <mat-option [value]="t">{{ t }}</mat-option> }
+            </mat-select>
+          </mat-form-field>
 
-  <!-- Step 3: Questions -->
-  @if (step === 2) {
-    <div class="card">
-      <div class="bar" [formGroup]="filters">
-        <input formControlName="search" placeholder="Search questions" aria-label="Search questions" />
-        <select formControlName="topic" aria-label="Topic">
-          <option value="">All topics</option>
-          @for (t of topics; track t) { <option>{{ t }}</option> }
-        </select>
-        <select formControlName="difficulty" aria-label="Difficulty">
-          <option value="">All difficulties</option>
-          <option>Easy</option><option>Medium</option><option>Hard</option>
-        </select>
-        <button type="button" class="btn org" (click)="generateWithAi()">Generate with AI</button>
-      </div>
+          <mat-form-field appearance="outline" class="sel">
+            <mat-label>Difficulty</mat-label>
+            <mat-select formControlName="difficulty">
+              <mat-option value="">All difficulties</mat-option>
+              @for (l of levels; track l) { <mat-option [value]="l">{{ l }}</mat-option> }
+            </mat-select>
+          </mat-form-field>
 
-      <div class="tbl">
-        <table>
-          <thead><tr><th></th><th>Question</th><th>Topic</th><th>Type</th><th>Level</th><th>Marks</th></tr></thead>
-          <tbody>
-            @for (q of filtered; track q.id) {
-              <tr>
-                <td><input type="checkbox" [checked]="selected.has(q.id)" (change)="toggle(q, $any($event.target).checked)" [attr.aria-label]="'Select question ' + q.id" /></td>
-                <td>{{ q.text }}</td>
-                <td>{{ q.topic }}</td>
-                <td>{{ q.type }}</td>
-                <td><span class="tag">{{ q.difficulty }}</span></td>
-                <td><input type="number" min="1" [value]="selected.get(q.id) ?? q.marks" (input)="setMarks(q, $any($event.target).value)" aria-label="Marks" /></td>
-              </tr>
-            } @empty {
-              <tr><td colspan="6">No questions found. Choose a course, clear the filters, or generate new ones with AI.</td></tr>
-            }
-          </tbody>
-        </table>
-      </div>
+          <button mat-stroked-button type="button" class="pill ai" (click)="generateWithAi()">
+            <mat-icon>auto_awesome</mat-icon> Generate with AI
+          </button>
+        </div>
 
-      <div class="tot" [class.good]="selectedTotal === settings.value.totalMarks && selectedTotal > 0" [class.bad]="selectedTotal !== settings.value.totalMarks">
-        <span>{{ selected.size }} questions selected. Total marks needed: {{ settings.value.totalMarks }}</span>
-        <b>{{ selectedTotal }} / {{ settings.value.totalMarks }}</b>
-      </div>
-      @if (questionError) { <div class="err">{{ questionError }}</div> }
-    </div>
-  }
+        <div class="tbl">
+          <table>
+            <thead><tr><th></th><th>Question</th><th>Topic</th><th>Type</th><th>Level</th><th>Marks</th></tr></thead>
+            <tbody>
+              @for (q of filtered; track q.id) {
+                <tr>
+                  <td><input type="checkbox" [checked]="selected.has(q.id)" (change)="toggle(q, $any($event.target).checked)" [attr.aria-label]="'Select question ' + q.id" /></td>
+                  <td>{{ q.text }}</td>
+                  <td>{{ q.topic }}</td>
+                  <td>{{ q.type }}</td>
+                  <td><span [class]="'tag ' + q.difficulty">{{ q.difficulty }}</span></td>
+                  <td><input class="marks" type="number" min="1" [value]="selected.get(q.id) ?? q.marks" (input)="setMarks(q, $any($event.target).value)" aria-label="Marks" /></td>
+                </tr>
+              } @empty {
+                <tr><td colspan="6" class="empty">No questions found. Choose a course, clear the filters, or generate new ones with AI.</td></tr>
+              }
+            </tbody>
+          </table>
+        </div>
 
-  <!-- Step 4: Review -->
-  @if (step === 3) {
-    <div class="card">
+        <div class="tot" [class.good]="selectedTotal === settings.value.totalMarks && selectedTotal > 0" [class.bad]="selectedTotal !== settings.value.totalMarks">
+          <span>{{ selected.size }} questions selected. Total marks needed: {{ settings.value.totalMarks }}</span>
+          <b>{{ selectedTotal }} / {{ settings.value.totalMarks }}</b>
+        </div>
+        @if (questionError) { <div class="err">{{ questionError }}</div> }
+      </div>
+    }
+
+    <!-- Step 4: Review -->
+    @if (step === 3) {
       <dl>
         <dt>Title</dt><dd>{{ basic.value.title }}</dd>
         <dt>Type</dt><dd>{{ basic.value.type }}</dd>
@@ -170,20 +224,20 @@
         <dt>Marks</dt><dd>{{ settings.value.totalMarks }} total, {{ settings.value.passMarks }} to pass</dd>
         <dt>Questions</dt><dd>{{ selected.size }} selected ({{ selectedTotal }} marks)</dd>
       </dl>
-    </div>
-  }
+    }
 
-  <div class="nav">
-    @if (step > 0) { <button type="button" class="btn" (click)="back()">Back</button> } @else { <span></span> }
-    <div>
-      <button type="button" class="btn" [disabled]="saving" (click)="save('draft')">Save as draft</button>
-      @if (step < 3) {
-        <button type="button" class="btn pri" (click)="next()">Next</button>
-      } @else {
-        <button type="submit" class="btn pri" [disabled]="saving">Publish</button>
-      }
+    <div class="nav">
+      @if (step > 0) { <button mat-stroked-button type="button" class="pill" (click)="back()">Back</button> } @else { <span></span> }
+      <div class="nav-right">
+        <button mat-stroked-button type="button" class="pill" [disabled]="saving" (click)="save('draft')">Save as draft</button>
+        @if (step < 3) {
+          <button mat-flat-button type="button" class="green-btn" (click)="next()">Next</button>
+        } @else {
+          <button mat-flat-button type="submit" class="green-btn" [disabled]="saving">{{ saving ? 'Saving...' : 'Publish' }}</button>
+        }
+      </div>
     </div>
-  </div>
-</form>
+  </form>
+</div>
 
 @if (message) { <div class="toast" role="status">{{ message }}</div> }

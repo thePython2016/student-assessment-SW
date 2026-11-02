@@ -1,0 +1,172 @@
+<div class="page-header">
+  <button mat-stroked-button type="button" class="action-btn" [disabled]="!data" (click)="exportCsv()">
+    <mat-icon>download</mat-icon> Export CSV
+  </button>
+</div>
+
+<mat-card class="table-card">
+  <mat-card-header>
+    <mat-card-title>Student Performance</mat-card-title>
+    <mat-card-subtitle>See how one student is doing across assessments and topics</mat-card-subtitle>
+  </mat-card-header>
+
+  <mat-divider class="header-divider"></mat-divider>
+
+  <mat-card-content>
+
+    @if (error) {
+      <p class="error-msg">{{ error }}</p>
+    }
+
+    @if (usingSample) {
+      <p class="info-msg">The student performance API is not connected yet, so this page is showing sample data.</p>
+    }
+
+    <div class="table-toolbar">
+      <mat-form-field appearance="outline" class="student-field">
+        <mat-label>Select student</mat-label>
+        <mat-select [(ngModel)]="selectedId" (selectionChange)="onStudentChange($event.value)">
+          @for (s of students; track s.id) {
+            <mat-option [value]="s.id">{{ s.name }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    @if (loading) {
+      <p class="no-data">Loading performance...</p>
+    } @else if (!data) {
+      <p class="no-data">Select a student to see their performance.</p>
+    } @else {
+
+      <div class="profile">
+        <h2>{{ data.student.name }}</h2>
+        <span class="muted">{{ data.student.department }} · {{ data.student.course }}</span>
+      </div>
+
+      <!-- Summary -->
+      <div class="stats">
+        <div class="stat"><span>Average score</span><b>{{ data.summary.avgScore }}%</b></div>
+        <div class="stat"><span>Class average</span><b>{{ data.summary.classAvg }}%</b></div>
+        <div class="stat"><span>Class rank</span><b>{{ data.summary.rank }}<small> / {{ data.summary.classSize }}</small></b></div>
+        <div class="stat"><span>Assessments taken</span><b>{{ data.summary.attempted }}</b></div>
+        <div class="stat"><span>Missed</span><b>{{ data.summary.missed }}</b></div>
+        <div class="stat">
+          <span>Fail risk</span>
+          <b>{{ data.summary.probability }}%</b>
+          <span class="badge" [class]="'badge ' + data.summary.risk.toLowerCase()">{{ data.summary.risk }}</span>
+        </div>
+      </div>
+
+      <div class="charts">
+
+        <!-- Score trend vs class -->
+        <section class="panel">
+          <h3>Scores over time</h3>
+          @if (data.history.length > 1) {
+            <svg viewBox="-10 -10 320 125" class="trend" role="img" aria-label="Student scores compared with class average">
+              <line x1="0" y1="50" x2="300" y2="50" class="grid-line" />
+              <polyline [attr.points]="classLine" class="line class-line" />
+              <polyline [attr.points]="studentLine" class="line student-line" />
+            </svg>
+            <div class="xlabels">
+              @for (l of xLabels; track $index) { <span>{{ l }}</span> }
+            </div>
+            <div class="legend">
+              <span><i class="dot me"></i> {{ data.student.name }}</span>
+              <span><i class="dot cls"></i> Class average</span>
+            </div>
+          } @else { <p class="muted">Not enough assessments to show a trend.</p> }
+        </section>
+
+        <!-- Topic performance -->
+        <section class="panel">
+          <h3>Performance by topic</h3>
+          @for (t of data.topics; track t.topic) {
+            <div class="hbar">
+              <span class="lbl">{{ t.topic }}</span>
+              <div class="track"><div class="fill" [class]="'fill ' + level(t.score)" [style.width.%]="t.score"></div></div>
+              <span class="val">{{ t.score }}%</span>
+            </div>
+          } @empty { <p class="muted">No topic data yet.</p> }
+          <p class="muted">
+            Strong: @for (t of strengths; track t.topic) { <span class="tag good">{{ t.topic }}</span> } @empty { none yet }
+          </p>
+          <p class="muted">
+            Needs work: @for (t of weaknesses; track t.topic) { <span class="tag bad">{{ t.topic }}</span> } @empty { none }
+          </p>
+        </section>
+
+        <!-- Recommendations -->
+        <section class="panel wide">
+          <h3>Recommendations</h3>
+          <ul>
+            @for (r of data.recommendations; track r) { <li>{{ r }}</li> }
+          </ul>
+        </section>
+
+      </div>
+    }
+
+  </mat-card-content>
+</mat-card>
+
+@if (data) {
+  <mat-card class="table-card">
+    <mat-card-header>
+      <mat-card-title>Assessment History</mat-card-title>
+      <mat-card-subtitle>Every assessment this student was assigned</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-divider class="header-divider"></mat-divider>
+
+    <mat-card-content>
+      <div class="table-container">
+        <table mat-table [dataSource]="dataSource" matSort matSortActive="date" matSortDirection="desc" class="student-table">
+
+          <ng-container matColumnDef="date">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Date </th>
+            <td mat-cell *matCellDef="let row"> {{ row.date }} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="assessment">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Assessment </th>
+            <td mat-cell *matCellDef="let row"> {{ row.assessment }} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="course">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Course </th>
+            <td mat-cell *matCellDef="let row"> {{ row.course }} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="score">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Score </th>
+            <td mat-cell *matCellDef="let row"> {{ row.score === null ? '—' : row.score + '%' }} </td>
+          </ng-container>
+
+          <ng-container matColumnDef="classAvg">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Class Average </th>
+            <td mat-cell *matCellDef="let row"> {{ row.classAvg }}% </td>
+          </ng-container>
+
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Status </th>
+            <td mat-cell *matCellDef="let row">
+              <span class="badge" [class]="'badge ' + row.status.toLowerCase()">{{ row.status }}</span>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell no-data" [attr.colspan]="displayedColumns.length">No assessments found.</td>
+          </tr>
+
+        </table>
+      </div>
+
+      <mat-paginator [pageSizeOptions]="pageSizeOptions" showFirstLastButtons></mat-paginator>
+    </mat-card-content>
+  </mat-card>
+}

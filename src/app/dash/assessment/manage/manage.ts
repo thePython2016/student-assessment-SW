@@ -1,4 +1,4 @@
-import { Component, AfterViewInit, ViewChild } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, HostListener, inject, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
@@ -19,10 +19,11 @@ export interface Assessment {
   id: number;
   title: string;
   type: string;
+  status: 'draft' | 'published';
   course: string;
   duration: number;
   totalMarks: number;
-  deadline: Date;
+  deadline: Date | null;
   numberOfQuestions: number;
 }
 
@@ -47,32 +48,61 @@ export interface Assessment {
   styleUrl: './manage.css',
   templateUrl: './manage.html',
 })
-export class Manage implements AfterViewInit {
+export class Manage implements OnInit, AfterViewInit {
+  private dialog = inject(MatDialog);
+  private cdr = inject(ChangeDetectorRef);
 
-  displayedColumns: string[] = ['id', 'title', 'type', 'course', 'duration', 'totalMarks', 'deadline', 'numberOfQuestions'];
-  dataSource: MatTableDataSource<Assessment>;
+  base = 'http://127.0.0.1:8000';
+  endPoint = 'assessments'; // no trailing slash, matches the Django router
+
+  displayedColumns: string[] = ['id', 'title', 'type', 'course', 'duration', 'totalMarks', 'deadline', 'numberOfQuestions', 'status'];
+  dataSource = new MatTableDataSource<Assessment>([]);
 
   pageSizeOptions = [5, 10, 25, 50];
   selectedPageSize = 5;
 
   selectedAssessment: Assessment | null = null;
+  error = '';
+  success = '';
 
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
 
-  assessments: Assessment[] = [
-    { id: 1, title: 'Midterm Quiz', type: 'Quiz', course: 'Computer Science', duration: 30, totalMarks: 20, deadline: new Date('2026-09-10'), numberOfQuestions: 10 },
-    { id: 2, title: 'Final Exam', type: 'Exam', course: 'Business Administration', duration: 120, totalMarks: 100, deadline: new Date('2026-11-15'), numberOfQuestions: 50 },
-    { id: 3, title: 'Structural Analysis Assignment', type: 'Assignment', course: 'Engineering', duration: 0, totalMarks: 30, deadline: new Date('2026-09-25'), numberOfQuestions: 5 },
-  ];
-
-  constructor(private dialog: MatDialog) {
-    this.dataSource = new MatTableDataSource(this.assessments);
+  ngOnInit() {
+    this.loadAssessments();
   }
 
   ngAfterViewInit() {
     this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
+  }
+
+  async loadAssessments() {
+    this.error = '';
+    try {
+      const response = await fetch(`${this.base}/${this.endPoint}`);
+      if (response.ok) {
+        const rows: any[] = await response.json();
+        // Map the API fields to the table fields.
+        this.dataSource.data = rows.map((r) => ({
+          id: r.id,
+          title: r.title,
+          type: r.type,
+          status: r.status,
+          course: r.course_name,
+          duration: r.duration,
+          totalMarks: r.total_marks,
+          deadline: r.end ? new Date(r.end) : null,
+          numberOfQuestions: r.question_count,
+        }));
+      } else {
+        this.error = 'Could not load assessments';
+      }
+    } catch (e) {
+      this.error = 'Cannot reach the server';
+    } finally {
+      this.cdr.markForCheck();
+    }
   }
 
   applyFilter(event: Event) {
@@ -90,8 +120,18 @@ export class Manage implements AfterViewInit {
     this.paginator._changePageSize(size);
   }
 
+  // Click anywhere outside a table row, the Update/Delete bar or a popup -> hide the buttons.
+  @HostListener('document:click', ['$event'])
+  onDocumentClick(event: MouseEvent) {
+    if (!this.selectedAssessment) return;
+    const target = event.target as HTMLElement | null;
+    if (target?.closest('tr.clickable, .selection-bar, .cdk-overlay-container')) return;
+    this.selectedAssessment = null;
+  }
+
   selectRow(a: Assessment) {
     this.selectedAssessment = this.selectedAssessment?.id === a.id ? null : a;
+    this.success = '';
   }
 
   isSelected(a: Assessment): boolean {
@@ -102,25 +142,42 @@ export class Manage implements AfterViewInit {
     event.stopPropagation();
 
     const dialogRef = this.dialog.open(EditAssessmentDialog, {
-      data: a
+      width: '720px',
+      maxWidth: '95vw',
+      disableClose: true,
+      data: a, // the whole row, so the popup can fill itself straight away
     });
 
-    dialogRef.afterClosed().subscribe((updated: Assessment | undefined) => {
+    dialogRef.afterClosed().subscribe(async (updated: boolean | undefined) => {
       if (updated) {
-        const index = this.assessments.findIndex(x => x.id === updated.id);
-        if (index > -1) {
-          this.assessments[index] = updated;
-          this.dataSource.data = [...this.assessments];
-        }
+        this.success = 'Assessment updated successfully';
+        await this.loadAssessments();
       }
       this.selectedAssessment = null;
+      this.cdr.markForCheck();
     });
   }
 
-  deleteAssessment(a: Assessment, event: Event) {
+  async deleteAssessment(a: Assessment, event: Event) {
     event.stopPropagation();
-    this.assessments = this.assessments.filter(x => x.id !== a.id);
-    this.dataSource.data = this.assessments;
-    this.selectedAssessment = null;
+    if (!confirm(`Delete "${a.title}"?`)) return;
+
+    this.error = '';
+    this.success = '';
+    try {
+      const response = await fetch(`${this.base}/${this.endPoint}/${a.id}`, { method: 'DELETE' });
+
+      if (response.ok) {
+        this.success = 'Assessment deleted successfully';
+        this.selectedAssessment = null;
+        await this.loadAssessments();
+      } else {
+        this.error = 'Could not delete assessment';
+      }
+    } catch (e) {
+      this.error = 'Cannot reach the server';
+    } finally {
+      this.cdr.markForCheck();
+    }
   }
 }

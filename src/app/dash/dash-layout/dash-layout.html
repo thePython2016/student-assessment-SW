@@ -112,7 +112,7 @@
   <a mat-list-item routerLink="question/ai-generate" routerLinkActive="active-link" class="submenu-item">
     <mat-icon>auto_awesome</mat-icon> <span class="item-label">AI Generate Questions</span>
   </a>
-  <a mat-list-item routerLink="question/list" routerLinkActive="active-link" class="submenu-item">
+  <a mat-list-item routerLink="question/allquestions" routerLinkActive="active-link" class="submenu-item">
     <mat-icon>format_list_bulleted</mat-icon> <span class="item-label">All Questions</span>
   </a>
   <a mat-list-item routerLink="question/manage" routerLinkActive="active-link" class="submenu-item">
@@ -159,45 +159,33 @@
    ├ At-Risk Students
    └ Item Analysis -->
 <!-- Recommendation block -->
-     <a mat-list-item (click)="togglePerformanceMenu()" class="expandable-item"
-   [matTooltip]="sidebarCollapsed ? 'Question Bank' : ''" matTooltipPosition="right">
-  <mat-icon>quiz</mat-icon>
-  <span class="item-label">Performance Analysis</span>
+   <!-- Performace Analytics  -->
+<a mat-list-item (click)="togglePerformanceMenu()" class="expandable-item"
+   [matTooltip]="sidebarCollapsed ? 'Performance Analytics' : ''" matTooltipPosition="right">
+  <mat-icon>insights</mat-icon>
+  <span class="item-label">Performance Analytics</span>
   <mat-icon class="chevron" [class.rotated]="performanceMenuOpen" *ngIf="!sidebarCollapsed">expand_more</mat-icon>
 </a>
 
 <div class="submenu" [class.open]="performanceMenuOpen && !sidebarCollapsed">
-  <a mat-list-item routerLink="performance-department" routerLinkActive="active-link" class="submenu-item">
-    <mat-icon>add_circle</mat-icon> <span class="item-label">Department Comparison</span>
+
+   <a mat-list-item routerLink="student/performance" routerLinkActive="active-link" class="submenu-item">
+    <mat-icon>person_search</mat-icon> <span class="item-label">Student Performance</span>
   </a>
-  <a mat-list-item routerLink="course-analytics" routerLinkActive="active-link" class="submenu-item">
-    <mat-icon>upload_file</mat-icon> <span class="item-label">Course Analytics</span>
+  
+  <a mat-list-item routerLink="student/general-analytics" routerLinkActive="active-link" class="submenu-item">
+    <mat-icon>bar_chart</mat-icon> <span class="item-label">Student Prediction</span>
   </a>
-  <a mat-list-item routerLink="instructor-analytics" routerLinkActive="active-link" class="submenu-item">
-    <mat-icon>auto_awesome</mat-icon> <span class="item-label">Instructor Analytics</span>
-  </a>
-  <a mat-list-item routerLink="at-risk-student" routerLinkActive="active-link" class="submenu-item">
-    <mat-icon>format_list_bulleted</mat-icon> <span class="item-label">At-Risk Students</span>
-  </a>
-  <a mat-list-item routerLink="item-analytics" routerLinkActive="active-link" class="submenu-item">
-    <mat-icon>edit_note</mat-icon> <span class="item-label">Item Analytics</span>
-  </a>
+
+ 
+
+  <!-- <a mat-list-item routerLink="student/prediction" routerLinkActive="active-link" class="submenu-item">
+    <mat-icon>online_prediction</mat-icon> <span class="item-label">Performance Prediction</span>
+  </a> -->
 </div>
-      <a mat-list-item routerLink="performance-prediction" routerLinkActive="active-link"
-         (click)="onMenuItemClick()"
-         [matTooltip]="sidebarCollapsed ? 'Performance Prediction' : ''" matTooltipPosition="right">
-        <mat-icon>trending_up</mat-icon> <span class="item-label">Performance Prediction</span>
-      </a>
-      <a mat-list-item routerLink="user" routerLinkActive="active-link"
-         (click)="onMenuItemClick()"
-         [matTooltip]="sidebarCollapsed ? 'Users' : ''" matTooltipPosition="right">
-        <mat-icon>manage_accounts</mat-icon> <span class="item-label">Users</span>
-      </a>
-      <a mat-list-item routerLink="analytics" routerLinkActive="active-link"
-         (click)="onMenuItemClick()"
-         [matTooltip]="sidebarCollapsed ? 'Analytics' : ''" matTooltipPosition="right">
-        <mat-icon>bar_chart</mat-icon> <span class="item-label">Analytics</span>
-      </a>
+
+    
+     
 
     </mat-nav-list>
   </mat-sidenav>

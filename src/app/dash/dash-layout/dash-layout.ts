@@ -67,7 +67,7 @@ export class DashLayout {
     if (this.sidebarCollapsed) {
       this.sidebarCollapsed = false;
     }
-    this.questionMenuOpen = !this.questionMenuOpen;
+    this.performanceMenuOpen = !this.performanceMenuOpen;
   }
    toggleInstructorMenu() {
     if (this.sidebarCollapsed) {

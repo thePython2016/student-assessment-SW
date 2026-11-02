@@ -1,0 +1,88 @@
+:host {
+  --side: #d4700f;
+  --green: #17896b;
+  --amber: #c98a00;
+  --warn: #b3261e;
+  --line: #e8dccf;
+  --mute: #7a6a5b;
+  display: block;
+}
+
+@media (prefers-color-scheme: dark) {
+  :host { --green: #4fd1a8; --amber: #f2b632; --warn: #ff8a80; --line: #3d3027; --mute: #b5a393; }
+}
+
+/* Same building blocks as the Student List page */
+.page-header {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+.table-card { margin-bottom: 16px; }
+.header-divider { margin: 12px 0; }
+.table-toolbar { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-bottom: 8px; }
+.student-field { width: 300px; max-width: 100%; }
+.table-container { overflow-x: auto; }
+.student-table { width: 100%; }
+
+.error-msg { color: var(--warn); margin: 0 0 12px; }
+.info-msg { color: var(--mute); margin: 0 0 12px; font-size: 13px; }
+.no-data { text-align: center; padding: 24px; color: var(--mute); }
+.muted { color: var(--mute); font-size: 13px; }
+
+/* Profile and summary */
+.profile { margin-bottom: 14px; }
+.profile h2 { margin: 0; font-size: 20px; font-weight: 600; }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 16px; }
+.stat { border: 1px solid var(--line); border-left: 4px solid var(--side); border-radius: 12px; padding: 14px 16px; }
+.stat span { display: block; color: var(--mute); font-size: 12px; margin-bottom: 4px; }
+.stat b { font-size: 22px; font-weight: 600; margin-right: 6px; }
+.stat b small { font-size: 13px; color: var(--mute); font-weight: 400; }
+.stat .badge { display: inline-block; margin: 0; }
+
+/* Panels */
+.charts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.panel { border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; min-width: 0; }
+.panel.wide { grid-column: 1 / -1; }
+.panel h3 { font-size: 15px; font-weight: 600; margin: 0 0 14px; }
+.panel ul { margin: 0; padding-left: 18px; }
+.panel li { margin-bottom: 6px; }
+
+/* Trend */
+.trend { width: 100%; height: auto; }
+.grid-line { stroke: var(--line); stroke-width: 1; stroke-dasharray: 4 4; }
+.line { fill: none; stroke-width: 3; stroke-linejoin: round; stroke-linecap: round; }
+.student-line { stroke: var(--side); }
+.class-line { stroke: var(--mute); stroke-dasharray: 6 5; stroke-width: 2; }
+.xlabels { display: flex; justify-content: space-between; color: var(--mute); font-size: 12px; margin-top: 4px; }
+.legend { display: flex; gap: 16px; flex-wrap: wrap; margin-top: 10px; font-size: 12px; color: var(--mute); }
+.dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; }
+.dot.me { background: var(--side); }
+.dot.cls { background: var(--mute); }
+
+/* Topic bars */
+.hbar { display: grid; grid-template-columns: 130px 1fr 44px; gap: 10px; align-items: center; margin-bottom: 10px; }
+.lbl { font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.track { height: 12px; background: var(--line); border-radius: 99px; overflow: hidden; }
+.fill { height: 100%; border-radius: 99px; }
+.fill.strong { background: var(--green); }
+.fill.ok { background: var(--amber); }
+.fill.weak { background: var(--warn); }
+.val { text-align: right; font-weight: 500; font-size: 13px; }
+.tag { display: inline-block; padding: 2px 8px; margin: 2px 4px 2px 0; border-radius: 99px; font-size: 11px; border: 1px solid var(--line); }
+.tag.good { border-color: var(--green); color: var(--green); }
+.tag.bad { border-color: var(--warn); color: var(--warn); }
+
+/* Badges */
+.badge { display: inline-block; padding: 3px 10px; border-radius: 99px; font-size: 12px; font-weight: 500; color: #fff; }
+.badge.high, .badge.failed { background: var(--warn); }
+.badge.medium, .badge.missed { background: var(--amber); }
+.badge.low, .badge.passed { background: var(--green); }
+
+@media (max-width: 900px) {
+  .charts { grid-template-columns: 1fr; }
+  .hbar { grid-template-columns: 100px 1fr 40px; }
+  .student-field { width: 100%; }
+}

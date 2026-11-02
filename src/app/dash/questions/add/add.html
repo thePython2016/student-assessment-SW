@@ -1,1 +1,68 @@
-<p>add works!</p>
+<div class="top-bar">
+  <button mat-flat-button class="green-btn" type="submit" form="addForm" [disabled]="saving">
+    <mat-icon>add</mat-icon>
+    {{ saving ? 'Saving...' : 'Add Question' }}
+  </button>
+</div>
+
+<div class="card">
+  <div class="card-head">
+    <h2>Add New Question</h2>
+    <p>Fill in the question's details below</p>
+  </div>
+
+  <form id="addForm" class="card-body" #f="ngForm" (ngSubmit)="save(f)" novalidate>
+    <mat-form-field appearance="outline" class="full">
+      <mat-label>Course</mat-label>
+      <mat-select name="courseId" [(ngModel)]="model.courseId" required #course="ngModel">
+        @for (c of courses; track c.id) { <mat-option [value]="c.id">{{ c.name }}</mat-option> }
+      </mat-select>
+      @if (course.invalid) { <mat-error>Select a course.</mat-error> }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full">
+      <mat-label>Question</mat-label>
+      <textarea matInput name="text" [(ngModel)]="model.text" rows="4" required minlength="3" #text="ngModel"></textarea>
+      @if (text.invalid) { <mat-error>Enter the question (at least 3 characters).</mat-error> }
+    </mat-form-field>
+
+    <div class="row">
+      <mat-form-field appearance="outline">
+        <mat-label>Topic</mat-label>
+        <input matInput name="topic" [(ngModel)]="model.topic" required #topic="ngModel" />
+        @if (topic.invalid) { <mat-error>Enter a topic.</mat-error> }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Type</mat-label>
+        <mat-select name="type" [(ngModel)]="model.type" required>
+          @for (t of types; track t) { <mat-option [value]="t">{{ t }}</mat-option> }
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <div class="row">
+      <mat-form-field appearance="outline">
+        <mat-label>Difficulty</mat-label>
+        <mat-select name="difficulty" [(ngModel)]="model.difficulty" required>
+          @for (l of levels; track l) { <mat-option [value]="l">{{ l }}</mat-option> }
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Marks</mat-label>
+        <input matInput type="number" name="marks" [(ngModel)]="model.marks" min="1" required #marks="ngModel" />
+        @if (marks.invalid) { <mat-error>Marks must be at least 1.</mat-error> }
+      </mat-form-field>
+    </div>
+
+    <div class="actions">
+      <button mat-stroked-button type="button" (click)="clear(f)">Clear</button>
+      <button mat-flat-button class="green-btn" type="submit" [disabled]="saving">
+        {{ saving ? 'Saving...' : 'Save Question' }}
+      </button>
+    </div>
+  </form>
+</div>
+
+@if (message) { <div class="msg" [class.bad]="isError" role="status">{{ message }}</div> }

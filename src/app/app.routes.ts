@@ -11,9 +11,9 @@ import { Analytics } from './dash/analytics/analytics';
 import { Add } from './dash/student/add/add';
 import { View } from './dash/student/view/view';
 import { Manage } from './dash/student/manage/manage';
-import { Questions } from './dash/questions/questions';
+// import { Questions } from './dash/questions/questions';
 import { Recommendations } from './dash/recommendations/recommendations';
-import { Performanceprediction } from './dash/performanceprediction/performanceprediction';
+// import { Performanceprediction } from './dash/performanceprediction/performanceprediction';
 import { Add as CourseAdd } from './dash/course/add/add';
 import { View as CourseView } from './dash/course/view/view';
 import { Manage as CourseManage } from './dash/course/manage/manage';
@@ -22,7 +22,7 @@ import { View as AssessmentView } from './dash/assessment/view/view';
 import { Manage as AssessmentManage } from './dash/assessment/manage/manage';
 import { StudentDashboard } from './studentcomponent/studentdashboard/student-dashboard';
 import {Assessment as StudentAssessment} from './studentcomponent/assessment/assessment';
-import {Performance as StudentPerformance} from './studentcomponent/performance/performance';
+// import {Performance as StudentPerformance} from './studentcomponent/performance/performance';
 import {Insights as StudentInsights} from './studentcomponent/insights/insights';
 import {Notification as StudentNotification} from './studentcomponent/notification/notification';
 import {Layout} from './studentcomponent/layout/layout';
@@ -30,6 +30,7 @@ import {Resources} from './studentcomponent/resources/resources';
 import {Assignment} from './studentcomponent/assignment/assignment';
 import {Insights} from './studentcomponent/insights/insights';
 import {View as DepartmentList} from './dash/department/view/view';
+import {Allquestions} from './dash/questions/allquestions/allquestions'
 import {Add as AddDept} from './dash/department/add/add';
 import {Manage as ManageDept} from './dash/department/manage/manage';
 import {Add as AddInstructor} from './dash/instructor/add/add';
@@ -40,6 +41,9 @@ import {Manage as ManageInstructor} from './dash/instructor/manage/manage';
 import {Add as QuestionAdd} from './dash/questions/add/add';
 import {Import as QuestionImport} from './dash/questions/import/import';
 import {AIGeneration as AIGenerate} from './dash/questions/ai-generation/ai-generation';
+import {GeneralPrediction} from './dash/performance-analytics/general-prediction/general-prediction'
+import {PerformancePrediction} from './dash/performance-analytics/performance-prediction/performance-prediction'
+import {StudentPerformance} from './dash/performance-analytics/student-performance/student-performance'
 import {authGuard} from './components/auth-guard';
 
 
@@ -95,11 +99,15 @@ export const routes: Routes = [
        { path: 'question/create', component: QuestionAdd,canActivate:[authGuard] },
        { path: 'question/import', component: QuestionImport,canActivate:[authGuard] },
        { path: 'question/ai-generate', component: AIGenerate,canActivate:[authGuard] },
+       { path: 'question/allquestions', component: Allquestions,canActivate:[authGuard] },
+       { path: 'student/general-analytics', component: GeneralPrediction,canActivate:[authGuard] },
+       { path: 'student/performance', component: StudentPerformance,canActivate:[authGuard] },
+       { path: 'student/prediction', component: PerformancePrediction,canActivate:[authGuard] },
       { path: 'assessment/view', component: AssessmentView },
       { path: 'assessment/manage', component: AssessmentManage },
-      { path: 'questions', component: Questions },
+      // { path: 'questions', component: Questions },
       { path: 'recommendations', component: Recommendations },
-      { path: 'performance-prediction', component: Performanceprediction },
+      // { path: 'performance-prediction', component: Performanceprediction },
       { path: '', redirectTo: 'dashboard', pathMatch: 'full' }
     
     ]

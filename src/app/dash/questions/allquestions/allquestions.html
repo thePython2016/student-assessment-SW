@@ -1,0 +1,98 @@
+<div class="top-bar">
+  <a mat-flat-button class="green-btn" routerLink="/add-question">
+    <mat-icon>add</mat-icon>
+    Add Question
+  </a>
+</div>
+
+<mat-card class="card">
+  <div class="card-head">
+    <h2>Question Bank</h2>
+    <p>Select a question, then edit or delete it</p>
+  </div>
+  <mat-divider></mat-divider>
+
+  <div class="card-body">
+    <div class="tools">
+      <mat-form-field appearance="outline" class="search">
+        <mat-label>Search</mat-label>
+        <input matInput (keyup)="applyFilter($event)" placeholder="Search questions, topics, courses" />
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="size">
+        <mat-label>Rows per page</mat-label>
+        <mat-select [(ngModel)]="selectedPageSize" (selectionChange)="onPageSizeChange($event.value)">
+          @for (s of pageSizeOptions; track s) { <mat-option [value]="s">{{ s }}</mat-option> }
+        </mat-select>
+      </mat-form-field>
+
+    </div>
+
+    @if (selectedQuestion) {
+      <div class="selection-bar">
+        <span class="sel-text">Selected: <b>{{ selectedQuestion.text }}</b></span>
+        <div class="sel-actions">
+          <button mat-stroked-button class="pill" type="button" (click)="openEdit()">
+            <mat-icon>edit</mat-icon> Update
+          </button>
+          <button mat-stroked-button class="pill" type="button" (click)="deleteQuestion()">
+            <mat-icon>delete</mat-icon> Delete
+          </button>
+        </div>
+      </div>
+    }
+
+    @if (success) { <div class="msg ok" role="status">{{ success }}</div> }
+    @if (error) { <div class="msg bad" role="alert">{{ error }}</div> }
+
+    <div class="table-wrap">
+      <table mat-table [dataSource]="dataSource" matSort>
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>ID</th>
+          <td mat-cell *matCellDef="let q">{{ q.id }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="text">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Question</th>
+          <td mat-cell *matCellDef="let q" class="text-cell" [title]="q.text">{{ q.text }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="course_name">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Course</th>
+          <td mat-cell *matCellDef="let q">{{ q.course_name }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="topic">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Topic</th>
+          <td mat-cell *matCellDef="let q">{{ q.topic }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="type">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Type</th>
+          <td mat-cell *matCellDef="let q">{{ q.type }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="difficulty">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Difficulty</th>
+          <td mat-cell *matCellDef="let q"><span [class]="'tag ' + q.difficulty">{{ q.difficulty }}</span></td>
+        </ng-container>
+
+        <ng-container matColumnDef="marks">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>Marks</th>
+          <td mat-cell *matCellDef="let q">{{ q.marks }}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"
+            class="clickable" [class.selected]="isSelected(row)" (click)="selectRow(row)"></tr>
+
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell empty" [attr.colspan]="displayedColumns.length">No questions found.</td>
+        </tr>
+      </table>
+    </div>
+
+    <mat-paginator [pageSize]="selectedPageSize" [pageSizeOptions]="pageSizeOptions" showFirstLastButtons></mat-paginator>
+  </div>
+</mat-card>

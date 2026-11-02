@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Performanceprediction } from './performanceprediction';
+import { PerformancePrediction } from './performance-prediction';
 
-describe('Performanceprediction', () => {
-  let component: Performanceprediction;
-  let fixture: ComponentFixture<Performanceprediction>;
+describe('PerformancePrediction', () => {
+  let component: PerformancePrediction;
+  let fixture: ComponentFixture<PerformancePrediction>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [Performanceprediction],
+      imports: [PerformancePrediction],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(Performanceprediction);
+    fixture = TestBed.createComponent(PerformancePrediction);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });
