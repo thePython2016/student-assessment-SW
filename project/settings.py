@@ -1,4 +1,3 @@
-
 """
 Django settings for project.
 
@@ -46,6 +45,17 @@ render_hostname = os.getenv('RENDER_EXTERNAL_HOSTNAME')
 if render_hostname and render_hostname not in ALLOWED_HOSTS:
     ALLOWED_HOSTS.append(render_hostname)
 
+# Needed for Django admin / CSRF-protected requests over HTTPS
+CSRF_TRUSTED_ORIGINS = [
+    'https://student-assessment-alis.onrender.com',
+    'https://student-assessment-zeta.vercel.app',
+]
+
+if render_hostname:
+    render_origin = f'https://{render_hostname}'
+    if render_origin not in CSRF_TRUSTED_ORIGINS:
+        CSRF_TRUSTED_ORIGINS.append(render_origin)
+
 
 # HTTPS security settings
 
@@ -60,7 +70,9 @@ SESSION_COOKIE_SECURE = not DEBUG
 
 CSRF_COOKIE_SECURE = not DEBUG
 
-SECURE_HSTS_SECONDS = 31536000 if not DEBUG else 0
+# Start low; raise to 31536000 (1 year) once you're sure HTTPS is permanent.
+# Override with the HSTS_SECONDS environment variable on Render.
+SECURE_HSTS_SECONDS = int(os.getenv('HSTS_SECONDS', '3600')) if not DEBUG else 0
 
 SECURE_HSTS_INCLUDE_SUBDOMAINS = False
 
@@ -164,6 +176,10 @@ WSGI_APPLICATION = 'project.wsgi.application'
 # --------------------------------------------------
 # DATABASE CONFIGURATION
 # --------------------------------------------------
+# On Render, use the Supabase *pooler* connection details (IPv4 compatible):
+#   DB_HOST = aws-0-<region>.pooler.supabase.com
+#   DB_USER = postgres.<project-ref>
+#   DB_PORT = 5432 (session pooler) or 6543 (transaction pooler)
 
 DATABASES = {
     'default': {
@@ -180,6 +196,14 @@ DATABASES = {
         'PORT': os.getenv('DB_PORT'),
 
         'CONN_MAX_AGE': 0,
+
+        'OPTIONS': {
+            'sslmode': 'require',
+        },
+
+        # Required for Supabase transaction pooler (port 6543);
+        # harmless with the session pooler.
+        'DISABLE_SERVER_SIDE_CURSORS': True,
     }
 }
 
@@ -239,6 +263,8 @@ SIMPLE_JWT = {
 # --------------------------------------------------
 # PASSWORD VALIDATION
 # --------------------------------------------------
+# Make sure account/validators.py defines CommonPasswordValidator,
+# otherwise Django raises an import error when validating passwords.
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -274,12 +300,19 @@ USE_TZ = True
 
 
 # --------------------------------------------------
-# STATIC FILES CONFIGURATION
+# STATIC AND MEDIA FILES CONFIGURATION
 # --------------------------------------------------
 
 STATIC_URL = 'static/'
 
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+
+# NOTE: Render's disk is ephemeral. Files uploaded to MEDIA_ROOT are lost on
+# every deploy/restart. For persistent uploads use Supabase Storage, S3,
+# or a Render persistent disk.
+MEDIA_URL = '/media/'
+
+MEDIA_ROOT = BASE_DIR / 'media'
 
 STORAGES = {
     'default': {
