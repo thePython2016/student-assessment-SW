@@ -69,7 +69,7 @@ export class Resources implements OnInit {
   private cdr = inject(ChangeDetectorRef);
   private snack = inject(MatSnackBar);
 
-  private api = 'http://127.0.0.1:8000';
+  private api = 'https://student-assessment-alis.onrender.com';
 
   searchQuery = '';
   categories: string[] = ['All'];

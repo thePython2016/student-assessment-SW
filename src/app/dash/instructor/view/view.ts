@@ -45,7 +45,7 @@ interface Instructor {
 export class View implements OnInit, AfterViewInit {
   private cdr = inject(ChangeDetectorRef);
 
-  base = 'http://127.0.0.1:8000';
+  base = 'https://student-assessment-alis.onrender.com';
   endPoint = 'instructor';
 
   displayedColumns: string[] = [

@@ -30,7 +30,7 @@ export class ForgotPassword {
   error = '';
   successMessage = '';
 
-  private base = 'http://127.0.0.1:8000';
+  private base = 'https://student-assessment-alis.onrender.com';
 
   constructor(private router: Router) {}
 

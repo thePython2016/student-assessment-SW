@@ -26,7 +26,7 @@ import { MatDividerModule } from '@angular/material/divider';
 export class Add implements OnInit {
   private cdr = inject(ChangeDetectorRef);
 
-  base = 'http://127.0.0.1:8000';
+  base = 'https://student-assessment-alis.onrender.com';
 
   firstName = '';
   lastName = '';

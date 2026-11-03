@@ -1,0 +1,1 @@
+export const environment = { apiUrl: 'https://student-assessment-alis.onrender.com' };

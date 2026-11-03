@@ -40,7 +40,7 @@ export class Manage implements OnInit, AfterViewInit {
   private cdr = inject(ChangeDetectorRef);
   private dialog = inject(MatDialog);
 
-  base = 'http://127.0.0.1:8000';
+  base = 'https://student-assessment-alis.onrender.com';
   endPoint = 'students';
 
   displayedColumns = ['id', 'first_name', 'last_name', 'email', 'phone', 'gender', 'course'];

@@ -39,7 +39,7 @@ export class Insights implements OnInit {
   private router = inject(Router);
   private cdr = inject(ChangeDetectorRef);
 
-  private api = 'http://127.0.0.1:8000';
+  private api = 'https://student-assessment-alis.onrender.com';
 
   loading = true;
   error = '';

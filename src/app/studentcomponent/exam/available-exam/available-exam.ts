@@ -44,7 +44,7 @@ export class AvailableExam implements OnInit {
   private router = inject(Router);
   private cdr = inject(ChangeDetectorRef);
 
-  base = 'http://127.0.0.1:8000';
+  base = 'https://student-assessment-alis.onrender.com';
   endPoint = 'assessments/available'; // no trailing slash, matches the Django router
 
   // Timezone used to display dates. Defaults to each student's own browser zone.

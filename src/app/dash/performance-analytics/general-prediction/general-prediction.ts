@@ -49,7 +49,7 @@ interface StudentRisk {
 export class GeneralPrediction implements OnInit, AfterViewInit {
   private http = inject(HttpClient);
   private cdr = inject(ChangeDetectorRef);
-  private api = 'http://127.0.0.1:8000';   // same base as your other pages
+  private api = 'https://student-assessment-alis.onrender.com';   // same base as your other pages
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;

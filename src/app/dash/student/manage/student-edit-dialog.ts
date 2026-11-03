@@ -133,7 +133,7 @@ export class StudentEditDialog implements OnInit {
   private data = inject<{ id: number }>(MAT_DIALOG_DATA);
   private cdr = inject(ChangeDetectorRef);
 
-  base = 'http://127.0.0.1:8000';
+  base = 'https://student-assessment-alis.onrender.com';
   endPoint = 'students';
 
   genders = ['Male', 'Female', 'Other'];
