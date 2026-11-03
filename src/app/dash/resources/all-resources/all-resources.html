@@ -1,0 +1,40 @@
+<div class="card">
+  <div class="card-head">
+    <h2>All Resources</h2>
+    <p>{{ resources.length }} resource(s) available</p>
+  </div>
+
+  @if (loading) { <mat-progress-bar mode="indeterminate"></mat-progress-bar> }
+
+  @if (error) { <div class="msg bad" role="alert">{{ error }}</div> }
+
+  @if (!loading && !error && resources.length === 0) {
+    <p class="empty">No resources uploaded yet.</p>
+  }
+
+  <ul class="list">
+    @for (r of resources; track r.id) {
+      <li class="item">
+        <div class="badge">{{ typeLabel(r) }}</div>
+
+        <div class="info">
+          <h3>{{ r.title }}</h3>
+          @if (r.description) { <p class="desc">{{ r.description }}</p> }
+          <p class="meta">
+            {{ r.course_name || 'General' }}
+            · {{ r.filename }}
+            @if (r.size) { · {{ sizeText(r.size) }} }
+            @if (r.created_at) { · {{ r.created_at | date: 'mediumDate' }} }
+          </p>
+        </div>
+
+        <button mat-stroked-button type="button" class="dl-btn"
+                (click)="$event.preventDefault(); download(r)"
+                [disabled]="downloadingId === r.id">
+          <mat-icon [fontIcon]="downloadingId === r.id ? 'hourglass_top' : 'download'"></mat-icon>
+          Download
+        </button>
+      </li>
+    }
+  </ul>
+</div>

@@ -7,53 +7,63 @@
     </div>
   </header>
 
-  <div class="summary-card">
-    <div class="summary-top">
-      <span class="risk-chip" [ngClass]="riskLevel">{{ riskLabel() }}</span>
-      <span class="comparison-text">{{ courseAverageComparison }}</span>
-    </div>
-    <p class="summary-text">{{ summary }}</p>
-  </div>
+  <p class="state-text" *ngIf="loading">Analysing your results…</p>
+  <p class="state-text error-text" *ngIf="error" role="alert">{{ error }}</p>
+  <p class="state-text" *ngIf="!loading && !error && !hasData">
+    No released results yet. Insights appear after you submit an exam and the results are released.
+  </p>
 
-  <div class="section">
-    <p class="section-title">Recommended focus areas</p>
-    <div class="recommendation-grid">
-      <div class="recommendation-card" *ngFor="let rec of topicRecommendations">
-        <div class="rec-header">
-          <div>
-            <p class="rec-topic">{{ rec.topic }}</p>
-            <p class="rec-course">{{ rec.courseName }}</p>
+  <ng-container *ngIf="!loading && !error && hasData">
+
+    <div class="summary-card">
+      <div class="summary-top">
+        <span class="risk-chip" [ngClass]="riskLevel">{{ riskLabel() }}</span>
+        <span class="comparison-text" *ngIf="courseAverageComparison">{{ courseAverageComparison }}</span>
+      </div>
+      <p class="summary-text">{{ summary }}</p>
+    </div>
+
+    <div class="section" *ngIf="topicRecommendations.length">
+      <p class="section-title">Recommended focus areas</p>
+      <div class="recommendation-grid">
+        <div class="recommendation-card" *ngFor="let rec of topicRecommendations">
+          <div class="rec-header">
+            <div>
+              <p class="rec-topic">{{ rec.topic }}</p>
+              <p class="rec-course">{{ rec.courseName }}</p>
+            </div>
+            <span class="rec-mastery" *ngIf="rec.masteryPercent > 0" [style.color]="masteryColor(rec.masteryPercent)">
+  {{ rec.masteryPercent }}%
+</span>
           </div>
-          <span class="rec-mastery" [style.color]="masteryColor(rec.masteryPercent)">
-            {{ rec.masteryPercent }}%
-          </span>
+          <p class="rec-suggestion">{{ rec.suggestion }}</p>
+          <button mat-stroked-button color="primary" type="button" (click)="goToResource(rec.resourceLink)">
+            Open study materials
+          </button>
         </div>
-        <p class="rec-suggestion">{{ rec.suggestion }}</p>
-        <button mat-stroked-button color="primary" (click)="goToResource(rec.resourceLink)">
-          Open study materials
-        </button>
       </div>
     </div>
-  </div>
 
-  <div class="section">
-    <p class="section-title">Suggested next steps</p>
-    <ul class="next-steps-list">
-      <li *ngFor="let step of nextSteps">
-        <mat-icon>{{ step.icon }}</mat-icon>
-        <span>{{ step.text }}</span>
-      </li>
-    </ul>
-  </div>
+    <!-- <div class="section" *ngIf="nextSteps.length">
+      <p class="section-title">Suggested next steps</p>
+      <ul class="next-steps-list">
+        <li *ngFor="let step of nextSteps">
+          <mat-icon>{{ step.icon }}</mat-icon>
+          <span>{{ step.text }}</span>
+        </li>
+      </ul>
+    </div> -->
 
-  <div class="section">
-    <p class="section-title">Study pattern observations</p>
-    <ul class="pattern-list">
-      <li *ngFor="let pattern of studyPatterns">
-        <mat-icon>{{ pattern.icon }}</mat-icon>
-        <span>{{ pattern.text }}</span>
-      </li>
-    </ul>
-  </div>
+    <div class="section" *ngIf="studyPatterns.length">
+      <p class="section-title">Study pattern observations</p>
+      <ul class="pattern-list">
+        <li *ngFor="let pattern of studyPatterns">
+          <mat-icon>{{ pattern.icon }}</mat-icon>
+          <span>{{ pattern.text }}</span>
+        </li>
+      </ul>
+    </div>
+
+  </ng-container>
 
 </div>

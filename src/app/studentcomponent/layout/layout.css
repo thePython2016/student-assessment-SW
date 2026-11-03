@@ -170,3 +170,6 @@ hr {
 .nav-bottom{
   margin-top:30px !important;
 }
+.nav-item.logout {
+  cursor: pointer;
+}

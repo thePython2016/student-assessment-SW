@@ -1,0 +1,16 @@
+/* Place at: src/app/studentcomponent/exam/exam-result/exam-result.css */
+
+.result {
+  max-width: 480px; margin: 32px auto; padding: 24px; text-align: center;
+  background: #fff; border: 1px solid #e0e0e0; border-radius: 12px;
+}
+.score { font-size: 2.5rem; font-weight: 700; }
+.percent { font-size: 1.2rem; margin: 4px 0 12px; }
+
+.badge { display: inline-block; padding: 4px 16px; border-radius: 16px; font-weight: 600; }
+.badge.pass { background: #e8f5e9; color: #2e7d32; }
+.badge.fail { background: #ffebee; color: #c62828; }
+
+.notice { margin: 16px 0; }
+.muted { color: #757575; }
+.error { color: #c62828; }

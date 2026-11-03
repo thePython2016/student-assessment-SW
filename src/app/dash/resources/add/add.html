@@ -1,0 +1,63 @@
+<div class="card">
+  <div class="card-head">
+    <h2>Upload Resource</h2>
+    <p>Share study material such as PDF or Word files with students</p>
+  </div>
+<hr>
+  <form class="card-body" #f="ngForm" (ngSubmit)="upload(f)" novalidate>
+    <mat-form-field appearance="outline" class="full">
+      <mat-label>Course</mat-label>
+      <mat-select name="courseId" [(ngModel)]="model.courseId">
+        <mat-option [value]="0">General (no course)</mat-option>
+        @for (c of courses; track c.id) { <mat-option [value]="c.id">{{ c.name }}</mat-option> }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full">
+      <mat-label>Title</mat-label>
+      <input matInput name="title" [(ngModel)]="model.title" required minlength="3" #title="ngModel" />
+      @if (title.invalid) { <mat-error>Enter a title (at least 3 characters).</mat-error> }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full">
+      <mat-label>Description (optional)</mat-label>
+      <textarea matInput name="description" [(ngModel)]="model.description" rows="3"></textarea>
+    </mat-form-field>
+
+    <div class="file-box">
+      <input #fileInput type="file" hidden [accept]="accept" (change)="onFile($event)" />
+      <button mat-stroked-button type="button" (click)="fileInput.click()" [disabled]="uploading">
+        <mat-icon>attach_file</mat-icon>
+        {{ file ? 'Change file' : 'Choose file' }}
+      </button>
+
+      @if (file) {
+        <span class="file-name">{{ file.name }} · {{ sizeText(file.size) }}</span>
+        <button mat-icon-button type="button" class="x-btn"
+                (click)="uploading ? cancelUpload() : removeFile()"
+                [attr.aria-label]="uploading ? 'Cancel upload' : 'Remove file'"
+                [title]="uploading ? 'Cancel upload' : 'Remove file'">
+          <mat-icon>close</mat-icon>
+        </button>
+      } @else {
+        <span class="hint">PDF, Word, PowerPoint, Excel or text. Up to {{ maxMb }} MB.</span>
+      }
+    </div>
+    @if (fileError) { <p class="field-error">{{ fileError }}</p> }
+
+    @if (uploading) {
+      <mat-progress-bar mode="determinate" [value]="progress"></mat-progress-bar>
+      <p class="hint">Uploading... {{ progress }}%</p>
+    }
+
+    <div class="actions">
+      <button mat-stroked-button type="button" (click)="clear(f)" [disabled]="uploading">Clear</button>
+      <button mat-flat-button class="green-btn" type="submit" [disabled]="uploading">
+        <mat-icon>cloud_upload</mat-icon>
+        {{ uploading ? 'Uploading...' : 'Upload' }}
+      </button>
+    </div>
+  </form>
+</div>
+
+@if (message) { <div class="msg" [class.bad]="isError" role="status">{{ message }}</div> }

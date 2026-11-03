@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { MatIconModule } from '@angular/material/icon';
@@ -22,4 +23,11 @@ export class Layout {
       this.isCollapsed = false;
     }
   }
+constructor(private router: Router) {}
+
+logout() {
+  sessionStorage.clear();
+  this.router.navigate(['/']);
+}
+
 }

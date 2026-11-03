@@ -20,8 +20,12 @@
     </mat-chip-option>
   </mat-chip-listbox>
 
+  <mat-progress-bar *ngIf="loading" mode="indeterminate"></mat-progress-bar>
+
+  <p class="empty-state error-text" *ngIf="error" role="alert">{{ error }}</p>
+
   <div class="resource-list">
-    <div class="resource-item" *ngFor="let r of filteredResources">
+    <div class="resource-item" *ngFor="let r of filteredResources; trackBy: trackById">
       <div class="resource-info">
         <div class="resource-icon" [style.background]="r.bg" [style.color]="r.fg">
           <mat-icon>{{ r.icon }}</mat-icon>
@@ -31,13 +35,17 @@
           <p class="resource-meta">{{ r.meta }}</p>
         </div>
       </div>
-      <button mat-stroked-button (click)="openResource(r)">
-        <mat-icon>{{ r.actionIcon }}</mat-icon>
-        {{ r.actionLabel }}
+      <button mat-stroked-button type="button" class="dl-btn"
+              (click)="openResource(r)"
+              [disabled]="downloadingId === r.id">
+        <mat-icon [fontIcon]="downloadingId === r.id ? 'hourglass_top' : 'download'"></mat-icon>
+        Download
       </button>
     </div>
 
-    <p class="empty-state" *ngIf="filteredResources.length === 0">No resources match your search.</p>
+    <p class="empty-state" *ngIf="!loading && !error && filteredResources.length === 0">
+      No resources match your search.
+    </p>
   </div>
 
 </div>

@@ -1,0 +1,27 @@
+<!-- Place at: src/app/studentcomponent/exam/exam-result/exam-result.html -->
+
+<div class="result">
+  @if (result(); as r) {
+    <h1>{{ r.title }}</h1>
+
+    @if (r.score === null) {
+      <p class="notice">Your exam has been submitted. Results are not released yet.</p>
+    } @else {
+      <div class="score">{{ r.score }} / {{ r.totalMarks }}</div>
+      <p class="percent">{{ r.percentage }}%</p>
+      <span class="badge" [class.pass]="r.passed" [class.fail]="!r.passed">
+        {{ r.passed ? 'Passed' : 'Failed' }}
+      </span>
+      <p class="muted">Pass mark: {{ r.passMarks }}</p>
+    }
+
+    <p class="muted">Time spent: {{ time(r.timeSpentSec) }}</p>
+
+    <button mat-flat-button color="primary" type="button" (click)="back()">Back to exams</button>
+  } @else if (error()) {
+    <p class="error">{{ error() }}</p>
+    <button mat-stroked-button type="button" (click)="back()">Back to exams</button>
+  } @else {
+    <p class="muted">Loading result…</p>
+  }
+</div>

@@ -9,6 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatBadgeModule } from '@angular/material/badge';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-dash-layout',
@@ -30,11 +31,14 @@ import { MatTooltipModule } from '@angular/material/tooltip';
   styleUrl: './dash-layout.css'
 })
 export class DashLayout {
+
+  
   email=sessionStorage.getItem("email")
   // userFname=sessionStorage.getItem("fname")
   notificationCount = 3;
 
   studentsMenuOpen = false;
+  resourcesMenuOpen = false;
   coursesMenuOpen = false;
   performanceMenuOpen = false;
   assessmentsMenuOpen = false;
@@ -83,6 +87,12 @@ export class DashLayout {
     this.coursesMenuOpen = !this.coursesMenuOpen;
   }
 
+    toggleResourcesMenu() {
+    if (this.sidebarCollapsed) {
+      this.sidebarCollapsed = false;
+    }
+    this.resourcesMenuOpen = !this.resourcesMenuOpen;
+  }
   toggleAssessmentsMenu() {
     if (this.sidebarCollapsed) {
       this.sidebarCollapsed = false;
@@ -105,7 +115,10 @@ export class DashLayout {
     }
   }
 
-  logout() {
-    console.log('Logging out...');
-  }
+ constructor(private router: Router) {}
+
+logout() {
+  sessionStorage.clear();
+  this.router.navigate(['/']);
+}
 }

@@ -3,13 +3,8 @@
   <div class="topbar">
     <div class="page-title">
       <p class="crumb">Dashboard</p>
-      <p class="date">
-
-        
-      </p>
       <p>Time: {{ currentDate | date:'mediumTime' }} Day: {{ currentDate | date:'EEEE' }}</p>
-<p></p>
-<p>Date: {{ currentDate | date:'dd/MM/yyyy' }}</p>
+      <p>Date: {{ currentDate | date:'dd/MM/yyyy' }}</p>
     </div>
 
     <form class="search-form" (ngSubmit)="onSearch()">
@@ -24,17 +19,17 @@
       <button class="icon-btn" title="Settings"><mat-icon>settings</mat-icon></button>
       <div class="profile-chip">
         <div class="avatar">{{ studentName[0] }}</div>
-        <!-- <div class="avatar" style="width:50px;height:50px">Peter</div> -->
-        <!-- <span>{{ studentName }}</span> -->
       </div>
     </div>
   </div>
 
+  <p *ngIf="error" style="color:#d92d20;margin:0 0 12px">{{ error }}</p>
+
   <div class="banner">
     <div class="banner-text">
       <p class="banner-tag">Academic Year 2026-2027</p>
-      <p class="banner-title">Overall Student Performance Dashboard for Class 10</p>
-      <button mat-raised-button class="banner-btn">Get Access</button>
+      <p class="banner-title">Welcome back, {{ studentName }}</p>
+      <button mat-raised-button class="banner-btn" (click)="load()">{{ loading ? 'Refreshing...' : 'Refresh' }}</button>
     </div>
     <mat-icon class="banner-icon">insights</mat-icon>
   </div>
@@ -56,9 +51,12 @@
       <div class="panel-header">
         <p class="panel-title">Performance Trend</p>
         <div class="panel-tabs">
-          <span class="tab active">Week</span>
-          <span class="tab">Month</span>
-          <span class="tab">Year</span>
+          <span class="tab" [class.active]="range === 'week'" role="button" tabindex="0"
+                (click)="setRange('week')" (keydown.enter)="setRange('week')">Week</span>
+          <span class="tab" [class.active]="range === 'month'" role="button" tabindex="0"
+                (click)="setRange('month')" (keydown.enter)="setRange('month')">Month</span>
+          <span class="tab" [class.active]="range === 'year'" role="button" tabindex="0"
+                (click)="setRange('year')" (keydown.enter)="setRange('year')">Year</span>
         </div>
       </div>
       <div class="chart-wrap">
@@ -78,6 +76,7 @@
             <div class="bar-fill" [style.width.%]="s.score" [style.background]="s.color"></div>
           </div>
         </div>
+        <p *ngIf="!subjectBreakdown.length" class="assessment-meta">No marked exams yet.</p>
       </div>
     </div>
   </div>
@@ -90,33 +89,34 @@
           <p class="assessment-title">{{ a.title }}</p>
           <p class="assessment-meta">{{ a.dueLabel }} · {{ a.durationMinutes }} min</p>
         </div>
-        <button mat-raised-button color="primary">Start</button>
+        <button mat-raised-button color="primary" [disabled]="!a.available" (click)="start(a)">Start</button>
       </div>
+      <p *ngIf="!upcomingAssessments.length" class="assessment-meta">No upcoming assessments.</p>
     </div>
   </div>
 
   <div class="panel table-panel">
     <div class="panel-header">
-      <p class="panel-title">Visualize Your Academic Success</p>
-      <button mat-stroked-button>View all</button>
+      <p class="panel-title">Recent Results</p>
     </div>
     <table class="data-table">
       <thead>
         <tr>
-          <th>Name</th>
-          <th>Student ID</th>
-          <th>Group</th>
-          <th>Mark-sheet</th>
+          <th>Assessment</th>
+          <th>Date</th>
+          <th>Score</th>
           <th>Status</th>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let row of studentRows">
-          <td>{{ row.name }}</td>
-          <td>{{ row.studentId }}</td>
-          <td>{{ row.group }}</td>
-          <td><a class="link">{{ row.markSheet }}</a></td>
+        <tr *ngFor="let row of recentResults">
+          <td>{{ row.title }}</td>
+          <td>{{ row.date }}</td>
+          <td>{{ row.scoreText }}</td>
           <td><span [class]="statusClass(row.status)">{{ row.status }}</span></td>
+        </tr>
+        <tr *ngIf="!recentResults.length">
+          <td colspan="4">You have not taken any exams yet.</td>
         </tr>
       </tbody>
     </table>

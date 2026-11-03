@@ -71,6 +71,25 @@
           <mat-icon>edit</mat-icon> <span class="item-label">Update / Delete</span>
         </a>
       </div>
+      <!-- Resources block -->
+
+        <a mat-list-item (click)="toggleResourcesMenu()" class="expandable-item"
+         [matTooltip]="sidebarCollapsed ? 'Resources' : ''" matTooltipPosition="right">
+        <mat-icon>group</mat-icon>
+        <span class="item-label">Resources</span>
+        <mat-icon class="chevron" [class.rotated]="resourcesMenuOpen" *ngIf="!sidebarCollapsed">expand_more</mat-icon>
+      </a>
+
+      <div class="submenu" [class.open]="resourcesMenuOpen && !sidebarCollapsed">
+        <a mat-list-item routerLink="student/resources" routerLinkActive="active-link" class="submenu-item">
+          <mat-icon>person_add</mat-icon> <span class="item-label">Upload</span>
+        </a>
+        <a mat-list-item routerLink="student/resources-list" routerLinkActive="active-link" class="submenu-item">
+          <mat-icon>visibility</mat-icon> <span class="item-label">Resources List</span>
+        </a>
+        
+      </div>
+
       <!-- Student block -->
       <a mat-list-item (click)="toggleStudentsMenu()" class="expandable-item"
          [matTooltip]="sidebarCollapsed ? 'Students' : ''" matTooltipPosition="right">
@@ -132,15 +151,13 @@
         <a mat-list-item routerLink="assessment/create" routerLinkActive="active-link" class="submenu-item">
           <mat-icon>add_box</mat-icon> <span class="item-label">Create Assessment</span>
         </a>
-        <a mat-list-item routerLink="assessment/view" routerLinkActive="active-link" class="submenu-item">
-          <mat-icon>visibility</mat-icon> <span class="item-label">All Assessments</span>
-        </a>
+        
         
 
           <a mat-list-item routerLink="assessment/manage" routerLinkActive="active-link" class="submenu-item">
-          <mat-icon>edit</mat-icon> <span class="item-label">Update / Deletes</span>
+          <mat-icon>edit</mat-icon> <span class="item-label">All Assessments</span>
         </a>
-        <a mat-list-item routerLink="assessment/manage" routerLinkActive="active-link" class="submenu-item">
+        <a mat-list-item routerLink="#" routerLinkActive="active-link" class="submenu-item">
           <mat-icon>edit</mat-icon> <span class="item-label">Grading & Results </span>
         </a>
         
@@ -226,8 +243,8 @@
           <mat-icon>settings</mat-icon> Settings
         </button>
         <button mat-menu-item (click)="logout()">
-          <mat-icon>logout</mat-icon> Logout
-        </button>
+  <mat-icon>logout</mat-icon> Logout
+</button>
       </mat-menu>
     </mat-toolbar>
 

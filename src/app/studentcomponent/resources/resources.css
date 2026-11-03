@@ -102,3 +102,11 @@
   padding: 16px;
   text-align: center;
 }
+.dl-btn {
+  flex: 0 0 auto;
+  width: 140px;   /* fixed width, so the page doesn't shift on click */
+}
+
+.error-text {
+  color: #b42318;
+}

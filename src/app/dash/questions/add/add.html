@@ -1,7 +1,7 @@
 <div class="top-bar">
-  <button mat-flat-button class="green-btn" type="submit" form="addForm" [disabled]="saving">
+  <button mat-flat-button class="green-btn" type="button" (click)="goToQuestions()">
     <mat-icon>add</mat-icon>
-    {{ saving ? 'Saving...' : 'Add Question' }}
+    Add Question
   </button>
 </div>
 
@@ -11,7 +11,7 @@
     <p>Fill in the question's details below</p>
   </div>
 
-  <form id="addForm" class="card-body" #f="ngForm" (ngSubmit)="save(f)" novalidate>
+  <form id="addForm" class="card-body" #f="ngForm" (ngSubmit)="save(f, false)" novalidate>
     <mat-form-field appearance="outline" class="full">
       <mat-label>Course</mat-label>
       <mat-select name="courseId" [(ngModel)]="model.courseId" required #course="ngModel">
@@ -24,6 +24,14 @@
       <mat-label>Question</mat-label>
       <textarea matInput name="text" [(ngModel)]="model.text" rows="4" required minlength="3" #text="ngModel"></textarea>
       @if (text.invalid) { <mat-error>Enter the question (at least 3 characters).</mat-error> }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full">
+      <mat-label>Answer</mat-label>
+      <mat-select name="answer" [(ngModel)]="model.answer" required #answer="ngModel">
+        @for (a of answers; track a) { <mat-option [value]="a">{{ a }}</mat-option> }
+      </mat-select>
+      @if (answer.invalid) { <mat-error>Select True or False.</mat-error> }
     </mat-form-field>
 
     <div class="row">
@@ -57,7 +65,13 @@
     </div>
 
     <div class="actions">
-      <button mat-stroked-button type="button" (click)="clear(f)">Clear</button>
+      <button mat-stroked-button type="button" (click)="clear(f)" [disabled]="saving">Clear</button>
+
+      <button mat-stroked-button type="button" (click)="save(f, true)" [disabled]="saving">
+        <mat-icon>playlist_add</mat-icon>
+        Save &amp; New
+      </button>
+
       <button mat-flat-button class="green-btn" type="submit" [disabled]="saving">
         {{ saving ? 'Saving...' : 'Save Question' }}
       </button>

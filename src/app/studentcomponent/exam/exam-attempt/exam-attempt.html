@@ -1,0 +1,47 @@
+<!-- Place at: src/app/studentcomponent/exam/exam-attempt/exam-attempt.html -->
+
+<div class="attempt">
+  @if (loading()) {
+    <p class="muted">Loading exam…</p>
+  } @else if (info(); as exam) {
+    <header class="bar">
+      <div>
+        <h1>{{ exam.title }}</h1>
+        <span class="muted">{{ answeredCount() }} of {{ exam.questions.length }} answered</span>
+      </div>
+      <div class="timer" [class.low]="secondsLeft() <= 300">{{ timeText() }}</div>
+    </header>
+
+    @for (q of exam.questions; track q.id; let i = $index) {
+      <section class="question">
+        <p class="text">
+          <strong>{{ i + 1 }}.</strong> {{ q.text }}
+          <span class="marks">({{ q.marks }} {{ q.marks === 1 ? 'mark' : 'marks' }})</span>
+        </p>
+        <div class="choices">
+          <label [class.picked]="answers()[q.id] === 'True'">
+            <input type="radio" [name]="'q' + q.id" [checked]="answers()[q.id] === 'True'" (change)="setAnswer(q.id, 'True')" />
+            True
+          </label>
+          <label [class.picked]="answers()[q.id] === 'False'">
+            <input type="radio" [name]="'q' + q.id" [checked]="answers()[q.id] === 'False'" (change)="setAnswer(q.id, 'False')" />
+            False
+          </label>
+        </div>
+      </section>
+    }
+
+    @if (error()) {
+      <p class="error">{{ error() }}</p>
+    }
+
+    <div class="actions">
+      <button mat-flat-button color="primary" type="button" [disabled]="submitting()" (click)="submit()">
+        {{ submitting() ? 'Submitting…' : 'Submit exam' }}
+      </button>
+    </div>
+  } @else {
+    <p class="error">{{ error() || 'Exam not found' }}</p>
+    <button mat-stroked-button type="button" (click)="back()">Back to exams</button>
+  }
+</div>

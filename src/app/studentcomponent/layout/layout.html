@@ -4,13 +4,17 @@
       <button class="menu-toggle" (click)="toggleSidebar()">
         <mat-icon>menu</mat-icon>
       </button>
-      <span class="brand-name" *ngIf="!isCollapsed">Emedley</span>
+      <span class="brand-name" *ngIf="!isCollapsed">AIPSPAS</span>
     </div>
 
     <nav class="nav-links">
       <a id="dashboard-item" routerLink="/student-course/dashboard" routerLinkActive="active" class="nav-item" (click)="expandSidebar()" title="Dashboard">
         <mat-icon>dashboard</mat-icon>
         <span *ngIf="!isCollapsed" >Dashboard</span>
+      </a>
+       <a routerLink="student/available-exam" routerLinkActive="active" class="nav-item" (click)="expandSidebar()" title="Assessments">
+        <mat-icon>description</mat-icon>
+        <span *ngIf="!isCollapsed">Examination</span>
       </a>
       <a routerLink="/student-course/assessment" routerLinkActive="active" class="nav-item" (click)="expandSidebar()" title="Assessments">
         <mat-icon>description</mat-icon>
@@ -21,15 +25,15 @@
         <mat-icon>groups</mat-icon>
         <span *ngIf="!isCollapsed">Resources</span>
       </a>
-      <a routerLink="/student-course/assignment" routerLinkActive="active" class="nav-item" (click)="expandSidebar()" title="Students profile">
+      <!-- <a routerLink="/student-course/assignment" routerLinkActive="active" class="nav-item" (click)="expandSidebar()" title="Students profile">
         <mat-icon>groups</mat-icon>
         <span *ngIf="!isCollapsed">Assignments</span>
-      </a>
+      </a> -->
      
-      <a routerLink="/student-course/performance" routerLinkActive="active" class="nav-item" (click)="expandSidebar()" title="Performance">
+      <!-- <a routerLink="/student-course/performance" routerLinkActive="active" class="nav-item" (click)="expandSidebar()" title="Performance">
         <mat-icon>bar_chart</mat-icon>
         <span *ngIf="!isCollapsed">Performance</span>
-      </a>
+      </a> -->
       <a routerLink="/student-course/insights" routerLinkActive="active" class="nav-item" (click)="expandSidebar()" title="AI Insights">
         <mat-icon>lightbulb</mat-icon>
         <span *ngIf="!isCollapsed">AI Insights</span>
@@ -66,7 +70,7 @@
         <mat-icon>settings</mat-icon>
         <span *ngIf="!isCollapsed">Settings</span>
       </a>
-      <a class="nav-item logout" (click)="expandSidebar()" title="Log out">
+      <a class="nav-item logout" (click)="logout()" title="Log out">
         <mat-icon>logout</mat-icon>
         <span *ngIf="!isCollapsed">Log out</span>
       </a>

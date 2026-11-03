@@ -1,0 +1,99 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.card {
+  width: 100%;
+  max-width: 900px;   /* match your other forms */
+  margin: 0 auto;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+}
+
+.card-head {
+  padding: 20px 24px 8px;
+}
+
+.card-head h2 {
+  margin: 0 0 4px;
+  font-size: 1.25rem;
+}
+
+.card-head p {
+  margin: 0;
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+.card-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px 24px 24px;
+}
+
+.full {
+  width: 100%;
+}
+
+.file-box {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 8px 0;
+}
+
+.file-name {
+  font-size: 0.9rem;
+  word-break: break-all;
+}
+
+.x-btn {
+  color: #6b7280;
+}
+
+.x-btn:hover {
+  color: #dc2626;
+}
+
+.hint {
+  margin: 0;
+  color: #6b7280;
+  font-size: 0.85rem;
+}
+
+.field-error {
+  margin: 0;
+  color: #dc2626;
+  font-size: 0.85rem;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.green-btn {
+  background: #16a34a;
+  color: #fff;
+}
+
+.msg {
+  max-width: 900px;
+  margin: 16px auto 0;
+  padding: 12px 16px;
+  border-radius: 8px;
+  background: #dcfce7;
+  color: #166534;
+}
+
+.msg.bad {
+  background: #fee2e2;
+  color: #991b1b;
+}

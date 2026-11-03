@@ -50,7 +50,7 @@ export class Create implements OnInit {
   private cdr = inject(ChangeDetectorRef);
   private api = 'http://127.0.0.1:8000';
 
-  types = ['Quiz', 'Midterm', 'Final', 'Assignment', 'Practice'];
+  types = ['Quiz', 'Midterm', 'Final','Assignment', 'Practice'];
   visibility = ['Immediately', 'After the deadline', 'Hidden until released'];
   levels = ['Easy', 'Medium', 'Hard'];
   // Date picker + time inputs. They fill settings.start / settings.end
@@ -246,6 +246,12 @@ export class Create implements OnInit {
   }
 
   // ---- Save ----
+
+  // 'YYYY-MM-DDTHH:mm' (browser local time) -> UTC ISO string, e.g. '2026-11-02T21:00:00.000Z'
+  private toUtcIso(v: string): string | null {
+    return v ? new Date(v).toISOString() : null;
+  }
+
   save(status: 'draft' | 'published') {
     // Draft only needs a title; publish needs steps 1 to 3 to be valid.
     if (status === 'draft' && this.basic.controls.title.invalid) {
@@ -261,7 +267,11 @@ export class Create implements OnInit {
     const payload = {
       status,
       basic: v.basic,
-      settings: v.settings,
+      settings: {
+        ...v.settings,
+        start: this.toUtcIso(v.settings.start),
+        end: this.toUtcIso(v.settings.end),
+      },
       questions: [...this.selected].map(([questionId, marks]) => ({ questionId, marks })),
     };
 

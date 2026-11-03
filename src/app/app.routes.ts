@@ -44,7 +44,15 @@ import {AIGeneration as AIGenerate} from './dash/questions/ai-generation/ai-gene
 import {GeneralPrediction} from './dash/performance-analytics/general-prediction/general-prediction'
 import {PerformancePrediction} from './dash/performance-analytics/performance-prediction/performance-prediction'
 import {StudentPerformance} from './dash/performance-analytics/student-performance/student-performance'
+import { AvailableExam } from './studentcomponent/exam/available-exam/available-exam';
+import { ExamAttempt } from './studentcomponent/exam/exam-attempt/exam-attempt';
+import { ExamResult } from './studentcomponent/exam/exam-result/exam-result';
+import { AttemptHistory } from './studentcomponent/exam/attempt-history/attempt-history';
+import { Add as AddResources }  from './dash/resources/add/add';
+import { AllResources as AllResources }  from './dash/resources/all-resources/all-resources';
 import {authGuard} from './components/auth-guard';
+// import {StudentExam, canLeaveExam } from './studentcomponent/exam/student-exam/student-exam';
+// import { } from './exam/student-exam/student-exam';  // adjust to your path
 
 
 export const routes: Routes = [
@@ -60,6 +68,19 @@ export const routes: Routes = [
       {path:'performance',component:StudentPerformance,canActivate:[authGuard]},
       {path:'insights',component:Insights,canActivate:[authGuard]},
       {path:'notification',component:StudentNotification,canActivate:[authGuard]},
+
+      // Student exaination block 
+
+   { path: 'student/available-exam', component: AvailableExam, canActivate: [authGuard] },
+{ path: 'student/exam-attempt/:id', component: ExamAttempt, canActivate: [authGuard] },
+{ path: 'student/exam-result/:id', component: ExamResult, canActivate: [authGuard] },
+{ path: 'student/attempt-history', component: AttemptHistory, canActivate: [authGuard] },
+
+      // {path:'exam/:id',component:StudentExam,canActivate:[authGuard],canDeactivate:[canLeaveExam]},
+      
+
+      // { path: 'exam/:id', component: StudentExam, : [canLeaveExam] },
+      
     //   // {path:Dashboard,component:student-dash},
 
 
@@ -83,6 +104,8 @@ export const routes: Routes = [
         { path: 'instructor/add', component: AddInstructor,canActivate:[authGuard] },
       { path: 'instructor/instructor-list', component: InstructorList,canActivate:[authGuard] },
       { path: 'instructor/manage', component: ManageInstructor,canActivate:[authGuard] },
+      
+
 
       // Student Component
       { path: 'student/add', component: Add,canActivate:[authGuard] },
@@ -103,6 +126,8 @@ export const routes: Routes = [
        { path: 'student/general-analytics', component: GeneralPrediction,canActivate:[authGuard] },
        { path: 'student/performance', component: StudentPerformance,canActivate:[authGuard] },
        { path: 'student/prediction', component: PerformancePrediction,canActivate:[authGuard] },
+       { path: 'student/resources', component: AddResources, canActivate: [authGuard] },
+{ path: 'student/resources-list', component: AllResources, canActivate: [authGuard] },
       { path: 'assessment/view', component: AssessmentView },
       { path: 'assessment/manage', component: AssessmentManage },
       // { path: 'questions', component: Questions },

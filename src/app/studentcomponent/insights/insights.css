@@ -154,3 +154,11 @@
     }
   }
 }
+.state-text {
+  padding: 16px 0;
+  color: #6b7280;
+}
+
+.error-text {
+  color: #b42318;
+}

@@ -18,25 +18,29 @@
       <p class="error-msg">{{ error }}</p>
     }
 
-    @if (usingSample) {
-      <p class="info-msg">The student performance API is not connected yet, so this page is showing sample data.</p>
-    }
-
     <div class="table-toolbar">
       <mat-form-field appearance="outline" class="student-field">
-        <mat-label>Select student</mat-label>
-        <mat-select [(ngModel)]="selectedId" (selectionChange)="onStudentChange($event.value)">
+        <mat-label>Search by email or username</mat-label>
+        <input matInput [formControl]="searchCtrl" [matAutocomplete]="auto"
+               (keyup.enter)="onEnter()" placeholder="e.g. peter.mushi@school.com" />
+        <button mat-icon-button matSuffix type="button" aria-label="Search" (click)="onEnter()">
+          <mat-icon>search</mat-icon>
+        </button>
+        <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayStudent"
+                          (optionSelected)="onStudentChange($event.option.value)">
           @for (s of students; track s.id) {
-            <mat-option [value]="s.id">{{ s.name }}</mat-option>
+            <mat-option [value]="s">{{ s.name }} <small class="muted">· {{ s.email }}{{ s.username ? ' · ' + s.username : '' }}</small></mat-option>
+          } @empty {
+            <mat-option disabled>{{ searching ? 'Searching...' : 'No students found' }}</mat-option>
           }
-        </mat-select>
+        </mat-autocomplete>
       </mat-form-field>
     </div>
 
     @if (loading) {
       <p class="no-data">Loading performance...</p>
     } @else if (!data) {
-      <p class="no-data">Select a student to see their performance.</p>
+      <p class="no-data">Search for a student to see their performance.</p>
     } @else {
 
       <div class="profile">
@@ -146,7 +150,7 @@
 
           <ng-container matColumnDef="classAvg">
             <th mat-header-cell *matHeaderCellDef mat-sort-header> Class Average </th>
-            <td mat-cell *matCellDef="let row"> {{ row.classAvg }}% </td>
+            <td mat-cell *matCellDef="let row"> {{ row.classAvg === null ? '—' : row.classAvg + '%' }} </td>
           </ng-container>
 
           <ng-container matColumnDef="status">

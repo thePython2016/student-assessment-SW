@@ -38,13 +38,13 @@ export class Login {
   error = '';
   wrongPass = '';
   invalid = '';
-wrongCredentials='';
+  wrongCredentials = '';
   isLoading = false;
-  isSubmitting=false;
-  loginToken='';
-  userEmail='';
+  isSubmitting = false;
+  loginToken = '';
+  userEmail = '';
 
-  correct='';
+  correct = '';
   private base = 'http://127.0.0.1:8000';
 
   constructor(private router: Router, private cdr: ChangeDetectorRef) {}
@@ -58,9 +58,7 @@ wrongCredentials='';
     this.passwordError = '';
     this.error = '';
     this.invalid = '';
-    this.wrongCredentials='';
-
-    
+    this.wrongCredentials = '';
   }
 
   async onLogin() {
@@ -88,23 +86,34 @@ wrongCredentials='';
       });
       const result = await response.json();
 
-    if (response.status === 200) {
-  this.loginToken = result.access || '';
-  this.userEmail = result.email || '';
-  sessionStorage.setItem('loginToken', this.loginToken);
-  sessionStorage.setItem('refreshToken', result.refresh || '');
-  sessionStorage.setItem('email', this.userEmail);
-  this.router.navigate(['/dash/dashboard']);
-  // this.router.navigate(['/student-course/dashboard']);
-  
-} else {
-        this.wrongCredentials = result.non_field_errors[0];
+      if (response.status === 200) {
+        this.loginToken = result.access || '';
+        this.userEmail = result.email || '';
+        const role = result.role || 'student';
+
+        sessionStorage.setItem('loginToken', this.loginToken);
+        sessionStorage.setItem('refreshToken', result.refresh || '');
+        sessionStorage.setItem('email', this.userEmail);
+        sessionStorage.setItem('role', role);
+
+        if (role === 'admin') {
+          this.router.navigate(['/dash/dashboard']);
+        } else if (role === 'instructor') {
+          this.router.navigate(['/instructor/dashboard']);
+        } else if (role === 'student') {
+          this.router.navigate(['/student-course/dashboard']);
+        } else {
+          this.router.navigate(['/login']);
+        }
+      } else {
+        this.wrongCredentials =
+          result.non_field_errors?.[0] || 'Invalid email or password.';
       }
     } catch (e) {
       this.error = 'Something went wrong. Try again.';
     } finally {
       this.isLoading = false;
-      this.cdr.detectChanges(); // ← force Angular to re-render after the async response
+      this.cdr.detectChanges();
     }
   }
 }

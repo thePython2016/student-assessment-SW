@@ -1,0 +1,80 @@
+<div class="page-top">
+  <div>
+    <h1>Examination</h1>
+    <p class="subtitle">All exams assigned to you. Start one when it opens.</p>
+  </div>
+  <button mat-stroked-button type="button" (click)="load()">
+    <mat-icon>refresh</mat-icon> Refresh
+  </button>
+</div>
+
+@if (error) {
+  <p class="error">{{ error }}</p>
+}
+
+<div class="toolbar">
+  <div class="tabs-scroll">
+    <mat-button-toggle-group [(ngModel)]="tab" (change)="refresh()" aria-label="Filter exams by status">
+      @for (t of tabs; track t) {
+        <mat-button-toggle [value]="t">{{ t }} <span class="count">{{ count(t) }}</span></mat-button-toggle>
+      }
+    </mat-button-toggle-group>
+  </div>
+
+  <mat-form-field appearance="outline" class="search-field">
+    <mat-label>Search</mat-label>
+    <input matInput (keyup)="onSearch($event)" placeholder="Search exams...">
+    <mat-icon matSuffix>search</mat-icon>
+  </mat-form-field>
+</div>
+
+@if (loading) {
+  <p class="empty">Loading exams...</p>
+} @else {
+  @for (e of view; track e.id) {
+    <article class="exam-card">
+      <div class="tile" [class]="'tile ' + badge(e.status)"><mat-icon>{{ icon(e.type) }}</mat-icon></div>
+
+      <div class="info">
+        <h3>{{ e.title }}</h3>
+        <p>{{ e.course }} <span class="dot">·</span> {{ e.type }}</p>
+        <p class="chips">
+          <span class="chip"><mat-icon>timer</mat-icon> {{ e.durationMin }} min</span>
+          <span class="chip"><mat-icon>help_outline</mat-icon> {{ e.questionCount }} questions</span>
+          <span class="chip"><mat-icon>grade</mat-icon> {{ e.totalMarks }} marks</span>
+          <span class="chip"><mat-icon>event</mat-icon>
+            {{ e.status === 'Upcoming' ? 'Opens ' + formatTime(e.opensAt) : 'Closes ' + formatTime(e.closesAt) }}
+          </span>
+        </p>
+      </div>
+
+      <div class="actions">
+        <span [class]="'badge ' + badge(e.status)">{{ e.status }}</span>
+
+        @switch (e.status) {
+          @case ('Available') {
+            <button mat-flat-button color="primary" type="button" (click)="start(e)">Start</button>
+            <span class="muted small">{{ timeLeft(e) }}</span>
+          }
+          @case ('In progress') {
+            <button mat-flat-button color="primary" type="button" (click)="start(e)">Continue</button>
+            <span class="muted small">{{ timeLeft(e) }}</span>
+          }
+          @case ('Upcoming') {
+            <span class="muted small">{{ timeLeft(e) }}</span>
+          }
+          @case ('Completed') {
+            <span class="score">{{ scoreText(e) }}</span>
+          }
+          @default {
+            <span class="muted small">Closed</span>
+          }
+        }
+      </div>
+    </article>
+  } @empty {
+    <p class="empty">
+      {{ tab === 'All' && !search ? 'No exams are assigned to you yet.' : 'No exams match this view.' }}
+    </p>
+  }
+}

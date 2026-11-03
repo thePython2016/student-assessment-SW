@@ -1,9 +1,7 @@
-import { Component, OnInit, inject, ChangeDetectorRef } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { ChangeDetectorRef, Component, OnInit, inject } from '@angular/core';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
-import { MatMenuModule } from '@angular/material/menu';
 import { MatTableModule } from '@angular/material/table';
 
 interface StatCard {
@@ -12,222 +10,142 @@ interface StatCard {
   danger?: boolean;
 }
 
-interface UpcomingAssessment {
+interface ResultRow {
   id: number;
   title: string;
-  dueLabel: string;
-  dueInDays: number;          // used for sorting by due date
-  durationMinutes: number;
-  questionCount: number;
-  icon: string;
-  bg: string;
-  fg: string;
-  available: boolean;
-}
-
-interface PastResult {
-  id: number;
-  title: string;
-  date: string;               // e.g. "Aug 21"
-  ts: number;                 // real time, used for sorting
-  score: number | null;       // percentage. null when missed or not marked yet
-  status: 'Passed' | 'Failed' | 'Pending' | 'Missed';
+  date: string;                       // display text
+  scoreText: string;                  // "38 / 50 (76%)" or "Not released yet"
+  note: string;                       // e.g. "Auto-submitted"
+  status: 'Passed' | 'Failed' | 'Pending';
 }
 
 @Component({
-  imports: [CommonModule, MatButtonModule, MatIconModule, MatMenuModule, MatTableModule],
+  imports: [MatButtonModule, MatIconModule, MatTableModule],
   selector: 'app-assessment',
   styleUrl: './assessment.css',
   templateUrl: './assessment.html',
 })
 export class Assessment implements OnInit {
-  private router = inject(Router);
+  private http = inject(HttpClient);
   private cdr = inject(ChangeDetectorRef);
 
-  base = 'http://127.0.0.1:8000';
-
-  filterOptions = ['All', 'Upcoming', 'Completed', 'Missed'];
-  sortOptions = ['Due date', 'Most recent', 'Highest score', 'Lowest score'];
-
-  activeFilter = 'All';
-  activeSort = 'Due date';
+  private api = 'http://127.0.0.1:8000';
+  private PASS_PERCENT = 50;   // used only if the API sends no pass_marks
+  private tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
   resultColumns = ['title', 'date', 'score', 'status'];
 
-  loading = true;
+  stats: StatCard[] = [];
+  results: ResultRow[] = [];
+
+  loading = false;
   error = '';
 
-  stats: StatCard[] = [
-    { label: 'Upcoming', value: '0' },
-    { label: 'Completed', value: '0' },
-    { label: 'Average score', value: '-' },
-    { label: 'Missed', value: '0', danger: true },
-  ];
-
-  // Real data from Django (filled by load()).
-  upcomingAssessments: UpcomingAssessment[] = [];
-  pastResults: PastResult[] = [];
-
-  // What the page actually shows. Updated by refresh(), not recalculated on every check.
-  upcomingView: UpcomingAssessment[] = [];
-  resultsView: PastResult[] = [];
-
-  ngOnInit(): void {
+  ngOnInit() {
     this.load();
   }
 
-  // TODO: replace with the id of the logged-in student from your login.
-  private studentId(): number | null {
-    const v = localStorage.getItem('studentId');
-    return v ? Number(v) : null;
+  // ---- Token ----
+  private getToken(): string | null {
+    const raw = localStorage.getItem('loginToken') ?? sessionStorage.getItem('loginToken');
+    return raw ? raw.replace(/^"|"$/g, '') : null;   // strips quotes if it was saved with JSON.stringify
   }
 
-  async load(): Promise<void> {
+  private authHeaders(): HttpHeaders {
+    const token = this.getToken();
+    return token
+      ? new HttpHeaders({ Authorization: `Bearer ${token}` })
+      : new HttpHeaders();
+  }
+
+  load() {
     this.loading = true;
     this.error = '';
-    try {
-      const id = this.studentId();
-      const url = `${this.base}/assessments/overview${id ? `?studentId=${id}` : ''}`;
-      const response = await fetch(url);
-      if (!response.ok) {
-        this.error = 'Could not load your assessments';
-        return;
-      }
-      const data = await response.json();
 
-      this.upcomingAssessments = data.upcoming.map((a: any, i: number) => this.toUpcoming(a, i));
-      this.pastResults = data.results.map((r: any) => this.toResult(r));
-
-      this.stats = [
-        { label: 'Upcoming', value: String(data.stats.upcoming) },
-        { label: 'Completed', value: String(data.stats.completed) },
-        { label: 'Average score', value: data.stats.average_score === null ? '-' : `${data.stats.average_score}%` },
-        { label: 'Missed', value: String(data.stats.missed), danger: true },
-      ];
-      this.refresh();
-    } catch (e) {
-      this.error = 'Cannot reach the server';
-    } finally {
+    if (!this.getToken()) {
+      this.error = 'You are not logged in. Please log in again.';
       this.loading = false;
-      this.cdr.markForCheck();
+      return;
     }
+
+    this.http.get<any>(`${this.api}/exam/results`, { headers: this.authHeaders() }).subscribe({
+      next: (body) => {
+        const rows: any[] = Array.isArray(body) ? body : body.results ?? [];
+        this.results = rows.map((r) => this.toRow(r));
+        this.buildStats(rows);
+        this.loading = false;
+        this.cdr.markForCheck();
+      },
+      error: (err: HttpErrorResponse) => {
+        this.results = [];
+        this.stats = [];
+        this.error =
+          err.status === 401 ? 'Your session has expired. Please log in again.'
+          : err.status === 403 ? 'Only student accounts can view exam results.'
+          : err.status === 404 ? 'Results endpoint not found. Check the URL.'
+          : err.status === 0 ? 'Cannot reach the server.'
+          : `Could not load your results (status ${err.status}).`;
+        this.loading = false;
+        this.cdr.markForCheck();
+      },
+    });
   }
 
-  // ---- API -> screen ----
-  private toUpcoming(a: any, i: number): UpcomingAssessment {
-    const days = a.end ? Math.max(0, Math.ceil((new Date(a.end).getTime() - Date.now()) / 86400000)) : 999;
-    const dueLabel = !a.end ? 'No deadline'
-      : days === 0 ? 'Due today'
-      : days === 1 ? 'Due tomorrow'
-      : `Due in ${days} days`;
-
-    const icons: Record<string, string> = {
-      Quiz: 'quiz', Midterm: 'edit_note', Final: 'assignment', Assignment: 'assignment_turned_in', Practice: 'fitness_center',
-    };
-    const blue = { bg: '#eef4ff', fg: '#3b82f6' };
-    const amber = { bg: '#fffaeb', fg: '#b54708' };
-    const colour = i % 2 === 0 ? blue : amber;
-
-    return {
-      id: a.id,
-      title: a.title,
-      dueLabel,
-      dueInDays: days,
-      durationMinutes: a.duration,
-      questionCount: a.question_count,
-      icon: icons[a.type] ?? 'description',
-      bg: colour.bg,
-      fg: colour.fg,
-      available: a.available,
-    };
+  private percent(r: any): number {
+    return r.total_marks ? Math.round((Number(r.score) / r.total_marks) * 100) : 0;
   }
 
-  private toResult(r: any): PastResult {
-    const d = new Date(r.date);
+  private passed(r: any): boolean {
+    return r.pass_marks != null
+      ? Number(r.score) >= Number(r.pass_marks)
+      : this.percent(r) >= this.PASS_PERCENT;
+  }
+
+  private toRow(r: any): ResultRow {
+    const released = r.released && r.score !== null;
     return {
       id: r.id,
       title: r.title,
-      date: d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }),
-      ts: d.getTime(),
-      score: r.score,
-      status: r.status,
+      date: this.formatDate(r.submitted_at),
+      scoreText: released
+        ? `${r.score} / ${r.total_marks} (${this.percent(r)}%)`
+        : 'Not released yet',
+      note: r.auto_submitted ? 'Auto-submitted' : '',
+      status: !released ? 'Pending' : this.passed(r) ? 'Passed' : 'Failed',
     };
   }
 
-  // ---- filters and sorting ----
-  applyFilter(option: string): void {
-    this.activeFilter = option;
-    this.refresh();
+  private buildStats(rows: any[]) {
+    const released = rows.filter((r) => r.released && r.score !== null);
+    const avg = released.length
+      ? Math.round(released.reduce((s, r) => s + this.percent(r), 0) / released.length) + '%'
+      : '—';
+
+    this.stats = [
+      { label: 'Completed', value: String(rows.length) },
+      { label: 'Average score', value: avg },
+      { label: 'Passed', value: String(released.filter((r) => this.passed(r)).length) },
+      { label: 'Failed', value: String(released.filter((r) => !this.passed(r)).length), danger: true },
+    ];
   }
 
-  applySort(option: string): void {
-    this.activeSort = option;
-    this.refresh();
+  // API dates are UTC. If an offset is missing, treat the value as UTC.
+  private formatDate(value: string | null): string {
+    if (!value) return '';
+    const iso = /([zZ]|[+-]\d{2}:?\d{2})$/.test(value) ? value : value + 'Z';
+    return new Intl.DateTimeFormat('en-US', {
+      month: 'short', day: 'numeric', year: 'numeric',
+      hour: 'numeric', minute: '2-digit',
+      timeZone: this.tz,
+    }).format(new Date(iso));
   }
 
-  get showUpcoming(): boolean {
-    return this.activeFilter === 'All' || this.activeFilter === 'Upcoming';
-  }
-
-  get showResults(): boolean {
-    return this.activeFilter !== 'Upcoming';
-  }
-
-  get resultsTitle(): string {
-    return this.activeFilter === 'Missed' ? 'Missed assessments' : 'Past results';
-  }
-
-  private refresh(): void {
-    // Upcoming assessments are always shown with the nearest deadline first.
-    this.upcomingView = [...this.upcomingAssessments].sort((a, b) => a.dueInDays - b.dueInDays);
-
-    const f = this.activeFilter;
-    let rows = this.pastResults.filter((r) =>
-      f === 'Completed' ? r.status !== 'Missed'
-      : f === 'Missed' ? r.status === 'Missed'
-      : true);
-
-    switch (this.activeSort) {
-      case 'Highest score':
-        rows = rows.sort((a, b) => (b.score ?? -1) - (a.score ?? -1));
-        break;
-      case 'Lowest score':
-        rows = rows.sort((a, b) => (a.score ?? 101) - (b.score ?? 101));
-        break;
-      default: // "Due date" and "Most recent" both show the newest results first
-        rows = rows.sort((a, b) => b.ts - a.ts);
-    }
-    this.resultsView = rows;
-  }
-
-  // ---- actions ----
-  startAssessment(assessment: UpcomingAssessment): void {
-    if (!assessment.available) return;
-    this.router.navigate(['/exam', assessment.id]);
-  }
-
-  viewAssessment(assessment: UpcomingAssessment): void {
-    // The exam page opens on an overview of the assessment before it starts.
-    this.router.navigate(['/exam', assessment.id]);
-  }
-
-  scoreClass(score: number | null): string {
-    if (score === null) return '';
-    return score >= 70 ? 'score-good' : score >= 50 ? 'score-mid' : 'score-low';
-  }
-
-  statusClass(status: PastResult['status']): string {
+  statusClass(status: ResultRow['status']): string {
     switch (status) {
-      case 'Passed':
-        return 'status-passed';
-      case 'Failed':
-        return 'status-failed';
-      case 'Pending':
-        return 'status-pending';
-      case 'Missed':
-        return 'status-missed';
-      default:
-        return '';
+      case 'Passed': return 'status-passed';
+      case 'Failed': return 'status-failed';
+      case 'Pending': return 'status-pending';
+      default: return '';
     }
   }
 }
