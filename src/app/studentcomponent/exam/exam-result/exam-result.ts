@@ -15,7 +15,7 @@ export class ExamResult implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
 
-  base = 'http://127.0.0.1:8000';
+  base = 'https://student-assessment-4ipf.onrender.com';
   // shown instantly after submit; fetched from the server on refresh or from history
   result = signal<ExamResultData | null>(history.state?.result ?? null);
   error = signal('');

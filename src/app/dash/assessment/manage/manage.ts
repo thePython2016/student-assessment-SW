@@ -52,7 +52,7 @@ export class Manage implements OnInit, AfterViewInit {
   private dialog = inject(MatDialog);
   private cdr = inject(ChangeDetectorRef);
 
-  base = 'http://127.0.0.1:8000';
+  base = 'https://student-assessment-4ipf.onrender.com';
   endPoint = 'assessments'; // no trailing slash, matches the Django router
 
   displayedColumns: string[] = ['id', 'title', 'type', 'course', 'duration', 'totalMarks', 'deadline', 'numberOfQuestions', 'status'];

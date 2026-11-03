@@ -30,7 +30,7 @@ export class AllResources implements OnInit {
   private cdr = inject(ChangeDetectorRef);
   private snack = inject(MatSnackBar);
 
-  private api = 'http://127.0.0.1:8000';
+  private api = 'https://student-assessment-4ipf.onrender.com';
 
   resources: Resource[] = [];
   loading = true;

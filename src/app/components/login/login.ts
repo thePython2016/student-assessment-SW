@@ -45,7 +45,7 @@ export class Login {
   userEmail = '';
 
   correct = '';
-  private base = 'http://127.0.0.1:8000';
+  private base = 'https://student-assessment-4ipf.onrender.com';
 
   constructor(private router: Router, private cdr: ChangeDetectorRef) {}
 
