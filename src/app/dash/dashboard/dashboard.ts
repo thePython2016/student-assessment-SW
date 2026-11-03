@@ -30,6 +30,26 @@ interface Activity {
   status: Status;
 }
 
+// What GET exam/admin-overview returns
+interface Overview {
+  totals: {
+    students: number | null;
+    courses: number | null;
+    assessments: number;
+    submissions: number;
+    average_score: number | null;
+    pass_rate: number | null;
+  };
+  recent: {
+    student: string;
+    title: string;
+    percent: number | null;
+    passed: boolean | null;
+    submitted_at: string;
+    auto_submitted: boolean;
+  }[];
+}
+
 @Component({
   selector: 'app-dashboard',
   imports: [CommonModule, RouterLink, MatCardModule, MatIconModule, MatButtonModule, MatDividerModule],
@@ -40,9 +60,7 @@ export class Dashboard implements OnInit {
   private http = inject(HttpClient);
   private cdr = inject(ChangeDetectorRef);
 
-  // Same backend and endpoint as the Assessment page
   private api = 'https://student-assessment-4ipf.onrender.com';
-  private PASS_PERCENT = 50;   // used only if the API sends no pass_marks
 
   userEmail = sessionStorage.getItem('email');
 
@@ -71,9 +89,7 @@ export class Dashboard implements OnInit {
 
   private authHeaders(): HttpHeaders {
     const token = this.getToken();
-    return token
-      ? new HttpHeaders({ Authorization: `Bearer ${token}` })
-      : new HttpHeaders();
+    return token ? new HttpHeaders({ Authorization: `Bearer ${token}` }) : new HttpHeaders();
   }
 
   load() {
@@ -86,11 +102,11 @@ export class Dashboard implements OnInit {
       return;
     }
 
-    this.http.get<any>(`${this.api}/exam/results`, { headers: this.authHeaders() }).subscribe({
-      next: (body) => {
-        const rows: any[] = Array.isArray(body) ? body : body.results ?? [];
-        this.buildKpis(rows);
-        this.buildActivity(rows);
+    // Administrators use their own endpoint. exam/results is for students only.
+    this.http.get<Overview>(`${this.api}/exam/admin-overview`, { headers: this.authHeaders() }).subscribe({
+      next: (data) => {
+        this.buildKpis(data.totals);
+        this.buildActivity(data.recent);
         this.loading = false;
         this.cdr.markForCheck();
       },
@@ -99,8 +115,8 @@ export class Dashboard implements OnInit {
         this.recentActivity = [];
         this.error =
           err.status === 401 ? 'Your session has expired. Please log in again.'
-          : err.status === 403 ? 'This account is not allowed to view exam results.'
-          : err.status === 404 ? 'Results endpoint not found. Check the URL.'
+          : err.status === 403 ? 'This account is not an administrator.'
+          : err.status === 404 ? 'The admin overview endpoint was not found. Check the URL.'
           : err.status === 0 ? 'Cannot reach the server.'
           : `Could not load the dashboard (status ${err.status}).`;
         this.loading = false;
@@ -109,57 +125,31 @@ export class Dashboard implements OnInit {
     });
   }
 
-  // ---- Same scoring logic as the Assessment page ----
-  private percent(r: any): number {
-    return r.total_marks ? Math.round((Number(r.score) / r.total_marks) * 100) : 0;
-  }
-
-  private passed(r: any): boolean {
-    return r.pass_marks != null
-      ? Number(r.score) >= Number(r.pass_marks)
-      : this.percent(r) >= this.PASS_PERCENT;
-  }
-
-  private isReleased(r: any): boolean {
-    return !!r.released && r.score !== null;
-  }
-
-  private statusOf(r: any): Status {
-    return !this.isReleased(r) ? 'Pending' : this.passed(r) ? 'Passed' : 'Failed';
-  }
-
-  private buildKpis(rows: any[]) {
-    const released = rows.filter((r) => this.isReleased(r));
-    const avg = released.length
-      ? Math.round(released.reduce((s, r) => s + this.percent(r), 0) / released.length) + '%'
-      : '—';
-
+  private buildKpis(t: Overview['totals']) {
+    const show = (v: number | null) => (v === null || v === undefined ? '—' : String(v));
     this.kpis = [
-      { label: 'Completed', value: String(rows.length), icon: 'task_alt', color: '#2b6cb0' },
-      { label: 'Average Score', value: avg, icon: 'insights', color: '#f59e0b' },
-      { label: 'Passed', value: String(released.filter((r) => this.passed(r)).length), icon: 'check_circle', color: '#198754' },
-      { label: 'Failed', value: String(released.filter((r) => !this.passed(r)).length), icon: 'cancel', color: '#dc2626' },
+      { label: 'Students', value: show(t.students), icon: 'groups', color: '#198754' },
+      { label: 'Courses', value: show(t.courses), icon: 'menu_book', color: '#2b6cb0' },
+      { label: 'Published Assessments', value: show(t.assessments), icon: 'assignment', color: '#f59e0b' },
+      { label: 'Average Score', value: t.average_score === null ? '—' : `${t.average_score}%`, icon: 'insights', color: '#8b5cf6' },
     ];
   }
 
-  private buildActivity(rows: any[]) {
-    this.recentActivity = [...rows]
-      .sort((a, b) => this.toTime(b.submitted_at) - this.toTime(a.submitted_at))
-      .slice(0, 5)
-      .map((r) => {
-        const status = this.statusOf(r);
-        const result =
-          status === 'Pending' ? 'result not released yet'
-          : `${status.toLowerCase()} with ${this.percent(r)}%`;
-        const auto = r.auto_submitted ? ' (auto-submitted)' : '';
+  private buildActivity(rows: Overview['recent']) {
+    this.recentActivity = rows.map((r) => {
+      const status: Status = r.passed === null ? 'Pending' : r.passed ? 'Passed' : 'Failed';
+      const result =
+        status === 'Pending' ? 'submitted, waiting to be marked'
+        : `${status.toLowerCase()} with ${r.percent}%`;
+      const auto = r.auto_submitted ? ' (auto-submitted)' : '';
 
-        return {
-          text: `"${r.title}" ${result}${auto}`,
-          time: this.timeAgo(r.submitted_at),
-          icon: status === 'Passed' ? 'check_circle' : status === 'Failed' ? 'cancel' : 'hourglass_empty',
-          status,
-        };
-      });
+      return {
+        text: `${r.student} ${result}: "${r.title}"${auto}`,
+        time: this.timeAgo(r.submitted_at),
+        icon: status === 'Passed' ? 'check_circle' : status === 'Failed' ? 'cancel' : 'hourglass_empty',
+        status,
+      };
+    });
   }
 
   // API dates are UTC. If an offset is missing, treat the value as UTC.
