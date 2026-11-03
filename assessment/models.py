@@ -53,11 +53,24 @@ class AssessmentQuestion(models.Model):
 
 
 class Submission(models.Model):
-    """One student's answers for one assessment."""
+    """One student's attempt for one assessment, with its answers and result."""
+
+    class Status(models.TextChoices):
+        IN_PROGRESS = "In progress"
+        SUBMITTED = "Submitted"   # waiting for marking
+        MARKED = "Marked"         # score is final
+
     assessment = models.ForeignKey(Assessment, on_delete=models.CASCADE, related_name="submissions")
     student_id = models.PositiveIntegerField(null=True, blank=True)  # change to a ForeignKey to your student/user model
     answers = models.JSONField(default=dict)  # { "questionId": "answer text" }
     auto_submitted = models.BooleanField(default=False)  # True when the timer ran out
+
+    # --- new: attempt and result fields ---
+    started_at = models.DateTimeField(null=True, blank=True)
+    time_spent_sec = models.PositiveIntegerField(default=0)
+    score = models.DecimalField(max_digits=6, decimal_places=2, null=True, blank=True)  # null until marked
+    status = models.CharField(max_length=12, choices=Status.choices, default=Status.SUBMITTED)
+
     submitted_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

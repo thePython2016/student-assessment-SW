@@ -9,6 +9,7 @@ from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
+from exam.models import ExamAttempt
 from .models import Assessment, Submission
 from .serializers import (
     AssessmentSerializer,
@@ -114,6 +115,14 @@ class AssessmentViewSet(
             .filter(Q(end__isnull=True) | Q(end__gte=now))
             .order_by("start", "id")
         )
+
+        # Hide exams this student has already submitted
+        if request.user and request.user.is_authenticated:
+            done = ExamAttempt.objects.filter(
+                student=request.user, status=ExamAttempt.Status.SUBMITTED
+            ).values_list("assessment_id", flat=True)
+            qs = qs.exclude(id__in=done)
+
         return Response(StudentAssessmentSerializer(qs, many=True).data)
 
     # GET /assessments/<id>/exam : questions + how many seconds the student has

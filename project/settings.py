@@ -29,9 +29,10 @@ SECRET_KEY = 'django-insecure-u0lq-w(*)4-sefksgef9p(g_*jho80n7f#8yf()idkolqa_d=v
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG = os.environ.get("DEBUG", "False") == "True"
 AUTH_USER_MODEL = 'account.User'
-DEBUG = True
+DEBUG = False
 
-
+TIME_ZONE = 'Africa/Nairobi'
+USE_TZ = True
 # Allow Angular site to access------------------------------
 ALLOWED_HOSTS = [
     "student-assessment-alis.onrender.com",
@@ -69,7 +70,9 @@ INSTALLED_APPS = [
     'department',
     'course',
     'questions',
-    'assessment'
+    'assessment',
+    'exam',
+    'resources'
     
 ]
 REST_FRAMEWORK = {
@@ -87,15 +90,10 @@ SIMPLE_JWT = {
 }
 
 AUTH_PASSWORD_VALIDATORS = [
-    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
     {
-        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
-        "OPTIONS": {"min_length": 8},
+        'NAME': 'account.validators.CommonPasswordValidator',
     },
-    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
-    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
-    # your custom validator (see below)
-    {"NAME": "accounts.validators.StrongPasswordValidator"},
+    # ...other validators
 ]
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

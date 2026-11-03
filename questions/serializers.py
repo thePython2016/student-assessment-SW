@@ -11,12 +11,20 @@ class QuestionSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = QuestionBank
-        fields = ["id", "courseId", "course_name", "text", "topic", "type", "difficulty", "marks"]
+        fields = [
+            "id", "courseId", "course_name", "text", "answer",
+            "topic", "type", "difficulty", "marks",
+        ]
 
     def validate_text(self, value):
         if len(value.strip()) < 3:
             raise serializers.ValidationError("Enter the question (at least 3 characters).")
         return value.strip()
+
+    def validate_answer(self, value):
+        if value not in QuestionBank.Answer.values:
+            raise serializers.ValidationError("Answer must be True or False.")
+        return value
 
     def validate_marks(self, value):
         if value < 1:
