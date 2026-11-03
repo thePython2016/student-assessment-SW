@@ -11,6 +11,16 @@ import { MatBadgeModule } from '@angular/material/badge';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { Router } from '@angular/router';
 
+type MenuKey =
+  | 'students'
+  | 'resources'
+  | 'courses'
+  | 'performance'
+  | 'assessments'
+  | 'question'
+  | 'department'
+  | 'instructor';
+
 @Component({
   selector: 'app-dash-layout',
   imports: [
@@ -32,73 +42,42 @@ import { Router } from '@angular/router';
 })
 export class DashLayout {
 
-  
-  email=sessionStorage.getItem("email")
+  email = sessionStorage.getItem("email")
   // userFname=sessionStorage.getItem("fname")
   notificationCount = 3;
 
-  studentsMenuOpen = false;
-  resourcesMenuOpen = false;
-  coursesMenuOpen = false;
-  performanceMenuOpen = false;
-  assessmentsMenuOpen = false;
-   questionMenuOpen = false;
-  departmentMenuOpen = false;
-   instructorMenuOpen = false;
   sidebarCollapsed = false;
-  is_logging_out=false;
+  is_logging_out = false;
 
-  toggleStudentsMenu() {
-    if (this.sidebarCollapsed) {
-      this.sidebarCollapsed = false;
-    }
-    this.studentsMenuOpen = !this.studentsMenuOpen;
-  }
+  // Only one menu can be open at a time. null means all are closed.
+  openMenu: MenuKey | null = null;
 
-   toggleDepartmentMenu() {
+  // These keep the names your HTML already uses, for example [class.open]="performanceMenuOpen".
+  get studentsMenuOpen() { return this.openMenu === 'students'; }
+  get resourcesMenuOpen() { return this.openMenu === 'resources'; }
+  get coursesMenuOpen() { return this.openMenu === 'courses'; }
+  get performanceMenuOpen() { return this.openMenu === 'performance'; }
+  get assessmentsMenuOpen() { return this.openMenu === 'assessments'; }
+  get questionMenuOpen() { return this.openMenu === 'question'; }
+  get departmentMenuOpen() { return this.openMenu === 'department'; }
+  get instructorMenuOpen() { return this.openMenu === 'instructor'; }
+
+  // Opens the chosen menu and closes any other. Clicking the open one closes it.
+  private toggle(menu: MenuKey) {
     if (this.sidebarCollapsed) {
       this.sidebarCollapsed = false;
     }
-    this.departmentMenuOpen = !this.departmentMenuOpen;
-  }
-   toggleQuestionMenu() {
-    if (this.sidebarCollapsed) {
-      this.sidebarCollapsed = false;
-    }
-    this.questionMenuOpen = !this.questionMenuOpen;
-  }
-   togglePerformanceMenu() {
-    if (this.sidebarCollapsed) {
-      this.sidebarCollapsed = false;
-    }
-    this.performanceMenuOpen = !this.performanceMenuOpen;
-  }
-   toggleInstructorMenu() {
-    if (this.sidebarCollapsed) {
-      this.sidebarCollapsed = false;
-    }
-    this.instructorMenuOpen = !this.instructorMenuOpen;
+    this.openMenu = this.openMenu === menu ? null : menu;
   }
 
-  toggleCoursesMenu() {
-    if (this.sidebarCollapsed) {
-      this.sidebarCollapsed = false;
-    }
-    this.coursesMenuOpen = !this.coursesMenuOpen;
-  }
-
-    toggleResourcesMenu() {
-    if (this.sidebarCollapsed) {
-      this.sidebarCollapsed = false;
-    }
-    this.resourcesMenuOpen = !this.resourcesMenuOpen;
-  }
-  toggleAssessmentsMenu() {
-    if (this.sidebarCollapsed) {
-      this.sidebarCollapsed = false;
-    }
-    this.assessmentsMenuOpen = !this.assessmentsMenuOpen;
-  }
+  toggleStudentsMenu() { this.toggle('students'); }
+  toggleDepartmentMenu() { this.toggle('department'); }
+  toggleQuestionMenu() { this.toggle('question'); }
+  togglePerformanceMenu() { this.toggle('performance'); }
+  toggleInstructorMenu() { this.toggle('instructor'); }
+  toggleCoursesMenu() { this.toggle('courses'); }
+  toggleResourcesMenu() { this.toggle('resources'); }
+  toggleAssessmentsMenu() { this.toggle('assessments'); }
 
   onMenuItemClick() {
     if (this.sidebarCollapsed) {
@@ -109,16 +88,14 @@ export class DashLayout {
   toggleSidebar() {
     this.sidebarCollapsed = !this.sidebarCollapsed;
     if (this.sidebarCollapsed) {
-      this.studentsMenuOpen = false;
-      this.coursesMenuOpen = false;
-      this.assessmentsMenuOpen = false;
+      this.openMenu = null;   // collapsing the sidebar closes every menu
     }
   }
 
- constructor(private router: Router) {}
+  constructor(private router: Router) {}
 
-logout() {
-  sessionStorage.clear();
-  this.router.navigate(['/']);
-}
+  logout() {
+    sessionStorage.clear();
+    this.router.navigate(['/']);
+  }
 }
