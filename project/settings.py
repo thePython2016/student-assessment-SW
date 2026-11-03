@@ -34,7 +34,7 @@ if not SECRET_KEY:
 DEBUG = os.getenv('DEBUG', 'False').lower() == 'true'
 
 ALLOWED_HOSTS = [
-    'student-assessment-alis.onrender.com',
+    'student-assessment-4ipf.onrender.com',
     'localhost',
     '127.0.0.1',
 ]
@@ -47,7 +47,7 @@ if render_hostname and render_hostname not in ALLOWED_HOSTS:
 
 # Needed for Django admin / CSRF-protected requests over HTTPS
 CSRF_TRUSTED_ORIGINS = [
-    'https://student-assessment-alis.onrender.com',
+    'https://student-assessment-4ipf.onrender.com',
     'https://student-assessment-zeta.vercel.app',
 ]
 
