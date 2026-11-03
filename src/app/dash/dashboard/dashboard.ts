@@ -74,7 +74,7 @@ export class Dashboard implements OnInit {
     { label: 'Add Student', icon: 'person_add', route: '/dash/student/add', color: '#198754' },
     { label: 'Add Course', icon: 'add_box', route: '/dash/course/add', color: '#2b6cb0' },
     { label: 'Create Assessment', icon: 'assignment_add', route: '/dash/assessment/create', color: '#f59e0b' },
-    { label: 'View Analytics', icon: 'bar_chart', route: '/dash/analytics', color: '#8b5cf6' },
+    { label: 'View Prediction', icon: 'bar_chart', route: 'dash/student/general-analytics', color: '#8b5cf6' },
   ];
 
   ngOnInit() {
