@@ -47,7 +47,7 @@ interface PerformanceData {
 export class StudentPerformance implements OnInit, OnDestroy {
   private http = inject(HttpClient);
   private cdr = inject(ChangeDetectorRef);
-  private api = 'https://student-assessment-alis.onrender.com';
+  private api = 'http://127.0.0.1:8000';
   private PASS_PERCENT = 50;   // used only if the API sends no pass_marks
   private sub = new Subscription();
 

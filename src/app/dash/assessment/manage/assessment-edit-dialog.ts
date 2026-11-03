@@ -164,7 +164,7 @@ export class EditAssessmentDialog implements OnInit {
   private cdr = inject(ChangeDetectorRef);
   data = inject<{ id: number }>(MAT_DIALOG_DATA);
 
-  base = 'https://student-assessment-alis.onrender.com';
+  base = 'http://127.0.0.1:8000';
   endPoint = 'assessments';
 
   types = ['Quiz', 'Midterm', 'Final', 'Assignment', 'Practice'];

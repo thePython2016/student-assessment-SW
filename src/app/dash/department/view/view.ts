@@ -40,7 +40,7 @@ interface Department {
   templateUrl: './view.html',
 })
 export class View implements OnInit, AfterViewInit {
-  base = 'https://student-assessment-alis.onrender.com';
+  base = 'http://127.0.0.1:8000';
   endPoint = 'department';
 
   displayedColumns: string[] = ['id', 'departmentCode', 'departmentName', 'description'];

@@ -40,7 +40,7 @@ interface InstructorOption {
 export class Add implements OnInit {
   private cdr = inject(ChangeDetectorRef);
 
-  base = 'https://student-assessment-alis.onrender.com';
+  base = 'http://127.0.0.1:8000';
 
   courseName = '';
   courseCode = '';

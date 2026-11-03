@@ -114,7 +114,7 @@ export class CourseEditDialog implements OnInit {
   private data = inject<{ id: number }>(MAT_DIALOG_DATA);
   private cdr = inject(ChangeDetectorRef);
 
-  base = 'https://student-assessment-alis.onrender.com';
+  base = 'http://127.0.0.1:8000';
 
   model: CourseData = {
     id: this.data.id, course_name: '', course_code: '', department: '',

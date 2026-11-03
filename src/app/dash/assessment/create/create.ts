@@ -48,7 +48,7 @@ export class Create implements OnInit {
   private fb = inject(FormBuilder);
   private http = inject(HttpClient);
   private cdr = inject(ChangeDetectorRef);
-  private api = 'https://student-assessment-alis.onrender.com';
+  private api = 'http://127.0.0.1:8000';
 
   types = ['Quiz', 'Midterm', 'Final','Assignment', 'Practice'];
   visibility = ['Immediately', 'After the deadline', 'Hidden until released'];
