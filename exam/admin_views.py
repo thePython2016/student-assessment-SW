@@ -1,13 +1,15 @@
 """
-Admin endpoints for the Student Performance page.
+Admin endpoints for the Student Performance page and the admin Dashboard.
 Save as backend/exam/admin_views.py  (same folder as exam/models.py).
 
 project/urls.py (or exam/urls.py):
-    from exam.admin_views import StudentSearchView, StudentResultsView, PredictionView
+    from exam.admin_views import StudentSearchView, StudentResultsView, PredictionView, AdminOverviewView
     path('prediction', PredictionView.as_view()),
     path('students', StudentSearchView.as_view()),
     path('exam/results/student/<int:student_id>', StudentResultsView.as_view()),
+    path('exam/admin-overview', AdminOverviewView.as_view()),
 """
+from django.apps import apps
 from django.contrib.auth import get_user_model
 from django.db.models import Avg, Q
 from rest_framework.permissions import BasePermission, IsAuthenticated
@@ -172,3 +174,55 @@ class PredictionView(APIView):
                 'actions': actions,
             })
         return Response(out)
+
+
+class AdminOverviewView(APIView):
+    """GET /exam/admin-overview -> numbers and recent activity for the admin dashboard."""
+    permission_classes = [IsAuthenticated, IsAdminRole]
+
+    @staticmethod
+    def _count(label):
+        """Row count for a model such as "course.Course", or None if that model does not exist."""
+        try:
+            return apps.get_model(label).objects.count()
+        except (LookupError, ValueError):
+            return None
+
+    @staticmethod
+    def _percent(at):
+        total = at.assessment.total_marks
+        if at.score is None or not total:
+            return None
+        return float(at.score) / total * 100
+
+    def get(self, request):
+        # The Assessment model is found from the attempt, so no import path is needed.
+        Assessment = ExamAttempt._meta.get_field('assessment').related_model
+
+        submitted = list(
+            ExamAttempt.objects.filter(status=ExamAttempt.Status.SUBMITTED)
+            .select_related('assessment', 'student')
+            .order_by('-submitted_at', '-started_at')
+        )
+        percents = [p for p in (self._percent(a) for a in submitted) if p is not None]
+        passed = [a for a in submitted if a.score is not None
+                  and float(a.score) >= float(a.assessment.pass_marks)]
+
+        return Response({
+            'totals': {
+                'students': User.objects.filter(role='student').count(),
+                'courses': self._count('course.Course'),     # change to your Course model, e.g. "courses.Course"
+                'assessments': Assessment.objects.filter(status='published').count(),
+                'submissions': len(submitted),
+                'average_score': round(sum(percents) / len(percents)) if percents else None,
+                'pass_rate': round(len(passed) / len(submitted) * 100) if submitted else None,
+            },
+            'recent': [{
+                'student': a.student.get_full_name() or a.student.username,
+                'title': a.assessment.title,
+                'percent': None if self._percent(a) is None else round(self._percent(a)),
+                'passed': None if a.score is None else float(a.score) >= float(a.assessment.pass_marks),
+                'submitted_at': a.submitted_at.isoformat() if a.submitted_at else None,
+                'auto_submitted': getattr(a, 'auto_submitted', False),
+            } for a in submitted[:8]],
+        })
