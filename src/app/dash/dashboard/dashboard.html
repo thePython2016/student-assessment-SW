@@ -2,10 +2,16 @@
 
   <div class="welcome-banner">
     <div>
-      <!-- <h2 *ngIf="userToken">Welcome back, {{ userToken }} </h2> -->
-      <h2 *ngIf="userEmail">Welcome back: {{ userEmail }} </h2>
+      <h2 *ngIf="userEmail">Welcome back: {{ userEmail }}</h2>
       <p>Here's what's happening in your system today.</p>
     </div>
+  </div>
+
+  <p class="loading-text" *ngIf="loading">Loading dashboard...</p>
+
+  <div class="error-box" *ngIf="error">
+    <span>{{ error }}</span>
+    <button mat-button (click)="load()">Retry</button>
   </div>
 
   <!-- KPI cards -->
@@ -50,12 +56,16 @@
       <mat-card-content>
         <div class="activity-list">
           <div class="activity-item" *ngFor="let activity of recentActivity">
-            <mat-icon class="activity-icon">{{ activity.icon }}</mat-icon>
+            <mat-icon class="activity-icon" [ngClass]="activity.status.toLowerCase()">{{ activity.icon }}</mat-icon>
             <div class="activity-text">
               <span>{{ activity.text }}</span>
               <small>{{ activity.time }}</small>
             </div>
           </div>
+
+          <p class="empty-text" *ngIf="!loading && !error && recentActivity.length === 0">
+            No recent activity.
+          </p>
         </div>
       </mat-card-content>
     </mat-card>
