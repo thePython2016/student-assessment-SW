@@ -28,6 +28,7 @@ load_dotenv(BASE_DIR / '.env')
 
 SECRET_KEY = os.getenv('SECRET_KEY')
 
+
 if not SECRET_KEY:
     raise ValueError("SECRET_KEY is missing from environment variables")
 
@@ -39,6 +40,20 @@ ALLOWED_HOSTS = [
     '127.0.0.1',
 ]
 
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {
+        "console": {"class": "logging.StreamHandler"},
+    },
+    "loggers": {
+        "django.request": {
+            "handlers": ["console"],
+            "level": "ERROR",
+            "propagate": False,
+        },
+    },
+}
 # Render automatically provides this variable
 render_hostname = os.getenv('RENDER_EXTERNAL_HOSTNAME')
 
