@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
   providedIn: 'root'
 })
 export class Auth {
-  private baseUrl = 'https://student-assessment-4ipf.onrender.com';
+  private baseUrl = 'http://127.0.0.1:8000';
   private watcherId: ReturnType<typeof setInterval> | null = null;
 
   constructor(private router: Router) {

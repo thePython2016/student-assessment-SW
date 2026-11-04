@@ -37,7 +37,7 @@ export class View implements OnInit, AfterViewInit {
   private cdr = inject(ChangeDetectorRef);
   private router = inject(Router);
 
-  base = 'https://student-assessment-4ipf.onrender.com';
+  base = 'http://127.0.0.1:8000';
   error = '';
   loading = false;
 

@@ -60,7 +60,7 @@ export class Dashboard implements OnInit {
   private http = inject(HttpClient);
   private cdr = inject(ChangeDetectorRef);
 
-  private api = 'https://student-assessment-4ipf.onrender.com';
+  private api = 'http://127.0.0.1:8000';
 
   userEmail = sessionStorage.getItem('email');
 

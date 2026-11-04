@@ -25,8 +25,9 @@ import { MatDividerModule } from '@angular/material/divider';
 })
 export class Add implements OnInit {
   private cdr = inject(ChangeDetectorRef);
+  private successTimer: any;
 
-  base = 'https://student-assessment-4ipf.onrender.com';
+  base = 'http://127.0.0.1:8000';
 
   firstName = '';
   lastName = '';
@@ -36,8 +37,6 @@ export class Add implements OnInit {
   dob: Date | null = null;
   gender = '';
   course = '';
-  res=''
-  errorFname=''
 
   genders = ['Male', 'Female', 'Other'];
   courses: string[] = [];
@@ -71,11 +70,19 @@ export class Add implements OnInit {
     return `${d.getFullYear()}-${m}-${day}`;
   }
 
+  private showSuccess(message: string) {
+    this.success = message;
+    clearTimeout(this.successTimer);
+    this.successTimer = setTimeout(() => {
+      this.success = '';
+      this.cdr.markForCheck();
+    }, 4000);
+  }
+
   async onSubmit(form: NgForm) {
     this.errors = {};
     this.error = '';
     this.success = '';
-    
 
     const payload = {
       first_name: this.firstName,
@@ -94,15 +101,16 @@ export class Add implements OnInit {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
-        const res=await response.json()
+      const res = await response.json();
 
       if (response.ok) {
-        this.success = 'Student added successfully';
-
+        this.showSuccess('Student added successfully!');
         form.resetForm();
-      } 
-      else{
-        this.error=res;
+      } else {
+        this.errors = res;
+        this.error = Object.entries(res)
+          .map(([field, msgs]) => `${field}: ${Array.isArray(msgs) ? msgs.join(', ') : msgs}`)
+          .join(' | ');
       }
     } catch (e) {
       this.error = 'Cannot reach the server';

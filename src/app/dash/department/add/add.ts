@@ -38,7 +38,7 @@ export class Add {
   private cdr = inject(ChangeDetectorRef);
   // Base and Enddpoint
 
-base="https://student-assessment-4ipf.onrender.com";
+base="http://127.0.0.1:8000";
 endPoint='department';
 
 

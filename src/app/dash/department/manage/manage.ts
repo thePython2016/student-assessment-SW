@@ -44,7 +44,7 @@ interface Department {
 export class Manage implements OnInit, AfterViewInit {
   private dialog = inject(MatDialog);
 
-  base = 'https://student-assessment-4ipf.onrender.com';
+  base = 'http://127.0.0.1:8000';
   endPoint = 'department';
 
   displayedColumns: string[] = ['id', 'department_code', 'department_name', 'description'];

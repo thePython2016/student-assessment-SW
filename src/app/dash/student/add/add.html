@@ -13,7 +13,18 @@
   <mat-divider class="header-divider"></mat-divider>
 
   <mat-card-content>
-   <form #studentForm="ngForm" (ngSubmit)="onSubmit(studentForm)" class="student-form">
+
+    @if (success) {
+      <div class="success-alert" role="status">
+        <mat-icon class="success-icon">check_circle</mat-icon>
+        <span class="success-text">{{ success }}</span>
+        <button type="button" class="success-close" (click)="success = ''" aria-label="Close">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+    }
+
+    <form #studentForm="ngForm" (ngSubmit)="onSubmit(studentForm)" class="student-form">
 
       <div class="form-row">
         <mat-form-field appearance="outline" class="half-width">
@@ -75,10 +86,8 @@
           <mat-icon>person_add</mat-icon> Add Student
         </button>
       </div>
- @if(success){
-      <p>{{success}}</p>
-    }
+
     </form>
-   
+
   </mat-card-content>
 </mat-card>

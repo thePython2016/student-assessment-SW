@@ -15,7 +15,7 @@ export class ExamAttempt implements OnInit, OnDestroy {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
 
-  base = 'https://student-assessment-4ipf.onrender.com';
+  base = 'http://127.0.0.1:8000';
   examId = Number(this.route.snapshot.paramMap.get('id'));
 
   info = signal<ExamInfo | null>(null);
