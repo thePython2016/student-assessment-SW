@@ -19,7 +19,7 @@ interface Option { id: number; name: string; }
 export class Add implements OnInit {
   private http = inject(HttpClient);
   private router = inject(Router);
-  private api = 'https://student-assessment-4ipf.onrender.com  ';
+  private api = 'https://student-assessment-4ipf.onrender.com';
 
   courses: Option[] = [];
   types = ['MCQ', 'True/False', 'Short answer'];
