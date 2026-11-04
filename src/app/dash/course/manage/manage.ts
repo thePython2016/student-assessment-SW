@@ -38,7 +38,7 @@ export class Manage implements OnInit, AfterViewInit {
   private dialog = inject(MatDialog);
   private cdr = inject(ChangeDetectorRef);
 
-  base = 'https://student-assessment-4ipf.onrender.com  ';
+  base = 'https://student-assessment-4ipf.onrender.com';
   endPoint = 'course';
 
   displayedColumns: string[] = [

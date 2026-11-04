@@ -114,7 +114,7 @@ export class CourseEditDialog implements OnInit {
   private data = inject<{ id: number }>(MAT_DIALOG_DATA);
   private cdr = inject(ChangeDetectorRef);
 
-  base = 'https://student-assessment-4ipf.onrender.com  ';
+  base = 'https://student-assessment-4ipf.onrender.com';
 
   model: CourseData = {
     id: this.data.id, course_name: '', course_code: '', department: '',

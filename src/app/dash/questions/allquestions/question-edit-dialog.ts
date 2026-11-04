@@ -84,7 +84,7 @@ export class QuestionEditDialog implements OnInit {
   private cdr = inject(ChangeDetectorRef);
   data = inject<{ id: number }>(MAT_DIALOG_DATA);
 
-  base = 'https://student-assessment-4ipf.onrender.com  ';
+  base = 'https://student-assessment-4ipf.onrender.com';
   endPoint = 'question-bank';
 
   courseName = '';

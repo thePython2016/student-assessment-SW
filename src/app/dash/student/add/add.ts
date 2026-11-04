@@ -28,7 +28,7 @@ export class Add implements OnInit {
   private successTimer: any;
 
   // base = 'https://student-assessment-4ipf.onrender.com';
-  base = 'https://student-assessment-4ipf.onrender.com  ';
+  base = 'https://student-assessment-4ipf.onrender.com';
 
 
   firstName = '';

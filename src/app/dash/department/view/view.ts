@@ -40,7 +40,7 @@ interface Department {
   templateUrl: './view.html',
 })
 export class View implements OnInit, AfterViewInit {
-  base = 'https://student-assessment-4ipf.onrender.com  ';
+  base = 'https://student-assessment-4ipf.onrender.com';
   endPoint = 'department';
 
   displayedColumns: string[] = ['id', 'departmentCode', 'departmentName', 'description'];
