@@ -1,13 +1,18 @@
 <mat-sidenav-container class="dashboard-container">
 
   <mat-sidenav mode="side" opened class="sidebar" [class.collapsed]="sidebarCollapsed">
-    <div class="sidebar-header">
-      <span class="logo" *ngIf="!sidebarCollapsed">Admin Panel</span>
-    </div>
+   <div class="sidebar-header">
+  <span class="logo" *ngIf="!sidebarCollapsed">
+    <img src="Logo.png" alt="Logo" class="logo-img full">
+  </span>
+  <span class="logo" *ngIf="sidebarCollapsed">
+    <img src="Logo.png" alt="Logo" class="logo-img mini">
+  </span>
+</div>
 
     <mat-nav-list>
       <a mat-list-item routerLink="dashboard" routerLinkActive="active-link" class="dashboard-link"
-   (click)="onMenuItemClick()" style="background-color: #198754 !important;"
+   (click)="onMenuItemClick()" style="background-color: #198754 !important;margin-top:60px"
    [matTooltip]="sidebarCollapsed ? 'Dashboard' : ''" matTooltipPosition="right">
   <mat-icon>dashboard</mat-icon> <span class="item-label">Dashboard</span>
 </a>

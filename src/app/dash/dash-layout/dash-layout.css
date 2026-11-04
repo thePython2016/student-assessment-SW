@@ -3,15 +3,57 @@
 .dashboard-container {
   height: 100vh;
 }
+.logo{
+  width:100px !important;
+  height:100px !important;
+}
 
+
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;   /* centered in both states */
+  padding: 12px 0;
+  background: transparent;   /* same surface as the rest of the sidebar */
+  border: none;
+  box-shadow: none;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+}
+
+.logo-img {
+  object-fit: contain;
+  background: transparent;
+  display: block;
+}
+
+.logo-img.full { width: 150px; height: 150px; }
+.logo-img.mini { width: 40px;  height: 40px; }   /* small and centered when collapsed */
 .sidebar {
   width: 270px;
-  background-color: #d4730d;
+  background-color: #cf8d4b;
   color: white;
   display: flex;
   flex-direction: column;
   transition: width 0.25s ease;
   
+}
+:host ::ng-deep .sidebar.collapsed .sidebar-header,
+:host ::ng-deep .sidebar.collapsed .logo {
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
+  width: 100% !important;
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
 }
 .submenu a {
 
