@@ -103,7 +103,7 @@ export class Add implements OnInit {
     this.busy.set(true);
     this.message.set('');
 
-    this.http.post(`${this.api}/api/question-bank`, this.buildPayload())
+    this.http.post(`${this.api}/question-bank`, this.buildPayload())
       .pipe(
         timeout(60000),
         finalize(() => this.busy.set(false)),
