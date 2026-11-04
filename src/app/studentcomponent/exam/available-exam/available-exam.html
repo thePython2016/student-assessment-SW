@@ -43,7 +43,7 @@
           <span class="chip"><mat-icon>help_outline</mat-icon> {{ e.questionCount }} questions</span>
           <span class="chip"><mat-icon>grade</mat-icon> {{ e.totalMarks }} marks</span>
           <span class="chip"><mat-icon>event</mat-icon>
-            {{ e.status === 'Upcoming' ? 'Opens ' + formatTime(e.opensAt) : 'Closes ' + formatTime(e.closesAt) }}
+            {{ e.status === 'Upcoming' ? 'Opens ' + formatTime(e.opensAt) : (e.status === 'Closed' ? 'Closed ' : 'Closes ') + formatTime(e.closesAt) }}
           </span>
         </p>
       </div>

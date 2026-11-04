@@ -9,7 +9,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 
-type Status = 'Available' | 'In progress' | 'Upcoming' | 'Completed' | 'Missed';
+type Status = 'Available' | 'In progress' | 'Upcoming' | 'Completed' | 'Missed' | 'Closed';
 type Tab = 'All' | Status;
 
 interface ExamItem {
@@ -51,7 +51,7 @@ export class AvailableExam implements OnInit {
   // For one fixed zone for everyone, use: 'Africa/Dar_es_Salaam'
   tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-  tabs: Tab[] = ['All', 'Available', 'Upcoming'];
+  tabs: Tab[] = ['All', 'Available', 'Upcoming', 'Closed'];
   tab: Tab = 'All';
   search = '';
 
@@ -128,6 +128,7 @@ export class AvailableExam implements OnInit {
     const opensAt = this.utc(r.start);
     const closesAt = this.utc(r.end);
     const opensLater = opensAt ? Date.parse(opensAt) > Date.now() : false;
+    const closed = closesAt ? Date.parse(closesAt) <= Date.now() : false;
     return {
       id: r.id,
       title: r.title,
@@ -138,7 +139,7 @@ export class AvailableExam implements OnInit {
       durationMin: r.duration,
       questionCount: r.question_count,
       totalMarks: r.total_marks,
-      status: opensLater ? 'Upcoming' : 'Available',
+      status: closed ? 'Closed' : opensLater ? 'Upcoming' : 'Available',
       score: null,
       resultsVisible: true,
     };
@@ -151,11 +152,13 @@ export class AvailableExam implements OnInit {
 
   refresh() {
     const s = this.search.trim().toLowerCase();
-    const rank: Record<Status, number> = { 'In progress': 0, Available: 1, Upcoming: 2, Completed: 3, Missed: 4 };
+    const rank: Record<Status, number> = {
+      'In progress': 0, Available: 1, Upcoming: 2, Completed: 3, Missed: 4, Closed: 5,
+    };
     const when = (e: ExamItem) =>
       e.status === 'Upcoming' ? Date.parse(e.opensAt)
-      : e.status === 'Completed' || e.status === 'Missed' ? -Date.parse(e.closesAt)  // newest first
-      : Date.parse(e.closesAt);                                                      // closing soonest first
+      : e.status === 'Completed' || e.status === 'Missed' || e.status === 'Closed' ? -Date.parse(e.closesAt)  // newest first
+      : Date.parse(e.closesAt);                                                                              // closing soonest first
 
     this.view = this.all
       .filter((e) =>

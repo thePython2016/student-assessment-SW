@@ -78,3 +78,7 @@ button:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
   .actions { flex-direction: row; align-items: center; width: 100%; justify-content: space-between; }
   .search-field { max-width: none; width: 100%; }
 }
+
+/* Closed exams (past their closing time): no Start button, grey label */
+.tile.closed { background: #f2f4f7; color: var(--mute); }
+.badge.closed { background: #f2f4f7; color: var(--mute); }
