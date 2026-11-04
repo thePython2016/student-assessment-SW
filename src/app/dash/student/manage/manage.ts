@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewInit, ViewChild, inject, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, inject, ChangeDetectorRef, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
@@ -39,8 +39,10 @@ export interface Student {
 export class Manage implements OnInit, AfterViewInit {
   private cdr = inject(ChangeDetectorRef);
   private dialog = inject(MatDialog);
+  private successTimer: any;
 
-  base = 'http://127.0.0.1:8000';
+  // base = 'http://127.0.0.1:8000';
+  base = 'https://student-assessment-4ipf.onrender.com';
   endPoint = 'students';
 
   displayedColumns = ['id', 'first_name', 'last_name', 'email', 'phone', 'gender', 'course'];
@@ -51,7 +53,7 @@ export class Manage implements OnInit, AfterViewInit {
 
   selectedStudent: Student | null = null;
   error = '';
-  success = '';
+  success = signal('');
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
@@ -63,6 +65,12 @@ export class Manage implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
+  }
+
+  private showSuccess(message: string) {
+    this.success.set(message);
+    clearTimeout(this.successTimer);
+    this.successTimer = setTimeout(() => this.success.set(''), 2000);
   }
 
   async loadStudents() {
@@ -106,7 +114,7 @@ export class Manage implements OnInit, AfterViewInit {
   openEdit() {
     if (!this.selectedStudent) return;
     this.error = '';
-    this.success = '';
+    this.success.set('');
 
     const ref = this.dialog.open(StudentEditDialog, {
       width: '620px',
@@ -117,7 +125,7 @@ export class Manage implements OnInit, AfterViewInit {
 
     ref.afterClosed().subscribe(result => {
       if (result) {
-        this.success = 'Student updated successfully';
+        this.showSuccess('Student updated successfully');
         this.selectedStudent = null;
         this.loadStudents();
       }
@@ -131,11 +139,11 @@ export class Manage implements OnInit, AfterViewInit {
     if (!confirm(`Delete ${s.first_name} ${s.last_name}?`)) return;
 
     this.error = '';
-    this.success = '';
+    this.success.set('');
     try {
       const response = await fetch(`${this.base}/${this.endPoint}/${s.id}/`, { method: 'DELETE' });
       if (response.ok || response.status === 204) {
-        this.success = 'Student deleted successfully';
+        this.showSuccess('Student deleted successfully');
         this.selectedStudent = null;
         await this.loadStudents();
       } else {

@@ -19,6 +19,8 @@ export interface Student {
   lastName: string;
   email: string;
   phone: string;
+  address: string;
+  dateOfBirth: string;
   course: string;
   gender: string;
 }
@@ -37,11 +39,15 @@ export class View implements OnInit, AfterViewInit {
   private cdr = inject(ChangeDetectorRef);
   private router = inject(Router);
 
-  base = 'http://127.0.0.1:8000';
+  // base = 'http://127.0.0.1:8000';
+   base = 'https://student-assessment-4ipf.onrender.com';
   error = '';
   loading = false;
 
-  displayedColumns: string[] = ['id', 'firstName', 'lastName', 'email', 'phone', 'course', 'gender'];
+  displayedColumns: string[] = [
+    'id', 'firstName', 'lastName', 'email', 'phone',
+    'address', 'dateOfBirth', 'course', 'gender',
+  ];
   dataSource = new MatTableDataSource<Student>([]);
 
   pageSizeOptions = [5, 10, 25, 50];
@@ -59,6 +65,21 @@ export class View implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
+    this.paginator.pageSize = this.selectedPageSize;
+  }
+
+  private toStudent(s: any): Student {
+    return {
+      id: s.id,
+      firstName: s.first_name ?? '',
+      lastName: s.last_name ?? '',
+      email: s.email ?? '',
+      phone: s.phone ?? '',
+      address: s.address ?? '',
+      dateOfBirth: s.date_of_birth ?? '',
+      course: s.course ?? '',
+      gender: s.gender ?? '',
+    };
   }
 
   async loadStudents() {
@@ -67,23 +88,17 @@ export class View implements OnInit, AfterViewInit {
     try {
       const response = await fetch(`${this.base}/students/`);
       if (!response.ok) {
-        this.error = 'Could not load students';
+        this.error = `Could not load students (${response.status})`;
         return;
       }
-      const data = await response.json();
-      const list = Array.isArray(data) ? data : data.results; // data.results if DRF pagination is on
 
-      this.students = list.map((s: any): Student => ({
-        id: s.id,
-        firstName: s.first_name,
-        lastName: s.last_name,
-        email: s.email,
-        phone: s.phone,
-        course: s.course,
-        gender: s.gender,
-      }));
+      const data = await response.json();
+      const list = Array.isArray(data) ? data : (data.results ?? []);
+
+      this.students = list.map((s: any) => this.toStudent(s));
       this.dataSource.data = this.students;
     } catch (e) {
+      console.error('loadStudents error:', e);
       this.error = 'Cannot reach the server';
     } finally {
       this.loading = false;
@@ -99,12 +114,15 @@ export class View implements OnInit, AfterViewInit {
 
   onPageSizeChange(size: number) {
     this.selectedPageSize = size;
-    this.paginator.pageSize = size;
-    this.paginator._changePageSize(size);
+    if (this.paginator) {
+      this.paginator.pageSize = size;
+      this.paginator.firstPage();
+      this.dataSource.paginator = this.paginator;
+    }
   }
 
   editStudent(student: Student) {
-    this.router.navigate(['/dash/student/edit', student.id]); // adjust to your edit route
+    this.router.navigate(['/dash/student/edit', student.id]);
   }
 
   async deleteStudent(student: Student) {
