@@ -53,7 +53,7 @@ export class Add implements OnInit {
 
   async loadCourses() {
     try {
-      const response = await fetch(`${this.base}/course/`);
+      const response = await fetch(`${this.base}/api/course/`);
       if (response.ok) {
         const data = await response.json();
         this.courses = data.map((c: any) => c.course_name);
