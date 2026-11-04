@@ -39,7 +39,7 @@ export class Allquestions implements OnInit, AfterViewInit {
   private dialog = inject(MatDialog);
   private cdr = inject(ChangeDetectorRef);
 
-  base = 'https://student-assessment-4ipf.onrender.com  /api';
+  base = 'https://student-assessment-4ipf.onrender.com';
   endPoint = 'question-bank'; // no trailing slash, matches the Django router
 
   displayedColumns: string[] = ['id', 'text', 'course_name', 'topic', 'type', 'difficulty', 'marks'];
