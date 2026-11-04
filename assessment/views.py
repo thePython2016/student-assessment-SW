@@ -45,6 +45,22 @@ class AssessmentViewSet(
         # The Angular create form expects { id: number }
         return Response({"id": assessment.id, "status": assessment.status}, status=status.HTTP_201_CREATED)
 
+    # ---- Helpers (no GROUP BY, safe on Postgres) ----
+
+    def _plain_queryset(self):
+        return (
+            Assessment.objects.select_related("course")
+            .prefetch_related("items__question")
+        )
+
+    @staticmethod
+    def _with_question_count(qs):
+        # Items are already prefetched, so this costs no extra queries
+        rows = list(qs)
+        for a in rows:
+            a.question_count = len(a.items.all())
+        return rows
+
     # ---- Student side ----
 
     # GET /assessments/overview?studentId=7 : everything the student assessment page shows
@@ -54,7 +70,9 @@ class AssessmentViewSet(
         student_id = int(raw) if raw.isdigit() else None  # None = submissions saved without a student
         now = timezone.now()
 
-        published = self.get_queryset().filter(status=Assessment.Status.PUBLISHED)
+        published = self._with_question_count(
+            self._plain_queryset().filter(status=Assessment.Status.PUBLISHED).order_by("-id")
+        )
         submissions = list(
             Submission.objects.filter(student_id=student_id, assessment__status=Assessment.Status.PUBLISHED)
             .select_related("assessment")
@@ -110,10 +128,9 @@ class AssessmentViewSet(
     def available(self, request):
         now = timezone.now()
         qs = (
-            self.get_queryset()
+            self._plain_queryset()
             .filter(status=Assessment.Status.PUBLISHED)
             .filter(Q(end__isnull=True) | Q(end__gte=now))
-            .order_by("start", "id")
         )
 
         # Hide exams this student has already submitted
@@ -121,8 +138,9 @@ class AssessmentViewSet(
             done = ExamAttempt.objects.filter(
                 student=request.user, status=ExamAttempt.Status.SUBMITTED
             ).values_list("assessment_id", flat=True)
-            qs = qs.exclude(id__in=done)
+            qs = qs.exclude(id__in=list(done))
 
+        qs = self._with_question_count(qs.order_by("start", "id"))
         return Response(StudentAssessmentSerializer(qs, many=True).data)
 
     # GET /assessments/<id>/exam : questions + how many seconds the student has
