@@ -63,7 +63,7 @@ if render_hostname and render_hostname not in ALLOWED_HOSTS:
 # Needed for Django admin / CSRF-protected requests over HTTPS
 CSRF_TRUSTED_ORIGINS = [
     'https://student-assessment-4ipf.onrender.com',
-    'https://student-assessment-azure.vercel.app',
+    'https://student-assessment-sw.vercel.app',
 ]
 
 if render_hostname:
@@ -295,7 +295,7 @@ AUTH_PASSWORD_VALIDATORS = [
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:4200',
     'http://127.0.0.1:4200',
-    'https://student-assessment-azure.vercel.app',
+    'https://student-assessment-sw.vercel.app',
 ]
 
 CORS_ALLOW_CREDENTIALS = True
