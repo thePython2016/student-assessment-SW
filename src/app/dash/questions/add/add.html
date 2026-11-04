@@ -11,11 +11,11 @@
     <p>Fill in the question's details below</p>
   </div>
 
-  <form id="addForm" class="card-body" #f="ngForm" (ngSubmit)="save(f, false)" novalidate>
+  <form id="addForm" class="card-body" #f="ngForm" (ngSubmit)="submit(f, false)" novalidate>
     <mat-form-field appearance="outline" class="full">
       <mat-label>Course</mat-label>
       <mat-select name="courseId" [(ngModel)]="model.courseId" required #course="ngModel">
-        @for (c of courses; track c.id) { <mat-option [value]="c.id">{{ c.name }}</mat-option> }
+        @for (c of courses(); track c.id) { <mat-option [value]="c.id">{{ c.name }}</mat-option> }
       </mat-select>
       @if (course.invalid) { <mat-error>Select a course.</mat-error> }
     </mat-form-field>
@@ -65,18 +65,21 @@
     </div>
 
     <div class="actions">
-      <button mat-stroked-button type="button" (click)="clear(f)" [disabled]="saving">Clear</button>
+      <button mat-stroked-button type="button" (click)="clear(f)" [disabled]="busy()">Clear</button>
 
-      <button mat-stroked-button type="button" (click)="save(f, true)" [disabled]="saving">
+      <button mat-stroked-button type="button" (click)="submit(f, true)" [disabled]="busy()">
         <mat-icon>playlist_add</mat-icon>
         Save &amp; New
       </button>
 
-      <button mat-flat-button class="green-btn" type="submit" [disabled]="saving">
-        {{ saving ? 'Saving...' : 'Save Question' }}
-      </button>
+      <button mat-flat-button class="green-btn" type="submit" [disabled]="busy()">Submit</button>
     </div>
   </form>
 </div>
 
-@if (message) { <div class="msg" [class.bad]="isError" role="status">{{ message }}</div> }
+@if (message()) {
+  <div class="msg" [class.bad]="isError()" role="status">
+    <mat-icon>{{ isError() ? 'error' : 'check_circle' }}</mat-icon>
+    <span>{{ message() }}</span>
+  </div>
+}

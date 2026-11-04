@@ -1,4 +1,4 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { FormsModule, NgForm } from '@angular/forms';
@@ -7,6 +7,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
+import { finalize, timeout } from 'rxjs';
 
 interface Option { id: number; name: string; }
 
@@ -21,25 +22,33 @@ export class Add implements OnInit {
   private router = inject(Router);
   private api = 'https://student-assessment-4ipf.onrender.com';
 
-  courses: Option[] = [];
+  courses = signal<Option[]>([]);
   types = ['MCQ', 'True/False', 'Short answer'];
   levels = ['Easy', 'Medium', 'Hard'];
   answers = ['True', 'False'];
-  saving = false;
-  message = '';
-  isError = false;
 
-  model = {
-    courseId: null as number | null,
-    text: '',
-    answer: '' as '' | 'True' | 'False',
-    topic: '',
-    type: 'MCQ',
-    difficulty: 'Easy',
-    marks: 1,
-  };
+  busy = signal(false);       // blocks double-clicks only; label never changes
+  message = signal('');
+  isError = signal(false);
+
+  private msgTimer?: ReturnType<typeof setTimeout>;
+
+  model = this.emptyModel();
+
+  private emptyModel() {
+    return {
+      courseId: null as number | null,
+      text: '',
+      answer: '' as '' | 'True' | 'False',
+      topic: '',
+      type: 'MCQ',
+      difficulty: 'Easy',
+      marks: 1,
+    };
+  }
 
   ngOnInit() {
+    // Also wakes the Render server before the user submits.
     this.loadCourses();
   }
 
@@ -47,15 +56,12 @@ export class Add implements OnInit {
     this.http.get<any>(`${this.api}/api/course/`).subscribe({
       next: (res) => {
         const list = Array.isArray(res) ? res : (res.results ?? []);
-        this.courses = list.map((x: any) => ({
+        this.courses.set(list.map((x: any) => ({
           id: x.id ?? x.course_id,
           name: x.course_name ?? x.name,
-        }));
+        })));
       },
-      error: () => {
-        this.isError = true;
-        this.message = 'Could not load courses.';
-      },
+      error: () => this.show('Could not load courses. Please refresh the page.', true),
     });
   }
 
@@ -63,7 +69,6 @@ export class Add implements OnInit {
     this.router.navigate(['/questions']);
   }
 
-  // Sends both `course` and `courseId`; DRF ignores whichever the serializer doesn't use.
   private buildPayload() {
     return {
       course: this.model.courseId,
@@ -77,54 +82,62 @@ export class Add implements OnInit {
     };
   }
 
+  private show(text: string, error: boolean, hideAfterMs = error ? 6000 : 4000) {
+    clearTimeout(this.msgTimer);
+    this.isError.set(error);
+    this.message.set(text);
+    if (hideAfterMs) this.msgTimer = setTimeout(() => this.message.set(''), hideAfterMs);
+  }
+
   // addAnother = true  -> Save & New: stay on the form
-  // addAnother = false -> Save Question: go to the questions list
-  save(form: NgForm, addAnother = false) {
-    if (this.saving) return;
-    if (form.invalid) { form.control.markAllAsTouched(); return; }
+  // addAnother = false -> Submit: show message, then go to the questions list
+  submit(form: NgForm, addAnother = false) {
+    if (this.busy()) return;
 
-    const payload = this.buildPayload();
-    console.log('Sending to API:', payload);
+    if (form.invalid) {
+      form.control.markAllAsTouched();
+      this.show('Please fill in all required fields.', true);
+      return;
+    }
 
-    this.saving = true;
-    this.message = '';
+    this.busy.set(true);
+    this.message.set('');
 
-    // No trailing slash: the router uses trailing_slash=False.
-    this.http.post(`${this.api}/question-bank`, payload).subscribe({
-      next: (res) => {
-        console.log('Saved:', res);
-        this.saving = false;
-        this.isError = false;
-
-        if (addAnother) {
-          this.message = 'Question added. Enter the next one.';
-          form.resetForm({ ...this.model, text: '', answer: '' });
-        } else {
-          this.goToQuestions();
-        }
-      },
-      error: (err) => {
-        console.error('Save failed:', err);
-        this.saving = false;
-        this.isError = true;
-        this.message = this.readError(err);
-      },
-    });
+    this.http.post(`${this.api}/api/question-bank`, this.buildPayload())
+      .pipe(
+        timeout(60000),
+        finalize(() => this.busy.set(false)),
+      )
+      .subscribe({
+        next: () => {
+          if (addAnother) {
+            form.resetForm(this.emptyModel());
+            this.show('Question submitted successfully. Enter the next one.', false);
+          } else {
+            this.show('Question submitted successfully.', false, 0);
+            setTimeout(() => this.goToQuestions(), 1200);
+          }
+        },
+        error: (err) => this.show(this.readError(err), true),
+      });
   }
 
   private readError(err: any): string {
-    if (err.status === 0) return 'Cannot reach the server.';
+    if (err?.name === 'TimeoutError') return 'The server took too long to respond. Please try again.';
+    if (err.status === 0) return 'Cannot reach the server. Check your connection and try again.';
+    if (err.status === 404) return 'Submit endpoint not found (404). Check the API URL.';
+    if (err.status >= 500) return 'Server error. Please try again in a moment.';
     const body = err.error;
     if (body && typeof body === 'object') {
       return Object.entries(body)
         .map(([field, msgs]) => `${field}: ${Array.isArray(msgs) ? msgs.join(', ') : msgs}`)
         .join(' | ');
     }
-    return `Could not save the question (${err.status}).`;
+    return `Could not submit the question (${err.status}).`;
   }
 
   clear(form: NgForm) {
-    form.resetForm({ courseId: null, text: '', answer: '', topic: '', type: 'MCQ', difficulty: 'Easy', marks: 1 });
-    this.message = '';
+    form.resetForm(this.emptyModel());
+    this.message.set('');
   }
 }
