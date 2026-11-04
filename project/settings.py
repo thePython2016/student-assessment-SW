@@ -62,7 +62,7 @@ if render_hostname and render_hostname not in ALLOWED_HOSTS:
 
 # Needed for Django admin / CSRF-protected requests over HTTPS
 CSRF_TRUSTED_ORIGINS = [
-    'https://student-assessment-4ipf.onrender.com',
+    'https://student-assessment-4ipf.onrender.com  ',
     'https://student-assessment-sw.vercel.app',
 ]
 
