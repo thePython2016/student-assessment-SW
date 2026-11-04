@@ -44,7 +44,7 @@ export class Add implements OnInit {
   }
 
   private loadCourses() {
-    this.http.get<any>(`${this.api}/course/`).subscribe({
+    this.http.get<any>(`${this.api}/api/course/`).subscribe({
       next: (res) => {
         const list = Array.isArray(res) ? res : (res.results ?? []);
         this.courses = list.map((x: any) => ({
