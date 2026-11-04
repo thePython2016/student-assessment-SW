@@ -112,7 +112,7 @@ export class Create implements OnInit {
         name: x.departmentName_ ?? x.name,
       })), this.cdr.markForCheck()));
 
-    this.http.get<any[]>(`${this.api}/course`).subscribe((c) =>
+    this.http.get<any[]>(`${this.api}/api/course`).subscribe((c) =>
       (this.courses = c.map((x) => ({
         id: x.id ?? x.id,
         name: x.course_name ?? x.name,
