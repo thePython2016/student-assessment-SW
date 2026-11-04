@@ -1,5 +1,4 @@
 from django.urls import path
-from .views import CourseCreateView
 from .views import CourseCreateView, CourseDetailView
 
 urlpatterns = [

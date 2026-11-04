@@ -210,7 +210,7 @@ DATABASES = {
 
         'PORT': os.getenv('DB_PORT'),
 
-        'CONN_MAX_AGE': 0,
+        'CONN_MAX_AGE': 60,
 
         'OPTIONS': {
             'sslmode': 'require',
