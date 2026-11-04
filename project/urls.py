@@ -5,6 +5,7 @@ from exam.admin_views import StudentSearchView, StudentResultsView
 from django.conf.urls.static import static
 from django.urls import path, include
 from rest_framework_simplejwt.views import TokenRefreshView
+from account.views import health
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -18,6 +19,7 @@ urlpatterns = [
     path('exam/', include('exam.urls')),
     path('resources/', include('resources.urls')),
     path('exam/', include('exam.urls')),
+    path("api/health/", health),
     path('students', StudentSearchView.as_view()),
 path('exam/results/student/<int:student_id>', StudentResultsView.as_view()),
     path('exam/results/student/<int:student_id>', StudentResultsView.as_view()),
