@@ -60,7 +60,7 @@ export class StudentDashboard implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('trendChart') trendChartRef!: ElementRef<HTMLCanvasElement>;
   private chart?: Chart;
 
-  private api = 'https://student-assessment-4ipf.onrender.com';
+  private api = 'https://student-assessment-4ipf.onrender.com  ';
   private PASS_PERCENT = 50;   // used only if the API sends no pass_marks
   private tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
