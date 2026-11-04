@@ -19,7 +19,7 @@ interface Option { id: number; name: string; }
 export class Add implements OnInit {
   private http = inject(HttpClient);
   private router = inject(Router);
-  private api = 'http://127.0.0.1:8000';
+  private api = 'https://student-assessment-4ipf.onrender.com';
 
   courses: Option[] = [];
   types = ['MCQ', 'True/False', 'Short answer'];
@@ -40,45 +40,87 @@ export class Add implements OnInit {
   };
 
   ngOnInit() {
-    this.http.get<any[]>(`${this.api}/course`).subscribe((c) =>
-      (this.courses = c.map((x) => ({
-        id: x.id ?? x.course_id,
-        name: x.course_name ?? x.name,
-      }))));
+    this.loadCourses();
+  }
+
+  private loadCourses() {
+    this.http.get<any>(`${this.api}/course/`).subscribe({
+      next: (res) => {
+        const list = Array.isArray(res) ? res : (res.results ?? []);
+        this.courses = list.map((x: any) => ({
+          id: x.id ?? x.course_id,
+          name: x.course_name ?? x.name,
+        }));
+      },
+      error: () => {
+        this.isError = true;
+        this.message = 'Could not load courses.';
+      },
+    });
   }
 
   goToQuestions() {
     this.router.navigate(['/questions']);
   }
 
-  // addAnother = true  -> Save & New: stay on the form for the next question
+  // Sends both `course` and `courseId`; DRF ignores whichever the serializer doesn't use.
+  private buildPayload() {
+    return {
+      course: this.model.courseId,
+      courseId: this.model.courseId,
+      text: this.model.text.trim(),
+      answer: this.model.answer,
+      topic: this.model.topic.trim(),
+      type: this.model.type,
+      difficulty: this.model.difficulty,
+      marks: Number(this.model.marks),
+    };
+  }
+
+  // addAnother = true  -> Save & New: stay on the form
   // addAnother = false -> Save Question: go to the questions list
   save(form: NgForm, addAnother = false) {
     if (this.saving) return;
     if (form.invalid) { form.control.markAllAsTouched(); return; }
 
+    const payload = this.buildPayload();
+    console.log('Sending to API:', payload);
+
     this.saving = true;
     this.message = '';
 
-    this.http.post(`${this.api}/question-bank`, this.model).subscribe({
-      next: () => {
+    // No trailing slash: the router uses trailing_slash=False.
+    this.http.post(`${this.api}/question-bank`, payload).subscribe({
+      next: (res) => {
+        console.log('Saved:', res);
         this.saving = false;
         this.isError = false;
 
         if (addAnother) {
           this.message = 'Question added. Enter the next one.';
-          // Keep course, topic, type, difficulty and marks; clear only the question and answer.
           form.resetForm({ ...this.model, text: '', answer: '' });
         } else {
           this.goToQuestions();
         }
       },
-      error: () => {
+      error: (err) => {
+        console.error('Save failed:', err);
         this.saving = false;
         this.isError = true;
-        this.message = 'Could not save the question. Try again.';
+        this.message = this.readError(err);
       },
     });
+  }
+
+  private readError(err: any): string {
+    if (err.status === 0) return 'Cannot reach the server.';
+    const body = err.error;
+    if (body && typeof body === 'object') {
+      return Object.entries(body)
+        .map(([field, msgs]) => `${field}: ${Array.isArray(msgs) ? msgs.join(', ') : msgs}`)
+        .join(' | ');
+    }
+    return `Could not save the question (${err.status}).`;
   }
 
   clear(form: NgForm) {

@@ -29,7 +29,7 @@ export class Assessment implements OnInit {
   private http = inject(HttpClient);
   private cdr = inject(ChangeDetectorRef);
 
-  private api = 'http://127.0.0.1:8000';
+  private api = 'https://student-assessment-4ipf.onrender.com';
   private PASS_PERCENT = 50;   // used only if the API sends no pass_marks
   private tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
 

@@ -41,7 +41,7 @@ export class Manage implements OnInit, AfterViewInit {
   private dialog = inject(MatDialog);
   private successTimer: any;
 
-  // base = 'http://127.0.0.1:8000';
+  // base = 'https://student-assessment-4ipf.onrender.com';
   base = 'https://student-assessment-4ipf.onrender.com';
   endPoint = 'students';
 

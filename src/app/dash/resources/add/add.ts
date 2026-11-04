@@ -26,7 +26,7 @@ export class Add implements OnInit {
 
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
 
-  private api = 'http://127.0.0.1:8000';
+  private api = 'https://student-assessment-4ipf.onrender.com';
   private uploadSub?: Subscription;
 
   // Keep these in step with the backend (ALLOWED_EXTENSIONS and MAX_MB)
