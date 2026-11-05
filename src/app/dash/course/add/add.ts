@@ -40,6 +40,7 @@ interface InstructorOption {
 export class Add implements OnInit {
   private cdr = inject(ChangeDetectorRef);
 
+  // base = 'https://student-assessment-4ipf.onrender.com';
   base = 'https://student-assessment-4ipf.onrender.com';
 
   courseName = '';
