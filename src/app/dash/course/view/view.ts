@@ -72,7 +72,7 @@ export class View implements OnInit, AfterViewInit {
   async loadCourses() {
     this.error = '';
     try {
-      const response = await fetch(`${this.base}/${this.endPoint}/`);
+      const response = await fetch(`${this.base}/api/${this.endPoint}/`);
       if (response.ok) {
         this.dataSource.data = await response.json();
       } else {

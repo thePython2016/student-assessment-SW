@@ -105,7 +105,7 @@ export class Add implements OnInit {
     };
 
     try {
-      const response = await fetch(`${this.base}/course/`, {
+      const response = await fetch(`${this.base}/api/course/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
