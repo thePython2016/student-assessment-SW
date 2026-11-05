@@ -1,36 +1,46 @@
-from rest_framework.views import APIView
-from rest_framework.response import Response
+from django.db import connection
+from django.shortcuts import get_object_or_404
 from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
 from .models import Course
 from .serializers import CourseSerializer
-from django.shortcuts import get_object_or_404
-from django.db import connection
-import pandas as pd
 
 
 class CourseCreateView(APIView):
 
     def get(self, request):
-        cursor=connection.cursor()
-        sql="""
-        select c.id,c.course_name,c.course_code,department_name,credits,first_name,last_name 
-            from course_course c,department_department d,instructor_instructor i where c.instructor::bigint=i.id and  d.id=i.department_id
+        # LEFT JOINs keep courses even when the instructor or department is missing.
+        # The regex check stops a non-numeric `instructor` value from crashing the ::bigint cast.
+        sql = """
+            SELECT c.id,
+                   c.course_name,
+                   c.course_code,
+                   d.department_name,
+                   c.credits,
+                   i.first_name,
+                   i.last_name
+            FROM course_course c
+            LEFT JOIN instructor_instructor i
+                   ON i.id = CASE WHEN c.instructor ~ '^[0-9]+$'
+                                  THEN c.instructor::bigint END
+            LEFT JOIN department_department d
+                   ON d.id = i.department_id
+            ORDER BY c.id
         """
-        cursor.execute(sql)
-        rows=cursor.fetchall()
-        df=pd.DataFrame(rows)
-        df.columns=[col[0] for col in cursor.description]
-        data=df.to_dict(orient='records')
+        with connection.cursor() as cursor:
+            cursor.execute(sql)
+            columns = [col[0] for col in cursor.description]
+            data = [dict(zip(columns, row)) for row in cursor.fetchall()]
         return Response(data)
-
-
-    
 
     def post(self, request):
         serializer = CourseSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
 
 class CourseDetailView(APIView):
 
@@ -46,10 +56,5 @@ class CourseDetailView(APIView):
         return Response(serializer.data)
 
     def delete(self, request, pk):
-        # id = request.GET.get("pk")
-
-        course=Course.objects.filter(id=pk)
-        course.delete()
-        
-        
+        Course.objects.filter(id=pk).delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
